@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using PLCSharp.Core.Prism;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -415,7 +415,7 @@ namespace PLCSharp.VVMs.Robots
         /// </summary>
         /// <param name="robotPoint">机器人点位</param>
         /// <returns>返回布尔值</returns>
-        public virtual bool RunPoint(RobotPoint robotPoint)
+        public virtual bool RunPoint(string pointName)
         {
             return false;
 
@@ -428,12 +428,19 @@ namespace PLCSharp.VVMs.Robots
         /// <param name="dist">dist</param>
         /// <param name="rate">rate</param>
         /// <returns>返回布尔值</returns>
-        public virtual bool Jog(RobotPoint point, string cmd, double dist, double rate = 0)
+        public virtual bool Jog(string pointName, string cmd, double dist, double rate = 0)
         {
 
             return false;
 
         }
+
+        /// <summary>
+        /// 点位运行完成
+        /// </summary>
+        [NotMapped]
+        
+        public bool PointDone { get; set; }
 
         private DelegateCommand _HomeCmd;
         /// <summary>

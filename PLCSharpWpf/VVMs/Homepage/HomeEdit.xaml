@@ -87,14 +87,14 @@
                                     <DataTemplate>
                                         <!--  编辑状态下，展示 ComboBox 供用户选择  -->
                                         <ComboBox SelectedIndex="{Binding Params.Layout, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                            <ComboBoxItem Content=" 左 -&gt; 右  上 -&gt; 下 " Tag = "0"/>
-                                            <ComboBoxItem Content=" 左 -&gt; 右  下 -&gt; 上 " Tag = "1"/>
-                                            <ComboBoxItem Content=" 右 -&gt; 左  上 -&gt; 下 " Tag = "2"/>
-                                            <ComboBoxItem Content=" 右 -&gt; 左  下 -&gt; 上 " Tag = "3"/>
-                                            <ComboBoxItem Content=" 上 -&gt; 下  左 -&gt; 右 " Tag = "4"/>
-                                            <ComboBoxItem Content=" 上 -&gt; 下  右 -&gt; 左 " Tag = "5"/>
-                                            <ComboBoxItem Content=" 下 -&gt; 上  左 -&gt; 右 " Tag = "6"/>
-                                            <ComboBoxItem Content=" 下 -&gt; 上  右 -&gt; 左 " Tag = "7"/>
+                                            <ComboBoxItem Content=" 左 -&gt; 右  上 -&gt; 下 " Tag="0" />
+                                            <ComboBoxItem Content=" 左 -&gt; 右  下 -&gt; 上 " Tag="1" />
+                                            <ComboBoxItem Content=" 右 -&gt; 左  上 -&gt; 下 " Tag="2" />
+                                            <ComboBoxItem Content=" 右 -&gt; 左  下 -&gt; 上 " Tag="3" />
+                                            <ComboBoxItem Content=" 上 -&gt; 下  左 -&gt; 右 " Tag="4" />
+                                            <ComboBoxItem Content=" 上 -&gt; 下  右 -&gt; 左 " Tag="5" />
+                                            <ComboBoxItem Content=" 下 -&gt; 上  左 -&gt; 右 " Tag="6" />
+                                            <ComboBoxItem Content=" 下 -&gt; 上  右 -&gt; 左 " Tag="7" />
                                         </ComboBox>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellEditingTemplate>

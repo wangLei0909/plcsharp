@@ -35,7 +35,8 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <Button Margin="3" Command="{Binding DataContext.FastEntry, RelativeSource={RelativeSource AncestorType=GroupBox}}"
+                                <Button Margin="3"
+                                        Command="{Binding DataContext.FastEntry, RelativeSource={RelativeSource AncestorType=GroupBox}}"
                                         CommandParameter="{Binding Content}"
                                         Content="{Binding Name}"
                                         ToolTip="点击插入代码片段到编辑器" />
@@ -77,7 +78,7 @@
             <TextBox Text="{Binding SelectedFlowTask.DebugLog}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />
         </GroupBox>
 
-        <!-- 状态栏 -->
+        <!--  状态栏  -->
         <StatusBar Grid.Row="1" Grid.ColumnSpan="4" Background="LightGray">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -93,7 +94,7 @@
             <StatusBarItem Grid.Column="0">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="tbStatus" Text="行: 1  列: 1" FontSize="12" FontFamily="Consolas" />
-                    <TextBlock Text=" | " FontSize="12" Margin="4,0" />
+                    <TextBlock Margin="4,0" Text=" | " FontSize="12" />
                     <TextBlock x:Name="tbFontSize" Text="字号: 20" FontSize="12" FontFamily="Consolas" />
                 </StackPanel>
             </StatusBarItem>
@@ -103,8 +104,12 @@
         </StatusBar>
 
         <StackPanel Grid.Row="2" Grid.ColumnSpan="4" Orientation="Horizontal">
-            <Button Margin="5" Padding="10" Command="{Binding Compile}" Content="  编译  " ToolTip="编译代码（Ctrl+S 格式化 + 自动保存后编译）" />
-            <Button Width="50" Margin="10,5" Command="{Binding Run}" Content="运行" ToolTip="手动执行一次（自动运行模式禁用）" />
+            <Button Margin="5" Padding="10"
+                    Command="{Binding Compile}"
+                    Content="  编译  " ToolTip="编译代码（Ctrl+S 格式化 + 自动保存后编译）" />
+            <Button Width="50" Margin="10,5"
+                    Command="{Binding Run}"
+                    Content="运行" ToolTip="手动执行一次（自动运行模式禁用）" />
             <TextBlock Margin="5" Padding="10"
                        Text="  已编译  "
                        HorizontalAlignment="Center" VerticalAlignment="Center"

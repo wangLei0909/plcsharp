@@ -309,7 +309,7 @@ namespace PLCSharp.VVMs.Robots
             {
                 case "RunPoint":
 
-                    SelectedRobot.RunPoint(SelectedRobot.SelectedPoint);
+                    SelectedRobot.RunPoint(SelectedRobot.SelectedPoint.Name);
                     break;
 
 
@@ -324,8 +324,8 @@ namespace PLCSharp.VVMs.Robots
 
                 case "U+":
                 case "U-":
-                    SelectedRobot.CurrPoint.ToolNum = SelectedRobot.SelectedPoint.ToolNum;
-                    SelectedRobot.Jog(SelectedRobot.CurrPoint, cmdStr, RelativeDistance);
+
+                    SelectedRobot.Jog(SelectedRobot.SelectedPoint.Name, cmdStr, RelativeDistance);
                     break;
             }
 

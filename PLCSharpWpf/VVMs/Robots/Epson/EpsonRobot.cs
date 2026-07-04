@@ -1,4 +1,4 @@
-using PLCSharp.Core.Tools;
+﻿using PLCSharp.Core.Tools;
 using PLCSharp.VVMs.Connects.Socket;
 using System.Threading;
 
@@ -232,7 +232,7 @@ public class EpsonRobot : Robot
                 case "u-":
                 case "returnhere":
                 case "runpoint":
-
+                    PointDone = true;
                     if (parts.Length >= 7)
                     {
                         _ = double.TryParse(parts[1], out var x);
@@ -312,8 +312,14 @@ public class EpsonRobot : Robot
     /// </summary>
     /// <param name="point">点位</param>
     /// <returns>返回布尔值</returns>
-    public override bool RunPoint(RobotPoint point)
+    public override bool RunPoint(string pointName)
     {
+        PointDone = false;
+        var point = Points.FirstOrDefault(p => p.Name == pointName);
+        if (point == null)
+        {
+            return false;
+        }
         point.Command = "RunPoint";
         PointCommand = point.DeepCopy();
         return SendCommand(PointCommand);
@@ -327,13 +333,19 @@ public class EpsonRobot : Robot
     /// <param name="dist"></param>
     /// <param name="rate"></param>
     /// <returns></returns>
-    public override bool Jog(RobotPoint pointBase, string cmd, double dist, double rate = 0)
+    public override bool Jog(string pointName, string cmd, double dist, double rate = 0)
     {
+        PointDone = false;
         var cmdDone = false;
+        var point = Points.FirstOrDefault(p => p.Name == pointName);
+        if (point == null)
+        {
+            return false;
+        }
 
-        PointCommand = pointBase.DeepCopy();
+        PointCommand = CurrPoint.DeepCopy();
 
-        if (PointCommand.ToolNum == 0)
+        if (point.ToolNum == 0)
         {
             switch (cmd)
             {
@@ -341,38 +353,38 @@ public class EpsonRobot : Robot
                 case "X-":
                     PointCommand.Command = cmd;
                     PointCommand.X = dist;
-                    PointCommand.Rate = rate > 0 ? rate : PointCommand.Rate;
+                    PointCommand.Rate = rate > 0 ?  rate : point.Rate;
                     cmdDone = SendCommand(PointCommand);
                     break;
                 case "Y+":
                 case "Y-":
                     PointCommand.Command = cmd;
                     PointCommand.Y = dist;
-                    PointCommand.Rate = rate > 0 ? rate : PointCommand.Rate;
+                    PointCommand.Rate = rate > 0 ? rate : point.Rate;
                     cmdDone = SendCommand(PointCommand);
                     break;
                 case "Z+":
                 case "Z-":
                     PointCommand.Command = cmd;
                     PointCommand.Z = dist;
-                    PointCommand.Rate = rate > 0 ? rate : PointCommand.Rate;
+                    PointCommand.Rate = rate > 0 ? rate : point.Rate;
                     cmdDone = SendCommand(PointCommand);
                     break;
                 case "U+":
                 case "U-":
                     PointCommand.Command = cmd;
                     PointCommand.U = dist;
-                    PointCommand.Rate = rate > 0 ? rate : PointCommand.Rate;
+                    PointCommand.Rate = rate > 0 ? rate : point.Rate;
                     cmdDone = SendCommand(PointCommand);
                     break;
             }
         }
         else
         {
-            PointCommand.Rate = rate > 0 ? rate : PointCommand.Rate;
+            PointCommand.Rate = rate > 0 ? rate : point.Rate;
             PointCommand.Command = "RunPoint";
 
-            var tool = Tools.FirstOrDefault(w => w.Key == PointCommand.ToolNum);
+            var tool = Tools.FirstOrDefault(w => w.Key == point.ToolNum);
 
             if (tool.Value == null) return false;
             var pointTool = ToolFrame4Axis.WorldToTool(PointCommand, tool.Value);

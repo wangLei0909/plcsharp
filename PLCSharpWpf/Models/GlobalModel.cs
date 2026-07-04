@@ -190,23 +190,21 @@ namespace PLCSharp.Models
         {
             var connect = Connects.Connects.FirstOrDefault(c => c.Name == name)
                                 ?? throw new Exception("网络未配置!");
-            if (connect.Connected == false)
-            {
-                throw new Exception("网络未连接!");
-            }
+ 
             return connect;
         }
         /// <summary>
-        /// 获取相机
+        /// 获取Robot
         /// </summary>
         /// <param name="name">名称</param>
         /// <returns>返回结果</returns>
-        public CameraBase GetCamera(string name)
+        public Robot GetRobot(string name)
         {
-            return VisionsModel.Cameras.FirstOrDefault(c => c.Name == name)
-                 ?? throw new Exception("相机未配置!");
+            var robot = RobotModel.Robots.FirstOrDefault(c => c.Name == name)
+                                ?? throw new Exception("Robot未配置!");
+ 
+            return robot;
         }
-
         /// <summary>
         /// 获取VisionFunction
         /// </summary>
