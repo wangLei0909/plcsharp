@@ -7,6 +7,9 @@ using Prism.Commands;
 using Prism.Dialogs;
 using Prism.Events;
 using Prism.Ioc;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 
 namespace PLCSharp.VVMs.Workflows
 {
@@ -64,12 +67,46 @@ namespace PLCSharp.VVMs.Workflows
         }
 
         /// <summary>
+        /// 快捷代码片段列表
+        /// </summary>
+        public ObservableCollection<SnippetItem> SnippetItems { get; set; } = [];
+
+        /// <summary>
         /// 打开对话框后要执行的
         /// </summary>
         /// <param name="parameters">parameters</param>
         public override void OnDialogOpened(IDialogParameters parameters)
         {
             SelectedFlowTask = parameters.GetValue<Workflow>("SelectedTask");
+            LoadSnippets();
+        }
+
+        /// <summary>
+        /// 从 Script 目录加载 .spt 文件
+        /// </summary>
+        private void LoadSnippets()
+        {
+            SnippetItems.Clear();
+
+            // 从程序集所在目录逐级向上查找 Script 目录
+            var dir = AppDomain.CurrentDomain.BaseDirectory;
+            string scriptDir;
+            while (true)
+            {
+                scriptDir = Path.Combine(dir, @"VVMs\Workflows\Script");
+                if (Directory.Exists(scriptDir)) break;
+
+                var parent = Directory.GetParent(dir);
+                if (parent == null) return;
+                dir = parent.FullName;
+            }
+
+            foreach (var file in Directory.GetFiles(scriptDir, "*.spt").OrderBy(f => f))
+            {
+                var name = Path.GetFileNameWithoutExtension(file);
+                var content = File.ReadAllText(file);
+                SnippetItems.Add(new SnippetItem { Name = name, Content = content });
+            }
         }
 
         private DelegateCommand _Run;
@@ -100,171 +137,15 @@ namespace PLCSharp.VVMs.Workflows
         public DelegateCommand<string> FastEntry =>
             _FastEntry ??= new DelegateCommand<string>(ExecuteFastEntry);
 
-        void ExecuteFastEntry(string cmd)
+        void ExecuteFastEntry(string content)
         {
-            switch (cmd)
-            {
-                case "网络收发":
-                    CustomTextEditor.Insert(@"
-                        case 0:
-                       
-                                CurrConnect = globalModel.GetConnect(""网络连接名"");
-                                _ = CurrConnect.SendAsync(""要发送的消息""); 
-                                flow.Step++;
-                       
-                        break;
-                        case 1:
-                
-                   
-                                if (string.IsNullOrEmpty(CurrConnect.ReceiveInfo))
-                                {
- 
-                                        flow.Step++;
-
-                            }
-                        break;
-                    ");
-                    break;
-
-                case "视觉功能":
-                    CustomTextEditor.Insert(@"
-                        case 0:
-                          
-                                CurrVF= globalModel.GetVisionFunction(""视觉功能名"");
-                                CurrVF.Flow.Reset();
-                                flow.Step++;
-                      
-                           break;
-                        case 1:
-                            {
-                            if(CurrVF.RunAll(CurrVF.Flow))
-                                {
-                                    flow.Step++;
-
-                                }else if (flow.CheckStepTime(3))
-                                     throw new Exception(""视觉功能超时!"");
-                                }     
-                            }                       
-
-                            break;
-                    ");
-                    break;
-                case "显示状态":
-                    CustomTextEditor.Insert(@"
-                        case 0:
-                            {
-                                var stateControl = globalModel.GetCustomControl(""控件名称"");
-                                stateControl.Params.CellInfos[0].State = CellState.OK;
-                                flow.Step++;
-                            }
-                        break;
-                    ");
-                    break;
-
-                case "运动控制":
-                    CustomTextEditor.Insert(@"
-                        case 0:
-                            {
-                                var point = globalModel.ControllersModel.AxisPoints.FirstOrDefault(p => p.Name == ""点位名称"");
-                                if (point != null)
-                                {
-                                    point.Run();
-                                    flow.Step++;
-                                }
-                            }
-                        break;
-                        case 1:
-                            {
-                                var point = globalModel.ControllersModel.AxisPoints.FirstOrDefault(p => p.Name == ""点位名称"");
-                                if (point != null && point.IsDone())
-                                {
-                                    flow.Step++;
-                                }
-                                else if (flow.CheckStepTime(10))
-                                    throw new Exception(""点位运动超时!"");
-                            }
-                        break;
-                    ");
-                    break;
-                case "变量赋值":
-                    CustomTextEditor.Insert(@"
-                        case 0:
-                            {
-                                var variable = globalModel.GetVariable(""变量名"");
-                                variable.Value = 100; // 设置变量值
-                                flow.Step++;
-                            }
-                        break;
-                    ");
-                    break;
-
-                case "延时等待":
-                    CustomTextEditor.Insert(@"
-                        case 0:
-                            {
-                                // 开始等待
-                                flow.Step++;
-                            }
-                        break;
-                        case 1:
-                            if (flow.CheckStepTime(2)) // 等待2秒
-                            {
-                                flow.Step++;
-                            }
-                        break;
-                    ");
-                    break;
-
-                case "机器人运动":
-                    CustomTextEditor.Insert(@"
-                        case 0:
-                            {
-                                var robot = globalModel.GetRobot(""机器人名称"");
-                                if (robot != null)
-                                {
-                                    var point = robot.Points.FirstOrDefault(p => p.Name == ""点位名称"");
-                                    if (point != null)
-                                    {
-                                        robot.RunPoint(point);
-                                        flow.Step++;
-                                    }
-                                }
-                            }
-                        break;
-                        case 1:
-                            if (robot.) // 等待运动完成
-                            {
-                                flow.Step++;
-                            }
-                        break;
-                    ");
-                    break;
-
-            }
-
+            if (!string.IsNullOrEmpty(content))
+                CustomTextEditor.Insert(content);
         }
 
         /// <summary>
         /// CustomTextEditor
         /// </summary>
         public CustomTextEditor CustomTextEditor { get; set; }
-        int index = 0;
-        CustomControl stateControl;
-        /// <summary>
-        /// Demo
-        /// </summary>
-        /// <param name="globalModel">全局模型</param>
-        /// <param name="flow">流程状态模型</param>
-        public void Demo(GlobalModel globalModel, FlowModel flow)
-        {
-            switch (flow.Step)
-            {
-
-
-            }
-
-
-        }
     }
-
 }

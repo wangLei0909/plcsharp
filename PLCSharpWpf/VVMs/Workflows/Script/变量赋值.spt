@@ -1,0 +1,7 @@
+                        case 0:
+                            {
+                                var variable = globalModel.GetVariable("变量名");
+                                variable.Value = 100; // 设置变量值
+                                flow.Step++;
+                            }
+                        break;

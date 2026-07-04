@@ -1,0 +1,12 @@
+                        case 0:
+                            {
+                                // 开始等待
+                                flow.Step++;
+                            }
+                        break;
+                        case 1:
+                            if (flow.CheckStepTime(2)) // 等待2秒
+                            {
+                                flow.Step++;
+                            }
+                        break;

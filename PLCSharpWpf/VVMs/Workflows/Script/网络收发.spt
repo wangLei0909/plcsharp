@@ -1,0 +1,17 @@
+                        case 0:
+                       
+                                CurrConnect = globalModel.GetConnect("网络连接名");
+                                _ = CurrConnect.SendAsync("要发送的消息"); 
+                                flow.Step++;
+                       
+                        break;
+                        case 1:
+                
+                   
+                                if (string.IsNullOrEmpty(CurrConnect.ReceiveInfo))
+                                {
+ 
+                                        flow.Step++;
+
+                            }
+                        break;

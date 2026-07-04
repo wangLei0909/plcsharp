@@ -31,22 +31,19 @@
         </Grid.ColumnDefinitions>
         <GroupBox Grid.Column="0" Margin="3" Header="快捷输入">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="网络收发" ToolTip="插入网络收发代码模板（连接→发送→接收）" />
-                    <Separator Margin="3" />
-                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="显示状态" ToolTip="插入控件状态更新代码模板（设置 CellState）" />
-                    <Separator Margin="3" />
-                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="视觉功能" ToolTip="插入视觉功能调用模板（获取→重置→运行，含超时检测）" />
-                    <Separator Margin="3" />
-                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="机器人运动" ToolTip="插入机器人点位运动模板（获取→运行→等待完成）" />
-                    <Separator Margin="3" />
-                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="运动控制" ToolTip="插入运动控制点位模板（获取点位→运行→等待完成，含超时检测）" />
-                    <Separator Margin="3" />
-                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="延时等待" ToolTip="插入延时等待模板（使用 CheckStepTime 实现固定时长等待）" />
-                    <Separator Margin="3" />
-                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="延时等待" />
-
-                </StackPanel>
+                <ItemsControl ItemsSource="{Binding SnippetItems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Button Margin="3" Command="{Binding DataContext.FastEntry, RelativeSource={RelativeSource AncestorType=GroupBox}}"
+                                        CommandParameter="{Binding Content}"
+                                        Content="{Binding Name}"
+                                        ToolTip="点击插入代码片段到编辑器" />
+                                <Separator Margin="3" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </ScrollViewer>
         </GroupBox>
         <GroupBox Grid.Column="1" Margin="3" Header="{Binding SelectedFlowTask.Name}">

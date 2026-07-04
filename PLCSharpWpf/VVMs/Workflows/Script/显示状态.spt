@@ -1,0 +1,7 @@
+                        case 0:
+                            {
+                                var stateControl = globalModel.GetCustomControl("控件名称");
+                                stateControl.Params.CellInfos[0].State = CellState.OK;
+                                flow.Step++;
+                            }
+                        break;

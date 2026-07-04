@@ -1,0 +1,19 @@
+                        case 0:
+                          
+                                CurrVF= globalModel.GetVisionFunction("视觉功能名");
+                                CurrVF.Flow.Reset();
+                                flow.Step++;
+                      
+                           break;
+                        case 1:
+                            {
+                            if(CurrVF.RunAll(CurrVF.Flow))
+                                {
+                                    flow.Step++;
+
+                                }else if (flow.CheckStepTime(3))
+                                     throw new Exception("视觉功能超时!");
+                                }     
+                            }                       
+
+                            break;
