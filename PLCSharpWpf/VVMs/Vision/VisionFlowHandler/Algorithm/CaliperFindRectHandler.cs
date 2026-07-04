@@ -34,7 +34,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
                 ? rv : "卡尺找旋转矩形_Rect";
 
             if (src.Channels() == 3)
-                src = src.CvtColor(ColorConversionCodes.BGR2GRAY);
+                Cv2.CvtColor(src, src, ColorConversionCodes.BGR2GRAY);
 
             double halfLen = caliperLength / 2.0;
             int scanLen = caliperLength;

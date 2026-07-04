@@ -23,7 +23,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Processing
             {
                 if (item.IntParams.TryGetValue("ChannelIndex", out int _channelIndex))
                 {
-                    Mat[] channels = func.Src.Split();
+                    Mat[] channels = Cv2.Split(func.Src);
                     func.Src = channels[_channelIndex];
 
                 }

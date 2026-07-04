@@ -33,7 +33,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Processing
                             {
 
                                 if (func.Src.Channels() == 3)
-                                    func.Src = func.Src.CvtColor(ColorConversionCodes.BGR2GRAY);
+                                    Cv2.CvtColor(func.Src, func.Src, ColorConversionCodes.BGR2GRAY);
 
 
                                 ThresholdTypes type = (ThresholdTypes)thresholdType;

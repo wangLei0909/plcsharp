@@ -366,7 +366,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler
 
             if (src.Type() == MatType.CV_8UC3)
             {
-                gray = src.CvtColor(ColorConversionCodes.BGR2GRAY);
+                Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
             }
             else
             {
@@ -395,7 +395,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler
             }
             else
             {
-                bgr = src.CvtColor(ColorConversionCodes.GRAY2BGR);
+                Cv2.CvtColor(src, bgr, ColorConversionCodes.GRAY2BGR);
             }
             return true;
         }
@@ -601,7 +601,8 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler
 
             if (src.Type() != MatType.CV_8UC3) return false;
 
-            var hsv = src.CvtColor(ColorConversionCodes.BGR2HSV);
+            Mat hsv = new Mat();
+            Cv2.CvtColor(src, hsv, ColorConversionCodes.BGR2HSV);
             Scalar low = new(hLow, sLow, vLow);
             Scalar high = new(hHigh, sHigh, vHigh);
             Cv2.InRange(hsv, low, high, dst);

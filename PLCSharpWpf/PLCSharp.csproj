@@ -19,10 +19,9 @@
     <PackageReference Include="DotNetCore.Natasha.CSharp.Compiler" Version="10.1.2.2" />
     <PackageReference Include="DotNetCore.Natasha.CSharp.Compiler.Domain" Version="10.0.0.1" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.17" />
-	<PackageReference Include="MiniExcel" Version="1.44.1" />
+	<PackageReference Include="MiniExcel" Version="1.45.0" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="OpenCvSharp4.Windows" Version="4.13.0.20260602" />
-    <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.13.0.20260602" />
+	<PackageReference Include="OpenCvSharp5.Windows" Version="5.0.0.20260702" />
     <PackageReference Include="Prism.DryIoc" Version="9.0.537" />
     <PackageReference Include="RoslynPad.Editor.Windows" Version="5.0.0" />
     <!--<PackageReference Include="SourceGear.sqlite3" Version="3.50.4.5" />-->

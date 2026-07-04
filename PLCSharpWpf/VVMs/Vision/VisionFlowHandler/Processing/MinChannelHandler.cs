@@ -21,7 +21,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Processing
         {
             if (func.Src.Channels() == 3)
             {
-                Mat[] channels = func.Src.Split();
+                Mat[] channels = Cv2.Split(func.Src);
                 Mat minMat = new Mat();
                 Cv2.Min(channels[0], channels[1], minMat);
                 Cv2.Min(minMat, channels[2], minMat);

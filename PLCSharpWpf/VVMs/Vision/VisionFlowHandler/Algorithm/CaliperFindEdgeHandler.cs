@@ -27,7 +27,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
                 ? en : "卡尺寻边_Edge";
 
             if (src.Channels() == 3)
-                src = src.CvtColor(ColorConversionCodes.BGR2GRAY);
+                Cv2.CvtColor(src, src, ColorConversionCodes.BGR2GRAY);
 
             double lineDx = ex - sx, lineDy = ey - sy;
             double lineLen = Math.Sqrt(lineDx * lineDx + lineDy * lineDy);

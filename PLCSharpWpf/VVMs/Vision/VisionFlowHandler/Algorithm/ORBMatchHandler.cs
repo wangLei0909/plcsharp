@@ -78,7 +78,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
             Mat mask = null;
             Mat homography = null;
             Mat template = null;
-            Mat templateMask = null; // 圆形模板遮罩
+            Mat templateMask = new Mat(); // 圆形模板遮罩（空 Mat = 无掩码）
 
             try
             {
@@ -115,8 +115,25 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
                 }
 
                 // 灰度化
-                graySrc = src.Channels() == 3 ? src.CvtColor(ColorConversionCodes.BGR2GRAY) : src.Clone();
-                grayTemplate = template.Channels() == 3 ? template.CvtColor(ColorConversionCodes.BGR2GRAY) : template.Clone();
+                if (src.Channels() == 3)
+                {
+                    graySrc = new Mat();
+                    Cv2.CvtColor(src, graySrc, ColorConversionCodes.BGR2GRAY);
+                }
+                else
+                {
+                    graySrc = src.Clone();
+                }
+
+                if (template.Channels() == 3)
+                {
+                    grayTemplate = new Mat();
+                    Cv2.CvtColor(template, grayTemplate, ColorConversionCodes.BGR2GRAY);
+                }
+                else
+                {
+                    grayTemplate = template.Clone();
+                }
 
                 // 圆形模板创建遮罩（仅圆形区域参与特征检测）
                 if (roiShape == "圆形")
@@ -131,7 +148,8 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
                 var orb = ORB.Create(nfeatures);
                 // 源图特征
                 srcDescriptors = new Mat();
-                orb.DetectAndCompute(graySrc, null, out KeyPoint[] srcKps, srcDescriptors);
+                using Mat noMask = new Mat();
+                orb.DetectAndCompute(graySrc, noMask, out KeyPoint[] srcKps, srcDescriptors);
                 // 模板特征（圆形模板使用遮罩）
                 templateDescriptors = new Mat();
                 orb.DetectAndCompute(grayTemplate, templateMask, out KeyPoint[] templateKps, templateDescriptors);
@@ -241,7 +259,8 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
                 Mat colorSrc = null;
                 if (func.Src.Channels() == 1)
                 {
-                    colorSrc = func.Src.CvtColor(ColorConversionCodes.GRAY2BGR);
+                    colorSrc = new Mat();
+                    Cv2.CvtColor(func.Src, colorSrc, ColorConversionCodes.GRAY2BGR);
                     func.Src = colorSrc;
                 }
 

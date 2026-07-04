@@ -21,7 +21,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Processing
         {
             if (func.Src.Channels() == 3)
             {
-                Mat[] channels = func.Src.Split();
+                Mat[] channels = Cv2.Split(func.Src);
                 Mat maxMat = new Mat();
                 Cv2.Max(channels[0], channels[1], maxMat);
                 Cv2.Max(maxMat, channels[2], maxMat);

@@ -1163,7 +1163,16 @@ namespace PLCSharp.VVMs.Vision
                 double spacing = SelectVisionFlow.DoubleParams.TryGetValue("CalibSpacing", out double sp) ? Math.Max(sp, 0.1) : 5;
                 string matName = SelectVisionFlow.StringParams.TryGetValue("CalibMatName", out var mn) && !string.IsNullOrEmpty(mn) ? mn : "标定矩阵";
 
-                var gray = src.Channels() == 3 ? src.CvtColor(ColorConversionCodes.BGR2GRAY) : src;
+                Mat gray;
+                if (src.Channels() == 3)
+                {
+                    gray = new Mat();
+                    Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
+                }
+                else
+                {
+                    gray = src;
+                }
                 int x = Math.Clamp((int)roi.Left, 0, gray.Width - 1);
                 int y = Math.Clamp((int)roi.Top, 0, gray.Height - 1);
                 int w = Math.Min((int)roi.Width, gray.Width - x);
@@ -1197,7 +1206,7 @@ namespace PLCSharp.VVMs.Vision
                     rows.Add(sorted.Skip(i).Take(3).OrderBy(d => d.cx).ToList());
 
                 // 画圆
-                if (src.Channels() == 1) src = src.CvtColor(ColorConversionCodes.GRAY2BGR);
+                if (src.Channels() == 1) { Cv2.CvtColor(src, src, ColorConversionCodes.GRAY2BGR); }
                 int idx = 0;
                 foreach (var row in rows)
                     foreach (var (cx, cy, r) in row)
@@ -1222,7 +1231,8 @@ namespace PLCSharp.VVMs.Vision
                         worldPts.Add(new Point2f((float)(colBase + c * spacing), (float)(rowBase + r * spacing)));
                     }
 
-                var affine = Cv2.EstimateAffine2D(InputArray.Create(imgPts), InputArray.Create(worldPts), null, RobustEstimationAlgorithms.RANSAC, 3.0);
+                using Mat noInliers = new Mat();
+                var affine = Cv2.EstimateAffine2D(InputArray.Create(imgPts), InputArray.Create(worldPts), noInliers, RobustEstimationAlgorithms.RANSAC, 3.0);
                 if (affine == null || affine.Empty()) { SendInfoDialog("计算变换矩阵失败！"); return; }
 
                 string json = MatExtension.SerializeAffineMat(affine);
