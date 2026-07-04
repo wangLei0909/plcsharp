@@ -1,0 +1,99 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <PlatformTarget>x64</PlatformTarget>
+    <ApplicationIcon>i.ico</ApplicationIcon>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<RestorePackagesPath>..\packages</RestorePackagesPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="VVMs\Robots\Epson\TextFile1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="i.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <!--<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />-->
+    <PackageReference Include="DotNetCore.Natasha.CSharp.Compiler" Version="10.1.2.2" />
+    <PackageReference Include="DotNetCore.Natasha.CSharp.Compiler.Domain" Version="10.0.0.1" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.17" />
+	<PackageReference Include="MiniExcel" Version="1.44.1" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="OpenCvSharp4.Windows" Version="4.13.0.20260602" />
+    <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.13.0.20260602" />
+    <PackageReference Include="Prism.DryIoc" Version="9.0.537" />
+    <PackageReference Include="RoslynPad.Editor.Windows" Version="5.0.0" />
+    <!--<PackageReference Include="SourceGear.sqlite3" Version="3.50.4.5" />-->
+    <!--<PackageReference Include="SqlSugarCore" Version="5.1.4.214" />-->
+    <PackageReference Include="System.IO.Ports" Version="10.0.9" />
+    <!-- 覆盖传递依赖 SQLitePCLRaw.lib.e_sqlite3 至修复版本 3.50.3（CVE-2025-6965，2.x 全部受影响且已弃用） -->
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.50.3" />
+  </ItemGroup>
+  <ItemGroup>
+  	<FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="SDK\Camera\MvCameraControl.Net.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="SDK\Camera\MvCameraControl.Net.XML">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="SDK\MotionControl\EMC\LTDMC.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SDK\MotionControl\EMC\LTDMC.lib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SDK\MotionControl\SMC\LTSMC.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SDK\MotionControl\SMC\LTSMC.lib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MvCameraControl.Net">
+      <HintPath>SDK\Camera\MvCameraControl.Net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Core\Resources\Iconfont\iconfont.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Core\UserControls\PasswordBoxNew.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="SDK\MotionControl\SMC\LTSMC.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="VVMs\Authority\Register.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="VVMs\MotionController\Config\EmcAxis.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="VVMs\MotionController\Config\EmcIO.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="VVMs\Vision\VisionFlowHandler\Access\ImageFromCamera.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="VVMs\Vision\VisionFlowHandler\Access\ImageToHomePage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="VVMs\Vision\VisionFlowHandler\Access\ImagesPool.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="VVMs\Vision\VisionFlowHandler\Access\ImageToFile .xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

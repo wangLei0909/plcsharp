@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Workflows.Workflows"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Workflows"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:WorkflowsViewModel}"
+             d:Height="550" d:Width="1000">
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+        </Style>
+    </prism:Dialog.WindowStyle>
+    <Grid>
+        <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                  Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                  AutoGenerateColumns="False" CanUserAddRows="False"
+                  CanUserDeleteRows="False" CanUserSortColumns="False"
+                  ItemsSource="{Binding WorkflowsModel.Workflows}"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  SelectedItem="{Binding WorkflowsModel.SelectedTask}"
+                  Unloaded="DataGrid_Unloaded">
+            <DataGrid.ItemContainerStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Prompt}" Value="已修改，请保存">
+                            <Setter Property="Foreground" Value="Red" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Prompt}" Value="">
+                            <Setter Property="Foreground" Value="Black" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.ItemContainerStyle>
+            <DataGrid.ContextMenu>
+                <ContextMenu IsEnabled="True" StaysOpen="False">
+                    <MenuItem Command="{Binding WorkflowsModel.Manage}" CommandParameter="New" Header="新增" />
+                    <MenuItem Command="{Binding WorkflowsModel.Manage}" CommandParameter="Remove" Header="删除" />
+                    <MenuItem Command="{Binding WorkflowsModel.Manage}" CommandParameter="Save" Header="保存" />
+                    <MenuItem Command="{Binding WorkflowsModel.Manage}" CommandParameter="Config" Header="配置" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Columns>
+                <DataGridTextColumn MinWidth="60" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="名称" />
+                <DataGridTextColumn MinWidth="200" Binding="{Binding Comment, UpdateSourceTrigger=LostFocus}" Header="备注" />
+                <DataGridTextColumn MinWidth="60" Binding="{Binding CycleDelayTime, UpdateSourceTrigger=LostFocus}" Header="循环结束延迟" />
+                <DataGridTextColumn MinWidth="60" Binding="{Binding CycleDelayTime, UpdateSourceTrigger=LostFocus}" Header="实际周期" IsReadOnly="True" />
+                <DataGridTextColumn MinWidth="60" Binding="{Binding Flow.Step, UpdateSourceTrigger=LostFocus}" Header="当前步" />
+                <DataGridTemplateColumn Header="已编译">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Viewbox>
+                                <Ellipse Width="10" Height="10" Fill="{Binding IsCompiled, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                            </Viewbox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="执行异常">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Viewbox>
+                                <Ellipse Width="10" Height="10" Fill="{Binding Exception, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Red, FallbackValue=Gray}" />
+                            </Viewbox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="程序自动运行">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Viewbox>
+                                <Ellipse Width="10" Height="10" Fill="{Binding AutomaticExecution, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                            </Viewbox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn MinWidth="100" Binding="{Binding Prompt}" Header="提示" IsReadOnly="True" />
+            </DataGrid.Columns>
+
+        </DataGrid>
+    </Grid>
+</UserControl>

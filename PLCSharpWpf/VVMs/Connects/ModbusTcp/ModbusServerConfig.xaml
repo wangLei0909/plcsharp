@@ -1,0 +1,109 @@
+<UserControl x:Class="PLCSharp.VVMs.Connects.ModbusTcp.ModbusServerConfig"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:beavior="clr-namespace:PLCSharp.Core.Prism"
+             xmlns:cvt="clr-namespace:PLCSharp.Core.Tools"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Connects.ModbusTcp"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" d:Background="White"
+             d:DataContext="{d:DesignInstance Type=local:ModbusServerConfigViewModel}"
+             Width="1000" Height="600">
+    <UserControl.Resources>
+        <cvt:BoolToValueConverter x:Key="BoolToValueConverter" />
+
+        <!--  值解释方式枚举  -->
+        <ObjectDataProvider x:Key="ValueInterpretationValues" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:DataItem+ValueInterpretationEnum" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+
+    <Grid>
+        <GroupBox Header="Modbus TCP 服务端">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="3*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  第一行：可访问地址列表  -->
+                <GroupBox Header="可访问地址列表">
+                    <Grid>
+                        <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                                  Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                  AutoGenerateColumns="False" CanUserAddRows="False"
+                                  CanUserDeleteRows="False" CanUserSortColumns="True"
+                                  ItemsSource="{Binding Server.DataItems}"
+                                  SelectedItem="{Binding SelectedDataItem}"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  Unloaded="DataGrid_Unloaded">
+                            <DataGrid.ContextMenu>
+                                <ContextMenu IsEnabled="True" StaysOpen="False">
+                                    <MenuItem Command="{Binding ConnectsManage}" CommandParameter="New" Header="新增" />
+                                    <MenuItem Command="{Binding ConnectsManage}" CommandParameter="Remove" Header="删除" />
+                                    <Separator />
+                                    <MenuItem Command="{Binding ConnectsManage}" CommandParameter="Save" Header="保存" />
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+                            <DataGrid.Columns>
+                                <!--  地址  -->
+                                <DataGridTextColumn Width="0.8*" Binding="{Binding Address, UpdateSourceTrigger=LostFocus}" Header="地址" />
+                                <!--  解释方式  -->
+                                <DataGridComboBoxColumn Width="1*" Header="解释" ItemsSource="{Binding Source={StaticResource ValueInterpretationValues}}" SelectedValueBinding="{Binding ValueInterpretation, UpdateSourceTrigger=PropertyChanged}" />
+                                <!--  当前值 (只读显示)  -->
+                                <DataGridTextColumn Width="1.2*" Binding="{Binding DisplayValue, Mode=OneWay}" Header="当前值" IsReadOnly="True" />
+                                <!--  设定值 (可编辑)  -->
+                                <DataGridTextColumn Width="1.2*" Binding="{Binding InputValue, UpdateSourceTrigger=LostFocus}" Header="设定值" />
+                                <!--  备注  -->
+                                <DataGridTextColumn Width="2*" Binding="{Binding Description, UpdateSourceTrigger=LostFocus}" Header="备注" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </GroupBox>
+
+                <!--  第二行：日志  -->
+                <GroupBox Grid.Row="1" Header="日志">
+                    <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=2}, Path=ActualWidth}"
+                              Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=2}, Path=ActualHeight}"
+                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                              AutoGenerateColumns="False" CanUserAddRows="False"
+                              CanUserDeleteRows="False" CanUserSortColumns="False"
+                              ItemsSource="{Binding Logs}"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              Unloaded="DataGrid_Unloaded">
+                        <i:Interaction.Behaviors>
+                            <beavior:DataGridScrollToBottomBehavior />
+                        </i:Interaction.Behaviors>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="1*" Binding="{Binding Time, UpdateSourceTrigger=LostFocus}" Header="时间" />
+                            <DataGridTextColumn Width="5*" Binding="{Binding Message, UpdateSourceTrigger=LostFocus}" Header="消息" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </GroupBox>
+
+                <!--  第三行：连接参数  -->
+                <StackPanel Grid.Row="2" Margin="0,4" Orientation="Horizontal">
+                    <TextBlock Margin="10,0" Text="服务器IP:" VerticalAlignment="Center" />
+                    <TextBox Width="130" Text="{Binding IP, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}" VerticalAlignment="Center" />
+                    <TextBlock Margin="10,0" Text="端口:" VerticalAlignment="Center" />
+                    <TextBox Width="80" Text="{Binding Port, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}" VerticalAlignment="Center" />
+                    <TextBlock Margin="10,0" Text="在线:" VerticalAlignment="Center" />
+                    <Ellipse Width="20" Height="20" Fill="{Binding Server.Online, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    <TextBlock Margin="10,0" Text="连接:" VerticalAlignment="Center" />
+                    <Ellipse Width="20" Height="20" Fill="{Binding Server.Connected, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    <TextBlock Margin="10,0" Text="数据项数:" VerticalAlignment="Center" />
+                    <TextBlock Margin="2,0" Text="{Binding Server.DataItems.Count}" VerticalAlignment="Center" />
+                    <CheckBox Margin="20,0,0,0" Content="显示日志" IsChecked="{Binding Server.LogSwitch}" />
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

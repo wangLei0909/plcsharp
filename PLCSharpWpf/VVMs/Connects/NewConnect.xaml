@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Connects.NewConnect"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:connect="clr-namespace:PLCSharp.VVMs.Connects"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=connect:NewConnectViewModel}"
+             Width="600" Height="200"
+             Background="AliceBlue">
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="Height" Value="200" />
+            <Setter Property="Width" Value="600" />
+        </Style>
+    </prism:Dialog.WindowStyle>
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="ProtocolType" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="connect:ProtocolType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+    </UserControl.Resources>
+    <StackPanel Width="300" Margin="20">
+        <UniformGrid>
+            <TextBlock Text="连接名称" />
+            <TextBox Width="150" Text="{Binding Name}" />
+        </UniformGrid>
+
+        <UniformGrid>
+            <TextBlock Text="协议:" />
+            <ComboBox MinWidth="150" ItemsSource="{Binding Source={StaticResource ProtocolType}}" SelectedValue="{Binding Type, UpdateSourceTrigger=PropertyChanged}" />
+        </UniformGrid>
+
+        <UniformGrid>
+            <Button Width="80" Height="28"
+                    FontSize="12"
+                    HorizontalAlignment="Center"
+                    Background="#5cb85c"
+                    Command="{Binding CloseDialogCommand}"
+                    CommandParameter="Yes" Content="确定" Cursor="Hand" Foreground="White" />
+            <Button Grid.Row="1"
+                    Width="80" Height="28"
+                    FontSize="12"
+                    HorizontalAlignment="Center"
+                    Background="#b85c5c"
+                    Command="{Binding CloseDialogCommand}"
+                    CommandParameter="No" Content="取消" Cursor="Hand" Foreground="White" />
+        </UniformGrid>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,209 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Robots.Robots"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Robots"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:rbt="clr-namespace:PLCSharp.VVMs.Robots"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:RobotsViewModel}"
+             d:DesignHeight="800" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="RobotType" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="rbt:RobotType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="HandType" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="rbt:HandType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+        </Style>
+    </prism:Dialog.WindowStyle>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="160" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="200" />
+        </Grid.RowDefinitions>
+        <!--  机器人列表  -->
+        <GroupBox Header="机器人">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Grid>
+                    <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                              Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                              AutoGenerateColumns="False" CanUserAddRows="False"
+                              CanUserDeleteRows="False" CanUserSortColumns="False"
+                              ItemsSource="{Binding RobotModel.Robots}"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              SelectedItem="{Binding SelectedRobot}"
+                              Unloaded="DataGrid_Unloaded">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu IsEnabled="True" StaysOpen="False">
+                                <MenuItem Command="{Binding RobotManage}" CommandParameter="New" Header="新增" />
+                                <MenuItem Command="{Binding RobotManage}" CommandParameter="Remove" Header="删除" />
+                                <MenuItem Command="{Binding RobotManage}" CommandParameter="Save" Header="保存" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn MinWidth="40" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="名称" />
+                            <DataGridComboBoxColumn MinWidth="60" Header="类型" ItemsSource="{Binding Source={StaticResource RobotType}}" SelectedValueBinding="{Binding Type, UpdateSourceTrigger=PropertyChanged}" />
+                            <DataGridTextColumn MinWidth="80" Binding="{Binding IP, UpdateSourceTrigger=LostFocus}" Header="IP" />
+                            <DataGridTextColumn MinWidth="40" Binding="{Binding Port, UpdateSourceTrigger=LostFocus}" Header="端口" />
+                            <DataGridTextColumn MinWidth="40" Binding="{Binding CommanPort, UpdateSourceTrigger=LostFocus}" Header="命令端口" />
+                            <DataGridTextColumn MinWidth="60" Binding="{Binding Speed, UpdateSourceTrigger=LostFocus}" Header="速度%" />
+                            <DataGridTextColumn MinWidth="150" Binding="{Binding Comment, UpdateSourceTrigger=LostFocus}" Header="备注" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+                <UniformGrid Grid.Column="1" Columns="1">
+
+                    <UniformGrid Rows="2">
+
+                        <Border Background="{Binding SelectedRobot.Status[0], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[0]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[1], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[1]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[2], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[2]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[3], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[3]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[4], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[4]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[5], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[5]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[6], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[6]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[7], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[7]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[8], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[8]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[9], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[9]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[10], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[10]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[11], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[11]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[12], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[12]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[13], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[13]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[14], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[14]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Border Background="{Binding SelectedRobot.Status[15], Converter={StaticResource BoolToValueConverter}, ConverterParameter=Lime, FallbackValue=Gray}">
+                            <TextBlock d:Text="状态" Text="{Binding SelectedRobot.StatusInfo[15]}" TextAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+
+
+                    </UniformGrid>
+                    <UniformGrid Columns="6">
+                        <Button Margin="1" Content="停止" Command="{Binding SelectedRobot.StopCmd}" />
+                        <Button Margin="1" Content="开始" Command="{Binding SelectedRobot.StartCmd}" />
+                        <Button Margin="1" Content="复位" Command="{Binding SelectedRobot.ResetCmd}" />
+                        <Button Margin="1" Content="回起始点" Command="{Binding SelectedRobot.HomeCmd}" />
+                        <!--<Button Margin="1" Content="电机开" Command="{Binding SelectedRobot.PowerCmd}" CommandParameter="On" />
+                        <Button Margin="1" Content="电机关" Command="{Binding SelectedRobot.PowerCmd}" CommandParameter="Off" />-->
+                    </UniformGrid>
+
+                    <Grid d:Background="White">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="5*" />
+                            <ColumnDefinition Width="*" />
+
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   Margin="10,0"
+                                   Text="总速率:" TextAlignment="Center"
+                                   VerticalAlignment="Center" />
+                        <Slider Grid.Row="0" Grid.Column="1"
+                                Margin="1"
+                                VerticalAlignment="Center"
+                                Maximum="100" Minimum="1" SmallChange="1"
+                                Value="{Binding SelectedRobot.Speed}" />
+                        <TextBlock Grid.Row="0" Grid.Column="4"
+                                   Margin="10,0"
+                                   Text="{Binding SelectedRobot.Speed, StringFormat={}{0:F0}}"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Width="100" Text="{Binding SelectedRobot.ErrorInfo}" />
+                        <TextBlock Text="{Binding SelectedRobot.RcvShowInfo}" />
+                    </StackPanel>
+                </UniformGrid>
+
+            </Grid>
+        </GroupBox>
+
+
+        <!--  状态显示  -->
+        <GroupBox Grid.Row="1" Header="点位配置">
+            <Grid Grid.ColumnSpan="4" Tag="表">
+                <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                          AutoGenerateColumns="False" CanUserAddRows="False"
+                          CanUserDeleteRows="False" CanUserSortColumns="False"
+                          ItemsSource="{Binding SelectedRobot.Points}"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          SelectedItem="{Binding SelectedRobot.SelectedPoint}"
+                          Unloaded="DataGrid_Unloaded">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu IsEnabled="True" StaysOpen="False">
+                            <MenuItem Command="{Binding RobotPointManage}" CommandParameter="New" Header="新增" />
+                            <MenuItem Command="{Binding RobotPointManage}" CommandParameter="Remove" Header="删除" />
+                            <MenuItem Command="{Binding RobotPointManage}" CommandParameter="Save" Header="保存" />
+                            <MenuItem Command="{Binding RobotPointCommand}" CommandParameter="RunPoint" Header="运行到" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn MinWidth="100" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="名称" />
+
+                        <DataGridTextColumn MinWidth="100" Binding="{Binding X, UpdateSourceTrigger=LostFocus}" Header="X" />
+                        <DataGridTextColumn MinWidth="100" Binding="{Binding Y, UpdateSourceTrigger=LostFocus}" Header="Y" />
+                        <DataGridTextColumn MinWidth="100" Binding="{Binding Z, UpdateSourceTrigger=LostFocus}" Header="Z" />
+                        <DataGridTextColumn MinWidth="100" Binding="{Binding U, UpdateSourceTrigger=LostFocus}" Header="U" />
+                        <DataGridComboBoxColumn MinWidth="60" Header="左右手" ItemsSource="{Binding Source={StaticResource HandType}}" SelectedValueBinding="{Binding Hand, UpdateSourceTrigger=PropertyChanged}" />
+                        <DataGridTextColumn MinWidth="100" Binding="{Binding PointType, UpdateSourceTrigger=LostFocus}" Header="点位类形" />
+                        <DataGridTextColumn MinWidth="100" Binding="{Binding ToolNum, UpdateSourceTrigger=LostFocus}" Header="工具坐标系" />
+                        <DataGridTextColumn MinWidth="100" Binding="{Binding Rate, UpdateSourceTrigger=LostFocus}" Header="点位速率%" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="2" Header="点位配置">
+            <ContentControl Content="{Binding RobotPointsConfig}" />
+        </GroupBox>
+
+    </Grid>
+</UserControl>

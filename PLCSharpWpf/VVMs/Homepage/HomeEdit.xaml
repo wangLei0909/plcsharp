@@ -1,0 +1,127 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Homepage.HomeEdit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:MyNamespace="clr-namespace:PLCSharp.Core.UserControls"
+             xmlns:cvt="clr-namespace:PLCSharp.Core.Tools"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Homepage"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:HomeEditViewModel}"
+             d:Height="600" d:Width="1000"
+             Background="AliceBlue">
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+        </Style>
+    </prism:Dialog.WindowStyle>
+    <UserControl.Resources>
+        <cvt:BoolToValueConverter x:Key="BoolToValueConverter" />
+
+        <ObjectDataProvider x:Key="ControlType" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:ControlType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="50" />
+
+        </Grid.RowDefinitions>
+        <Grid>
+            <GroupBox Header="主界面">
+                <Grid>
+                    <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                              Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                              AutoGenerateColumns="False" CanUserAddRows="False"
+                              CanUserDeleteRows="False" CanUserSortColumns="False"
+                              ItemsSource="{Binding Model.CustomControls}"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              SelectedItem="{Binding Model.SelectedCustomControl}"
+                              Unloaded="DataGrid_Unloaded">
+                        <DataGrid.ItemContainerStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Prompt}" Value="已修改，请保存">
+                                        <Setter Property="Foreground" Value="Red" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Prompt}" Value="">
+                                        <Setter Property="Foreground" Value="Black" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.ItemContainerStyle>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu IsEnabled="True" StaysOpen="False">
+                                <MenuItem Command="{Binding Manage}" CommandParameter="New" Header="新增" />
+                                <MenuItem Command="{Binding Manage}" CommandParameter="Remove" Header="删除" />
+                                <MenuItem Command="{Binding Manage}" CommandParameter="Save" Header="保存" />
+                                <MenuItem Command="{Binding Manage}" CommandParameter="Config" Header="配置" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn MinWidth="60" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="名称" />
+                            <DataGridComboBoxColumn Width="150" Header="类型" ItemsSource="{Binding Source={StaticResource ControlType}}" SelectedValueBinding="{Binding Type, UpdateSourceTrigger=PropertyChanged}" />
+
+                            <DataGridTextColumn MinWidth="40" Binding="{Binding Row, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Header="Row" />
+                            <DataGridTextColumn MinWidth="40" Binding="{Binding Column, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Header="Column" />
+                            <DataGridTextColumn MinWidth="40" Binding="{Binding RowSpan, UpdateSourceTrigger=LostFocus}" Header="RowSpan" />
+                            <DataGridTextColumn MinWidth="40" Binding="{Binding ColumnSpan, UpdateSourceTrigger=LostFocus}" Header="ColumnSpan" />
+                            <DataGridTextColumn MinWidth="40" Binding="{Binding Params.Rows, UpdateSourceTrigger=LostFocus}" Header="子元素行数" />
+                            <DataGridTextColumn MinWidth="40" Binding="{Binding Params.Columns, UpdateSourceTrigger=LostFocus}" Header="子元素列数" />
+                            <DataGridTemplateColumn Header="子元素布局方式">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <!--  非编辑状态下，可以用 TextBlock 展示，也可以直接放 ComboBox  -->
+                                        <TextBlock Text="{Binding Params.Layout}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <!--  编辑状态下，展示 ComboBox 供用户选择  -->
+                                        <ComboBox SelectedIndex="{Binding Params.Layout, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <ComboBoxItem Content=" 左 -&gt; 右  上 -&gt; 下 " Tag = "0"/>
+                                            <ComboBoxItem Content=" 左 -&gt; 右  下 -&gt; 上 " Tag = "1"/>
+                                            <ComboBoxItem Content=" 右 -&gt; 左  上 -&gt; 下 " Tag = "2"/>
+                                            <ComboBoxItem Content=" 右 -&gt; 左  下 -&gt; 上 " Tag = "3"/>
+                                            <ComboBoxItem Content=" 上 -&gt; 下  左 -&gt; 右 " Tag = "4"/>
+                                            <ComboBoxItem Content=" 上 -&gt; 下  右 -&gt; 左 " Tag = "5"/>
+                                            <ComboBoxItem Content=" 下 -&gt; 上  左 -&gt; 右 " Tag = "6"/>
+                                            <ComboBoxItem Content=" 下 -&gt; 上  右 -&gt; 左 " Tag = "7"/>
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn MinWidth="200" Binding="{Binding Comment, UpdateSourceTrigger=LostFocus}" Header="备注" />
+
+                            <DataGridTextColumn MinWidth="100" Binding="{Binding Prompt}" Header="提示" IsReadOnly="True" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </GroupBox>
+        </Grid>
+        <DockPanel Grid.Row="1">
+
+            <Button Width="100" Command="{Binding Model.Apply}" Content="应用" DockPanel.Dock="Right" />
+            <TextBlock Margin="10" Text="Row:" VerticalAlignment="Center" DockPanel.Dock="Left" />
+            <TextBox Width="100" Height="30"
+                     Text="{Binding Model.CurrentCanvasConfig.Rows}"
+                     TextAlignment="Center"
+                     DockPanel.Dock="Left" />
+            <TextBlock Margin="10" Text="Colum:" VerticalAlignment="Center" DockPanel.Dock="Left" />
+            <TextBox Width="100" Height="30"
+                     Text="{Binding Model.CurrentCanvasConfig.Columns}"
+                     VerticalAlignment="Center"
+                     DockPanel.Dock="Left" />
+            <Border />
+
+        </DockPanel>
+    </Grid>
+</UserControl>

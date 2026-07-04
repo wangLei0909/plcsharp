@@ -1,0 +1,541 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.ModeState.StateConfig"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cvt="clr-namespace:PLCSharp.Core.Tools"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.ModeState"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:StateConfigViewModel}"
+             Background="White">
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+        </Style>
+    </prism:Dialog.WindowStyle>
+    <UserControl.Resources>
+        <cvt:BoolToValueConverter x:Key="BoolToValueConverter" />
+        <!--  定义一个PathGeometry用于箭头  -->
+        <PathGeometry x:Key="ArrowGeometry" Figures="M 0,0 L 10,-5 L 10,5 Z" />
+    </UserControl.Resources>
+
+
+    <Grid Width="1200" Height="800">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="100" />
+        </Grid.ColumnDefinitions>
+        <Viewbox>
+            <Grid Width="1000" Height="600">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.RowSpan="3" Grid.ColumnSpan="5" Background="LightSkyBlue" />
+                <Border Grid.RowSpan="4" Grid.ColumnSpan="3" Background="LightSkyBlue" />
+                <Border Grid.RowSpan="3" Grid.ColumnSpan="5"
+                        Margin="10"
+                        Background="LightSkyBlue" BorderBrush="Black" BorderThickness="3" />
+                <Border Grid.Row="0" Grid.Column="1"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.UnHolding, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="UnHolding" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+
+                <Border Grid.Row="0" Grid.Column="2"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Held, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Gold, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Held" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+
+                <Border Grid.Row="0" Grid.Column="3"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Holding, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Holding" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+
+                <Border Grid.Row="1" Grid.Column="0"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Idle, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Gold, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Idle" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="1" Grid.Column="1"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Starting, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Starting" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="1" Grid.Column="2"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Execute, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=RoyalBlue, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Execute" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="1" Grid.Column="3"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Completing, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Completing" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="1" Grid.Column="4"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Complete, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Gold, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Complete" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="2" Grid.Column="0"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Resetting, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Resetting" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="2" Grid.Column="1"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.UnSuspending, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="UnSuspending" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="2" Grid.Column="2"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Suspended, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Gold, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Suspended" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="2" Grid.Column="3"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Suspending, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Suspending" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="3" Grid.Column="0"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Stopped, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Gold, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Stopped" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="3" Grid.Column="1"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Stopping, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Stopping" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="3" Grid.Column="2"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Clearing, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Clearing" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="3" Grid.Column="3"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Aborted, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Red, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Aborted&#x0a;中止" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Grid.Row="3" Grid.Column="4"
+                        Width="100" Height="50"
+                        Background="{Binding GlobalModel.ModeState.State.Aborting, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}"
+                        BorderThickness="1">
+                    <TextBlock Text="Aborting&#x0a;正在中止" TextAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <!--  绘制一条折线  -->
+
+                <Canvas>
+                    <!--  Abort  -->
+                    <Polyline Fill="Transparent" Points="900,450 900,500  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="900" Canvas.Top="500" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="-90" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Aborted SC  -->
+                    <Polyline Fill="Transparent" Points="850,525 750,525  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="750" Canvas.Top="525" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Aborted ->  Clearing  -->
+                    <Polyline Fill="Transparent" Points="650,525 550,525  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="550" Canvas.Top="525" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Clearing -> Stopped  -->
+                    <Polyline Fill="Transparent" Points="450,525 400,525 400,575 200,575 200,525 150,525" Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="150" Canvas.Top="525" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Stopping -> Stopped  -->
+                    <Polyline Fill="Transparent" Points="  250,525 150,525" Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="150" Canvas.Top="525" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Stopping  -->
+                    <Polyline Fill="Transparent" Points="300,440 300,500  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="300" Canvas.Top="500" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="-90" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Stopped -> Resetting  -->
+                    <Polyline Fill="Transparent" Points="100,500 100,400" Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="100" Canvas.Top="400" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="90" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Resetting -> Idle  -->
+                    <Polyline Fill="Transparent" Points="100,350 100,250" Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="100" Canvas.Top="250" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="90" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  UnHolding -> Execute  -->
+                    <Polyline Fill="Transparent" Points="300,100 300,150 480,150 480,200" Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="480" Canvas.Top="200" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="-90" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Execute -> Holding  -->
+                    <Polyline Fill="Transparent" Points="700,100 700,150 520,150 520,200" Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="700" Canvas.Top="100" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="90" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Holding ->  Held  -->
+                    <Polyline Fill="Transparent" Points="650,75 550,75  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="550" Canvas.Top="75" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Held ->  UnHoding  -->
+                    <Polyline Fill="Transparent" Points="450,75 350,75  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="350" Canvas.Top="75" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Idle ->  Starting  -->
+                    <Polyline Fill="Transparent" Points="150,225 250,225  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="250" Canvas.Top="225" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="180" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Starting ->  Execute  -->
+                    <Polyline Fill="Transparent" Points="450,225 350,225  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="450" Canvas.Top="225" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="180" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Suspending ->  Suspended  -->
+                    <Polyline Fill="Transparent" Points="450,375 350,375  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="350" Canvas.Top="375" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Suspended ->  UnSuspending  -->
+                    <Polyline Fill="Transparent" Points="450,375 350,375  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="350" Canvas.Top="375" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Execute ->   Suspending  -->
+                    <Polyline Fill="Transparent" Points="525,250 525,300  700,300  700,350" Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="700" Canvas.Top="350" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="-90" />
+                        </Path.RenderTransform>
+                    </Path>
+
+                    <!--  UnSuspending ->   Execute  -->
+                    <Polyline Fill="Transparent" Points="475,250 475,300  300,300  300,350" Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="475" Canvas.Top="250" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="90" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Suspending ->  Suspended  -->
+                    <Polyline Fill="Transparent" Points="650,375 550,375  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="550" Canvas.Top="375" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Execute ->  Completing  -->
+                    <Polyline Fill="Transparent" Points="650,225 550,225  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="650" Canvas.Top="225" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="180" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Completing ->  Complete  -->
+                    <Polyline Fill="Transparent" Points="850,225 750,225  " Stroke="Black" StrokeThickness="1" />
+                    <Path Canvas.Left="850" Canvas.Top="225" Data="{StaticResource ArrowGeometry}" Fill="Black">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="180" />
+                        </Path.RenderTransform>
+                    </Path>
+                    <!--  Completing ->  Complete  -->
+                    <Polyline Fill="Transparent" Points="900,250 900,425 100,425 " Stroke="Black" StrokeThickness="1" />
+
+
+                </Canvas>
+                <Canvas>
+                    <Border Canvas.Left="850" Canvas.Top="460" Width="100" BorderThickness="1">
+                        <TextBlock Width="60"
+                                   Text="Abort&#x0a;中止指令" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.Abort, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                    <Border Canvas.Left="750" Canvas.Top="515" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="SC" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.AbortingSC, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+
+                    <Border Canvas.Left="550" Canvas.Top="515" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="Clear&#x0a;清除" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.Clear, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+
+
+                    <Border Canvas.Left="350" Canvas.Top="515" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="SC" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.ClearingSC, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                    <Border Canvas.Left="175" Canvas.Top="515" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="SC" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.StoppingSC, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+
+                    <Border Canvas.Left="50" Canvas.Top="445" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="Reset&#x0a;复位" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.Reset, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                    <Border Canvas.Left="250" Canvas.Top="445" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="Stop&#x0a;停止" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.Stop, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                    <Border Canvas.Left="50" Canvas.Top="300" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="SC" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.ResettingSC, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+
+                    <Border Canvas.Left="100" Canvas.Top="200" Width="200" BorderThickness="1">
+                        <TextBlock Width="70"
+                                   Text="Start&#x0a;启动&#x0a;（生产模式）"
+                                   TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.Start, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+
+                    <Border Canvas.Left="350" Canvas.Top="215" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="SC" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.StartingSC, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                    <Border Canvas.Left="350" Canvas.Top="140" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="SC" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.UnHoldingSC, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                    <Border Canvas.Left="550" Canvas.Top="215" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="SC" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.ExecuteSC, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                    <Border Canvas.Left="550" Canvas.Top="365" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="SC" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.SuspendingSC, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                    <Border Canvas.Left="750" Canvas.Top="215" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="SC" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.CompletingSC, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+
+                    <Border Canvas.Left="550" Canvas.Top="140" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="Hold" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.Hold, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                    <Border Canvas.Left="850" Canvas.Top="290" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="SC" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.CompleteSC, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                    <Border Canvas.Left="550" Canvas.Top="65" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="SC" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.HoldingSC, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+
+                    <Border Canvas.Left="350" Canvas.Top="65" Width="100" BorderThickness="1">
+                        <TextBlock Width="60"
+                                   Text="Un-Hold" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.UnHold, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+
+                    <Border Canvas.Left="350" Canvas.Top="290" Width="100" BorderThickness="1">
+                        <TextBlock Width="40"
+                                   Text="SC" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.UnSuspendingSC, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                    <Border Canvas.Left="355" Canvas.Top="365" Width="100" BorderThickness="1">
+                        <TextBlock Width="80"
+                                   Text="Un-Suspend" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.UnSuspend, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                    <Border Canvas.Left="550" Canvas.Top="290" Width="100" BorderThickness="1">
+                        <TextBlock Width="60"
+                                   Text="Suspend" TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Background="{Binding GlobalModel.ModeState.Sc.Suspend, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    </Border>
+                </Canvas>
+            </Grid>
+        </Viewbox>
+        <StackPanel Grid.Column="1">
+
+            <GroupBox Header="模式">
+                <StackPanel>
+
+                    <Border Padding="10,5" Background="{Binding ElementName=ModeEnumChildElement, Path=Background}" CornerRadius="10">
+                        <TextBlock x:Name="ModeEnumChildElement" Text="{Binding GlobalModel.ModeState.ModeEnum}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Center">
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="Text" Value="Manual">
+                                            <Setter Property="Background" Value="Yellow" />
+                                        </Trigger>
+
+                                        <Trigger Property="Text" Value="Production">
+                                            <Setter Property="Background" Value="Green" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Border>
+                    <Button Height="30" Margin="10"
+                            Command="{Binding GlobalModel.ModeState.ViewCommand}"
+                            CommandParameter="Manual" Content="手动模式" />
+
+                    <Button Height="30" Margin="10"
+                            Command="{Binding GlobalModel.ModeState.ViewCommand}"
+                            CommandParameter="Production" Content="生产模式" />
+
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="状态">
+                <StackPanel>
+                    <Border Padding="10,5" Background="{Binding ElementName=MyChildElement, Path=Background}" CornerRadius="10">
+                        <TextBlock x:Name="MyChildElement" Text="{Binding GlobalModel.ModeState.StateEnum}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Center">
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="Text" Value="Execute">
+                                            <Setter Property="Background" Value="Lime" />
+                                        </Trigger>
+                                        <Trigger Property="Text" Value="Idle">
+                                            <Setter Property="Background" Value="PowderBlue" />
+                                        </Trigger>
+                                        <Trigger Property="Text" Value="Stopped">
+                                            <Setter Property="Background" Value="Yellow" />
+                                        </Trigger>
+                                        <Trigger Property="Text" Value="Aborted">
+                                            <Setter Property="Background" Value="Red" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                    </Border>
+                    <Button Height="30" Margin="10"
+                            Background="LightGreen"
+                            Command="{Binding GlobalModel.ModeState.ViewCommand}"
+                            CommandParameter="Start" Content="启动" />
+                    <Button Height="30" Margin="10"
+                            Background="Pink"
+                            Command="{Binding GlobalModel.ModeState.ViewCommand}"
+                            CommandParameter="Stop" Content="停止" />
+                    <Button Height="30" Margin="10"
+                            Background="LightYellow"
+                            Command="{Binding GlobalModel.ModeState.ViewCommand}"
+                            CommandParameter="Reset" Content="复位" />
+                    <Button Height="30" Margin="10"
+                            Background="LightBlue"
+                            Command="{Binding GlobalModel.ModeState.ViewCommand}"
+                            CommandParameter="Clear" Content="清除" />
+                    <Button Height="30" Margin="10"
+                            Background="LightCoral"
+                            Command="{Binding GlobalModel.ModeState.ViewCommand}"
+                            CommandParameter="Abort" Content="中止" />
+                </StackPanel>
+            </GroupBox>
+
+        </StackPanel>
+    </Grid>
+
+
+</UserControl>

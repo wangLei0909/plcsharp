@@ -1,0 +1,63 @@
+{
+  // 缩进与格式化
+  "IndentSize": 4,
+  "IndentWithTabs": false,
+  "AttributeIndentation": 0,          // 属性缩进（0=4空格）
+  "AttributeIndentationStyle": 1,     // 强制使用空格缩进
+  "SpaceBeforeClosingSlash": true,    // 自闭合标签斜杠前加空格：<Tag />
+  "SpaceBeforeColon": false,          // 类型转换前加空格：<Tag Property="Value"/>
+  "SpaceAfterColon": false,           // 类型转换后加空格：<Tag Property=" Value"/>
+  "SpaceBeforeSemicolon": false,      // 属性值前加空格：<Tag Property=" Value"/>
+  "SpaceAfterSemicolon": false,       // 属性值后加空格：<Tag Property="Value "/>
+
+  // 属性换行规则
+  "AttributesTolerance": 4,           // 超过3个属性则换行
+  "MaxAttributesPerLine": 6,          // 每行最多3个属性
+  "MaxAttributeCharactersPerLine": 70,// 属性行最大长度
+  "KeepFirstAttributeOnSameLine": true, // 首个属性与标签同行
+  "PutEndingBracketOnNewLine": false, // 闭合标签不单独成行
+  "RemoveEndingTagOfEmptyElement": false, // 空元素自动闭合：<Tag />
+
+  // 属性分组与排序
+  "EnableAttributeReordering": true,
+  "OrderAttributesByName": false,     // 不按字母排序，按分组排序
+  "SeparateByGroups": true,           // 按逻辑分组换行
+  "FirstLineAttributes": "x:Name,Name,x:Key,Key,Grid.Row,Grid.Column", // 重要属性优先
+
+  // 属性排序规则（WPF推荐顺序）
+  "AttributeOrderingRuleGroups": [
+    "x:Class",
+    "xmlns, xmlns:x,xmlns:*,prism:*",
+    "mc:Ignorable, d:*",
+    "x:Key, Key, x:Name, Name, x:Uid, Uid, Title",
+    "Grid.Row, Grid.RowSpan, Grid.Column, Grid.ColumnSpan, Canvas.Left, Canvas.Top",
+    "Width, Height, MinWidth, MinHeight, MaxWidth, MaxHeight,Margin, Padding",
+    "Text,FontSize,,TextAlignment,FontWeight,FontFamily,TextWrapping",
+    "HorizontalAlignment, VerticalAlignment",
+    "*:*, *",
+    "PageSource, PageIndex, Offset, Color, TargetName, Property, Value",
+    "Storyboard.*, From, To, Duration",
+    "TargetType, BasedOn"
+  ],
+
+  // 特殊元素处理
+  "NewlineExemptionElements": "Setter, Trigger, Condition, GradientStop", // 简单元素不分行
+  "ReorderSetters": 3,                // Setter按目标+属性名排序
+  "ReorderVSM": 2,                    // VisualStateManager移到末尾
+  "ReorderGridChildren": false,        // 不自动排序Grid子元素
+  "ReorderCanvasChildren": false,
+
+  // 标记扩展格式化
+  "FormatMarkupExtension": true,
+  "NoNewLineMarkupExtensions": "x:Bind, Binding, StaticResource", // 常用扩展保持一行
+
+  // Thickness类型处理
+  "ThicknessSeparator": 2,            // 用逗号分隔Margin/Padding值
+  "ThicknessAttributes": "Margin, Padding, BorderThickness",
+
+  // 其他
+  "RemoveDesignTimeReferences": false,
+  "IgnoreDesignTimeReferencePrefix": false,
+  "CommentPadding": 2,                // 注释前后空格
+  "FormatOnSave": true                // 保存时自动格式化
+}

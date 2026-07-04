@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Recipe.RecipeEdit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Recipe"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:RecipeEditViewModel}"
+             d:Height="550" d:Width="1000">
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+
+            <Setter Property="SizeToContent" Value="Manual" />
+        </Style>
+    </prism:Dialog.WindowStyle>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+
+
+        <GroupBox Header="配方管理">
+            <Grid>
+                <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                          AutoGenerateColumns="False" CanUserAddRows="False"
+                          CanUserDeleteRows="False" CanUserSortColumns="False"
+                          ItemsSource="{Binding Model.Recipes}"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          SelectedItem="{Binding Model.RecipeSelected}"
+                          Unloaded="DataGrid_Unloaded">
+                    <DataGrid.ItemContainerStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Prompt}" Value="已修改，请保存">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Prompt}" Value="">
+                                    <Setter Property="Foreground" Value="Black" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.ItemContainerStyle>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu IsEnabled="True" StaysOpen="False">
+                            <MenuItem Command="{Binding Model.RecipeManage}" CommandParameter="New" Header="新增" />
+                            <MenuItem Command="{Binding Model.RecipeManage}" CommandParameter="Copy" Header="复制" />
+                            <MenuItem Command="{Binding Model.RecipeManage}" CommandParameter="Remove" Header="删除" />
+                            <MenuItem Command="{Binding Model.RecipeManage}" CommandParameter="Save" Header="保存" />
+                            <MenuItem Command="{Binding Model.RecipeManage}" CommandParameter="Current" Header="切换" />
+                            <Separator />
+                            <MenuItem Command="{Binding Model.RecipeManage}" CommandParameter="Export" Header="导出" />
+                            <MenuItem Command="{Binding Model.RecipeManage}" CommandParameter="Import" Header="导入" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn MinWidth="60" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="名称" />
+
+                        <DataGridTextColumn MinWidth="200" Binding="{Binding Comment, UpdateSourceTrigger=LostFocus}" Header="备注" />
+
+                        <DataGridTextColumn MinWidth="100" Binding="{Binding Prompt}" Header="提示" IsReadOnly="True" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

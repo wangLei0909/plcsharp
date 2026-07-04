@@ -1,0 +1,159 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Connects.SerialPort.FreeSerialProtocolConfig"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Connects.SerialPort"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:connects="clr-namespace:PLCSharp.VVMs.Connects"
+             xmlns:cvt="clr-namespace:PLCSharp.Core.Tools"
+             xmlns:beavior="clr-namespace:PLCSharp.Core.Prism"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             xmlns:viewmodels="clr-namespace:PLCSharp.VVMs.Connects.SerialPort"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" d:Background="Snow"
+             d:DataContext="{d:DesignInstance Type=viewmodels:FreeSerialProtocolConfigViewModel}"
+             d:DesignHeight="400" d:DesignWidth="800"
+             Width="1200" Height="600">
+    <UserControl.Resources>
+        <cvt:BoolToValueConverter x:Key="BoolToValueConverter" />
+        <ObjectDataProvider x:Key="DataType" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="connects:CommunicationDataType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="8*" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="4*" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <!--  日志  -->
+            <GroupBox Grid.ColumnSpan="2" Header="日志">
+                <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=2}, Path=ActualWidth}"
+                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=2}, Path=ActualHeight}"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                          AutoGenerateColumns="False" CanUserAddRows="False"
+                          CanUserDeleteRows="False" CanUserSortColumns="False"
+                          ItemsSource="{Binding Logs}"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          Unloaded="DataGrid_Unloaded">
+                    <i:Interaction.Behaviors>
+                        <beavior:DataGridScrollToBottomBehavior />
+                    </i:Interaction.Behaviors>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="1*" Binding="{Binding Time, UpdateSourceTrigger=LostFocus}" Header="时间" />
+                        <DataGridTextColumn Width="5*" Binding="{Binding Message, UpdateSourceTrigger=LostFocus}" Header="消息" />
+                    </DataGrid.Columns>
+                </DataGrid>
+
+            </GroupBox>
+
+            <StackPanel Grid.Column="1"
+                        Margin="20"
+                        HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                        Orientation="Horizontal">
+
+                <CheckBox Content="记录日志" IsChecked="{Binding Client.LogSwitch}" />
+            </StackPanel>
+
+        </Grid>
+
+
+        <!--  串口参数  -->
+        <GroupBox Grid.Row="1" Header="串口设置">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="5,0" Text="端口:" VerticalAlignment="Center" />
+                <TextBox Width="80" Text="{Binding Client.IP_SerialPort}" VerticalAlignment="Center" />
+                <Button Width="40" Margin="5,0" Content="打开" Command="{Binding OpenPortCommand}" />
+                <Button Width="40" Margin="5,0" Content="关闭" Command="{Binding ClosePortCommand}" />
+                <TextBlock Margin="10,0,0,0" Text="波特率:" VerticalAlignment="Center" />
+                <ComboBox Width="80" VerticalAlignment="Center" SelectedValuePath="Content" SelectedValue="{Binding Client.Params.BaudRate}">
+                    <ComboBoxItem Content="9600" />
+                    <ComboBoxItem Content="19200" />
+                    <ComboBoxItem Content="38400" />
+                    <ComboBoxItem Content="115200" />
+                </ComboBox>
+                <TextBlock Margin="10,0,0,0" Text="数据位:" VerticalAlignment="Center" />
+                <ComboBox Width="50" VerticalAlignment="Center" SelectedValuePath="Content" SelectedValue="{Binding Client.Params.DataBits}">
+                    <ComboBoxItem Content="8" />
+                    <ComboBoxItem Content="7" />
+                </ComboBox>
+                <TextBlock Margin="10,0,0,0" Text="停止位:" VerticalAlignment="Center" />
+                <ComboBox Width="50" VerticalAlignment="Center" SelectedValuePath="Content" SelectedValue="{Binding Client.Params.StopBitsValue}">
+                    <ComboBoxItem Content="None" />
+                    <ComboBoxItem Content="One" />
+                    <ComboBoxItem Content="Two" />
+                </ComboBox>
+                <TextBlock Margin="10,0,0,0" Text="校验:" VerticalAlignment="Center" />
+                <ComboBox Width="80" VerticalAlignment="Center" SelectedValuePath="Content" SelectedValue="{Binding Client.Params.ParityValue}">
+                    <ComboBoxItem Content="None" />
+                    <ComboBoxItem Content="Odd" />
+                    <ComboBoxItem Content="Even" />
+                </ComboBox>
+                <TextBlock Margin="10,0,0,0" Text="消息类型:" VerticalAlignment="Center" />
+                <ComboBox Width="150" ItemsSource="{Binding Source={StaticResource DataType}}" SelectedValue="{Binding Client.Params.DataType, UpdateSourceTrigger=PropertyChanged}" />
+
+
+                <Button Width="40" Margin="5,0"
+                        Content="保存"
+                        Command="{Binding ConnectsManage}"
+                        CommandParameter="Save" />
+            </StackPanel>
+        </GroupBox>
+
+
+        <!--  发送  -->
+        <Grid Grid.Row="2" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <WrapPanel />
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <GroupBox Header="字符串">
+                    <Grid>
+                        <TextBox Text="{Binding SendString}" TextWrapping="Wrap" AcceptsReturn="True" />
+                        <Button Margin="5"
+                                HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                Command="{Binding Send}"
+                                CommandParameter="String" Content="发送" Cursor="Hand" />
+
+                    </Grid>
+                </GroupBox>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Margin="0,5" Padding="8"
+                            Command="{Binding StringToHex}"
+                            Content="→" Cursor="Hand" />
+                    <Button Margin="0,5" Padding="8"
+                            Command="{Binding HexToString}"
+                            Content="←" Cursor="Hand" />
+                </StackPanel>
+                <GroupBox Grid.Column="2" Header="HEX">
+                    <Grid>
+                        <TextBox Text="{Binding SendHex}" TextWrapping="Wrap" AcceptsReturn="True" />
+
+                        <Button Margin="5" Padding="10,5"
+                                HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                Command="{Binding Send}"
+                                CommandParameter="Hex" Content="发送" />
+
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

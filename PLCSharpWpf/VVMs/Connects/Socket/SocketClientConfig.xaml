@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Connects.Socket.SocketClientConfig"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:beavior="clr-namespace:PLCSharp.Core.Prism"
+             xmlns:cvt="clr-namespace:PLCSharp.Core.Tools"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Connects.Socket"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:viewmodels="clr-namespace:PLCSharp.VVMs.Connects.Socket"
+             xmlns:connects="clr-namespace:PLCSharp.VVMs.Connects"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" d:Background="White"
+             d:DataContext="{d:DesignInstance Type=local:SocketClientConfigViewModel}"
+             Width="900" Height="400">
+    <UserControl.Resources>
+        <cvt:BoolToValueConverter x:Key="BoolToValueConverter" />
+
+        <ObjectDataProvider x:Key="DataType" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="connects:CommunicationDataType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <GroupBox Header="客户端">
+
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <Grid>
+                    <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                              Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                              AutoGenerateColumns="False" CanUserAddRows="False"
+                              CanUserDeleteRows="False" CanUserSortColumns="False"
+                              ItemsSource="{Binding Logs}"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              Unloaded="DataGrid_Unloaded">
+                        <i:Interaction.Behaviors>
+                            <beavior:DataGridScrollToBottomBehavior />
+                        </i:Interaction.Behaviors>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="1*" Binding="{Binding Time, UpdateSourceTrigger=LostFocus}" Header="时间" />
+                            <DataGridTextColumn Width="5*" Binding="{Binding Message, UpdateSourceTrigger=LostFocus}" Header="消息" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <TextBox Width="600" Text="{Binding SendString, Mode=TwoWay}" TextWrapping="Wrap" AcceptsReturn="True" />
+                    <Button Width="80" Command="{Binding Send}" Content="发送" />
+                    <CheckBox Content="显示日志" IsChecked="{Binding Client.LogSwitch}" />
+                </StackPanel>
+                <StackPanel Grid.Row="2"
+                            Grid.RowSpan="2"
+                            HorizontalAlignment="Center" VerticalAlignment="Top"
+                            Orientation="Horizontal">
+
+
+                    <TextBlock Margin="10,0" Text="服务器IP:    " VerticalAlignment="Center" />
+                    <TextBox Width="150" Text="{Binding IP, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}" VerticalAlignment="Center" />
+
+
+
+                    <TextBlock Margin="10,0" Text="服务端口:" VerticalAlignment="Center" />
+                    <TextBox Width="150" Text="{Binding Port, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}" VerticalAlignment="Center" />
+
+                    <TextBlock Margin="10,0" Text="在线:" VerticalAlignment="Center" />
+
+                    <Ellipse Width="20" Height="20" Fill="{Binding Client.Online, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    <TextBlock Margin="10,0" Text="连接:" VerticalAlignment="Center" />
+
+                    <Ellipse Width="20" Height="20" Fill="{Binding Client. Connected, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                    <TextBlock Margin="10,0" Text="消息类型:" VerticalAlignment="Center" />
+                    <ComboBox Width="150" VerticalAlignment="Center" ItemsSource="{Binding Source={StaticResource DataType}}" SelectedValue="{Binding Client.Params.DataType, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </Grid>
+
+
+        </GroupBox>
+    </Grid>
+</UserControl>

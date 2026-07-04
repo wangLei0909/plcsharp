@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Vision.VisionFlowHandler.Processing.CoordTransform"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Vision.VisionFlowHandler"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vision="clr-namespace:PLCSharp.VVMs.Vision"
+             mc:Ignorable="d" d:Background="AliceBlue"
+             d:DataContext="{d:DesignInstance Type=vision:VisionConfigViewModel}"
+             d:DesignHeight="400" d:DesignWidth="400">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="5">
+            <GroupBox Header="标定">
+                <StackPanel>
+                    <Button Height="25" Margin="5" Command="{Binding CalibrateTransform}" Content="标定" />
+                    <Grid Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Text="矩阵名称" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectVisionFlow.StringParams[CalibMatName], Mode=TwoWay, TargetNullValue=标定矩阵}" />
+                        <TextBlock Grid.Row="1" Text="行基准" VerticalAlignment="Center" ToolTip="第一行的世界Y坐标" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[CalibRowBase], Mode=TwoWay, TargetNullValue=0, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="2" Text="列基准" VerticalAlignment="Center" ToolTip="第一列的世界X坐标" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[CalibColBase], Mode=TwoWay, TargetNullValue=0, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="3" Text="间距" VerticalAlignment="Center" ToolTip="相邻圆点的世界间距" />
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[CalibSpacing], Mode=TwoWay, TargetNullValue=5, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="4" Text="9点圆心数" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="4" Grid.Column="1"
+                                 Text="{Binding SelectedVisionFunction.Params.ResultDoubles[CalibDotCount], Mode=OneWay, TargetNullValue=—}"
+                                 IsReadOnly="True" Background="#FFF0F0F0" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="输入图像坐标">
+                <StackPanel>
+                    <TextBlock Margin="5,5,5,0" Text="从局部变量中选择：" TextWrapping="Wrap" />
+                    <ComboBox Margin="5"
+                              ItemsSource="{Binding AllVariables}"
+                              SelectedValue="{Binding SelectVisionFlow.StringParams[InputVar], Mode=TwoWay}"
+                              SelectedValuePath="Name" DisplayMemberPath="Name" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="变换矩阵">
+                <StackPanel>
+                    <TextBlock Margin="5,5,5,0" Text="输入标定时设置的矩阵名称：" TextWrapping="Wrap" />
+                    <TextBox Margin="5" Text="{Binding SelectVisionFlow.StringParams[TransformMat], Mode=TwoWay, TargetNullValue=标定矩阵}" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="转换结果（世界坐标）">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Text="世界 X" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="1"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[WorldX], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+                    <TextBlock Grid.Row="1" Text="世界 Y" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[WorldY], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+                    <TextBlock Grid.Row="2" Text="结果变量" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectVisionFlow.StringParams[OutputVar], Mode=TwoWay, TargetNullValue=转换结果}" />
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

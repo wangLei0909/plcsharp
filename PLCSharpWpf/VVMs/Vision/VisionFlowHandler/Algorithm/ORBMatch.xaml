@@ -1,0 +1,185 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm.ORBMatch"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Vision.VisionFlowHandler"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vision="clr-namespace:PLCSharp.VVMs.Vision"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vision:VisionConfigViewModel}"
+             d:DesignHeight="450" d:DesignWidth="300">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <GroupBox Header="模板">
+                <StackPanel>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="ROI 形状" VerticalAlignment="Center" />
+                        <ComboBox Grid.Column="1" Margin="5,0,0,0" SelectedValue="{Binding SelectVisionFlow.StringParams[ROIShape], TargetNullValue=矩形}" SelectedValuePath="Content">
+                            <ComboBoxItem Content="矩形" IsSelected="True" />
+                            <ComboBoxItem Content="旋转矩形" />
+                            <ComboBoxItem Content="圆形" />
+                        </ComboBox>
+                    </Grid>
+                    <Button Height="25" Margin="5" Command="{Binding DrawORBTemplateROI}" Content="画选区截取模板" />
+                    <Grid Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Margin="5,0" Text="Left" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[TemplateLeft], UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="0" Grid.Column="2"
+                                   Margin="5,0"
+                                   Text="Top"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding SelectVisionFlow.DoubleParams[TemplateTop], UpdateSourceTrigger=LostFocus}" />
+
+                        <TextBlock Grid.Row="1" Margin="5,0" Text="宽度" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[TemplateWidth], UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="1" Grid.Column="2"
+                                   Margin="5,0"
+                                   Text="高度"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectVisionFlow.DoubleParams[TemplateHeight], UpdateSourceTrigger=LostFocus}" />
+
+                        <TextBlock Grid.Row="2" Text="模板名称" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding SelectVisionFlow.StringParams[TemplateName], Mode=TwoWay, TargetNullValue=ORB_Template}" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="ORB 参数">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="特征点数量" VerticalAlignment="Center" ToolTip="提取的特征点越多越精确，但速度越慢" />
+                    <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.IntParams[NFeatures], Mode=TwoWay, TargetNullValue=500, UpdateSourceTrigger=LostFocus}" />
+
+                    <TextBlock Grid.Row="1" Text="最小匹配数" VerticalAlignment="Center" ToolTip="最少需要的优质匹配点数" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.IntParams[MinMatches], Mode=TwoWay, TargetNullValue=8, UpdateSourceTrigger=LostFocus}" />
+
+                    <TextBlock Grid.Row="2" Text="优质匹配比例" VerticalAlignment="Center" ToolTip="匹配距离 &lt; 最小距离×此系数的视为优质匹配" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[MinGoodRatio], Mode=TwoWay, TargetNullValue=0.3, UpdateSourceTrigger=LostFocus}" />
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="变量设置">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Text="绝对位置变量" VerticalAlignment="Center" ToolTip="匹配到的绝对位置写入此 Pos 变量" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectVisionFlow.StringParams[ORBMatch_PosVar], Mode=TwoWay, TargetNullValue=ORB匹配_Pos}" />
+
+                    <TextBlock Grid.Row="1" Text="相对位移变量" VerticalAlignment="Center" ToolTip="相对位移写入此 Pos 变量" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.StringParams[ORBMatch_OffsetVar], Mode=TwoWay, TargetNullValue=ORB匹配_Offset}" />
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="匹配结果">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.ColumnSpan="4" Text="— 绝对位置 —" FontWeight="Bold" HorizontalAlignment="Center" />
+
+                    <TextBlock Grid.Row="1" Margin="5,0" Text="匹配 X" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[MatchPosX], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+                    <TextBlock Grid.Row="1" Grid.Column="2"
+                               Margin="5,0"
+                               Text="匹配 Y"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="3"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[MatchPosY], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+
+                    <TextBlock Grid.Row="2" Margin="5,0" Text="匹配角度" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="2" Grid.Column="1"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[MatchAngle], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+
+                    <TextBlock Grid.Row="3"
+                               Grid.ColumnSpan="4"
+                               Text="— 相对位移 —" FontWeight="Bold"
+                               HorizontalAlignment="Center" />
+
+                    <TextBlock Grid.Row="4" Margin="5,0" Text="X 偏移" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="4" Grid.Column="1"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[ORBMatch_OffsetX], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+                    <TextBlock Grid.Row="4" Grid.Column="2" Text="Y 偏移" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="4" Grid.Column="3"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[ORBMatch_OffsetY], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+
+                    <TextBlock Grid.Row="5" Margin="5,0" Text="角度偏移" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="5" Grid.Column="1"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[ORBMatch_Angle], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+
+                    <TextBlock Grid.Row="6"
+                               Grid.ColumnSpan="2"
+                               Margin="5,0"
+                               Text="匹配点数"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="6" Grid.Column="2"
+                             Grid.ColumnSpan="2"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[ORBMatch_MatchCount], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+
+                    <TextBlock Grid.Row="7" Grid.Column="0"
+                               Grid.ColumnSpan="2"
+                               Margin="5,0"
+                               Text="分数"
+                               VerticalAlignment="Center"
+                               ToolTip="内点比例 × 100" />
+                    <TextBox Grid.Row="7" Grid.Column="2"
+                             Grid.ColumnSpan="2"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[ORBMatch_Score], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

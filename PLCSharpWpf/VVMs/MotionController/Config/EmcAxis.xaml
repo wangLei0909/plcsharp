@@ -1,0 +1,286 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.MotionController.Config.EmcAxis"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controllers="clr-namespace:PLCSharp.VVMs.MotionController"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.MotionController.Config"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             mc:Ignorable="d" d:Background="AliceBlue"
+             d:DataContext="{d:DesignInstance Type=controllers:ControllersModel}"
+             d:DesignHeight="500" d:DesignWidth="1000">
+    <Grid>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="3" Padding="10,8"
+                           Text="ALM" FontSize="14" TextAlignment="Center" FontWeight="Bold"
+                           Background="{Binding SelectedAxis.ALM, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Red, FallbackValue=Gray}" />
+                <TextBlock Margin="3" Padding="15,8"
+                           Text="EL+" FontSize="14" FontWeight="Bold"
+                           Background="{Binding SelectedAxis.LimitP, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Red, FallbackValue=Gray}" />
+                <TextBlock Margin="3" Padding="15,8"
+                           Text="EL-" FontSize="14" FontWeight="Bold"
+                           Background="{Binding SelectedAxis.LimitN, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Red, FallbackValue=Gray}" />
+                <TextBlock Margin="3" Padding="10,8"
+                           Text="ORG" FontSize="14" FontWeight="Bold"
+                           Background="{Binding SelectedAxis.ORG, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                <TextBlock Margin="3" Padding="5,8"
+                           Text="ORGCREATED" FontSize="14" FontWeight="Bold"
+                           Background="{Binding SelectedAxis.ORGCreated, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                <TextBlock Height="35" MinWidth="300" Padding="12,8"
+                           Text="{Binding SelectedAxis.ErrorMessage}"
+                           FontSize="14" FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           Background="{Binding SelectedAxis.Error, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Red, FallbackValue=Gray}" />
+            </StackPanel>
+
+
+            <StackPanel Orientation="Horizontal">
+
+                <TextBlock Margin="3" Padding="5,8"
+                           Text="回原点锁定" FontSize="14" FontWeight="Bold"
+                           Background="{Binding SelectedAxis.Interlock.Home, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+
+                <TextBlock Margin="3" Padding="5,8"
+                           Text="正向锁定" FontSize="14" FontWeight="Bold"
+                           Background="{Binding SelectedAxis.Interlock.Forward, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+
+                <TextBlock Margin="3" Padding="5,8"
+                           Text="反向锁定" FontSize="14" FontWeight="Bold"
+                           Background="{Binding SelectedAxis.Interlock.Backward, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                <TextBlock Margin="3" Padding="5,8"
+                           Text="AbsoluteDone" FontSize="14" FontWeight="Bold"
+                           Background="{Binding SelectedAxis.AbsoluteDone, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+                <TextBlock Margin="3" Padding="5,8"
+                           Text="RelativeDone" FontSize="14" FontWeight="Bold"
+                           Background="{Binding SelectedAxis.RelativeDone, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+
+                <TextBlock Margin="3" Padding="5,8"
+                           Text="MOVING" FontSize="14" FontWeight="Bold"
+                           Background="{Binding SelectedAxis.Moving, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Yellow, FallbackValue=Gray}" />
+                <TextBlock Margin="3" Padding="5,8"
+                           Text="PowerON" FontSize="14" FontWeight="Bold"
+                           Background="{Binding SelectedAxis.PowerOn, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Green, FallbackValue=Gray}" />
+            </StackPanel>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+
+                </Grid.ColumnDefinitions>
+                <UniformGrid Grid.Column="0" Columns="2">
+
+                    <TextBlock Margin="7"
+                               Text="脉冲当量" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Top" />
+                    <TextBox Height="30"
+                             Text="{Binding SelectedAxis.Params.Equiv}"
+                             FontSize="14" FontWeight="Bold"
+                             VerticalAlignment="Top" />
+
+                </UniformGrid>
+
+                <UniformGrid Grid.Column="1" Columns="2">
+                    <TextBlock Margin="3"
+                               Text="加速度" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+
+                    <TextBox Height="30" MinWidth="40"
+                             Text="{Binding SelectedAxis.Params.Acc}"
+                             FontSize="14" FontWeight="Bold" />
+                    <TextBlock Margin="3"
+                               Text="减速度" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBox Height="30" MinWidth="40"
+                             Text="{Binding SelectedAxis.Params.Dec}"
+                             FontSize="14" FontWeight="Bold" />
+                    <TextBlock Margin="3"
+                               Text="启动速度" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBox Height="30" Text="{Binding SelectedAxis.Params.MinVelocity}" FontSize="14" FontWeight="Bold" />
+                    <TextBlock Margin="3"
+                               Text="最大速度" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBox Height="30" MinWidth="60"
+                             Text="{Binding SelectedAxis.Params.MaxVelocity}"
+                             FontSize="14" FontWeight="Bold" />
+
+
+                    <TextBlock Margin="3"
+                               Text="停止速度" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBox Height="30" Text="{Binding SelectedAxis.Params.StopVelocity}" FontSize="14" FontWeight="Bold" />
+                    <TextBlock Margin="3"
+                               Text="目标位置" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBox Height="30" Text="{Binding SelectedAxis.Params.TargetPos}" FontSize="14" FontWeight="Bold" />
+                    <TextBlock Margin="3"
+                               Text="回原模式" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <ComboBox Height="30" Margin="3"
+                              FontSize="14" FontWeight="Bold"
+                              SelectedIndex="{Binding SelectedAxis.Params.HomeMode}">
+                        <ComboBoxItem Content="0" />
+                        <ComboBoxItem Content="1" />
+                        <ComboBoxItem Content="2" />
+                        <ComboBoxItem Content="3" />
+                        <ComboBoxItem Content="4" />
+                        <ComboBoxItem Content="5" />
+                        <ComboBoxItem Content="6" />
+                        <ComboBoxItem Content="7" />
+                        <ComboBoxItem Content="8" />
+                        <ComboBoxItem Content="9" />
+                        <ComboBoxItem Content="10" />
+                        <ComboBoxItem Content="11" />
+                        <ComboBoxItem Content="12" />
+                        <ComboBoxItem Content="13" />
+                        <ComboBoxItem Content="14" />
+                        <ComboBoxItem Content="15" />
+                        <ComboBoxItem Content="16" />
+                        <ComboBoxItem Content="17" />
+                        <ComboBoxItem Content="18" />
+                        <ComboBoxItem Content="19" />
+                        <ComboBoxItem Content="20" />
+                        <ComboBoxItem Content="21" />
+                        <ComboBoxItem Content="22" />
+                        <ComboBoxItem Content="23" />
+                        <ComboBoxItem Content="24" />
+                        <ComboBoxItem Content="25" />
+                        <ComboBoxItem Content="26" />
+                        <ComboBoxItem Content="27" />
+                        <ComboBoxItem Content="28" />
+                        <ComboBoxItem Content="29" />
+                        <ComboBoxItem Content="30" />
+                        <ComboBoxItem Content="31" />
+                        <ComboBoxItem Content="32" />
+                        <ComboBoxItem Content="33" />
+                        <ComboBoxItem Content="34" />
+                        <ComboBoxItem Content="35" />
+                    </ComboBox>
+
+                    <TextBlock Margin="3"
+                               Text="回原高速" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBox Height="30" Text="{Binding SelectedAxis.Params.HomeHighVelocity}" FontSize="14" FontWeight="Bold" />
+                    <TextBlock Margin="3"
+                               Text="回原低速" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBox Height="30" Text="{Binding SelectedAxis.Params.HomeLowVelocity}" FontSize="14" FontWeight="Bold" />
+                </UniformGrid>
+
+                <UniformGrid Grid.Column="2" Columns="2">
+                    <TextBlock Margin="3"
+                               Text="ERRCODE:" FontSize="12" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBlock Width="100"
+                               Text="{Binding SelectedAxis.ErrCode}"
+                               FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBlock Margin="3"
+                               Text="编码器" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBlock Margin="3"
+                               Text="{Binding SelectedAxis.EncoderPosition}"
+                               FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBlock Margin="3"
+                               Text="当前位置" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBlock Margin="3"
+                               Text="{Binding SelectedAxis.CommandPosition}"
+                               FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBlock Margin="3"
+                               Text="当前速度" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBlock Margin="3"
+                               Text="{Binding SelectedAxis.Velocity, StringFormat={}{0:F3}}"
+                               FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBlock Margin="3"
+                               Text="寸动距离" FontSize="14" FontWeight="Bold"
+                               VerticalAlignment="Center" />
+                    <TextBox Height="30" Margin="3"
+                             Text="{Binding SelectedAxis.RelativeDistance}"
+                             FontSize="14" FontWeight="Bold" />
+
+                    <Button Width="50" Margin="3"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="Jog0.01" Content="0.01" />
+                    <Button Width="50" Margin="3"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="Jog0.1" Content="0.1" />
+                    <Button Width="50" Margin="3"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="Jog1" Content="1" />
+                    <Button Width="50" Margin="3"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="Jog5" Content="5" />
+                    <Button Width="50" Margin="3"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="Jog10" Content="10" />
+                    <Button Width="50" Margin="3"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="Jog20" Content="20" />
+
+                    <Button Width="50" Margin="3" Padding="5,-5,5,0"
+                            FontSize="24" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="-" Content="-" />
+                    <Button Width="50" Margin="3" Padding="5,-5,5,0"
+                            FontSize="24" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="+" Content="+" />
+
+                </UniformGrid>
+
+                <UniformGrid Grid.Column="3" Columns="1">
+                    <Button Margin="3" Padding="5,5"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="PowerOn" Content="使能" />
+                    <Button Margin="3" Padding="5,5"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="PowerOff" Content="关使能" />
+                    <Button Margin="3" Padding="5,5"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="AbsoluteMotion" Content="绝对定位" />
+                    <Button Margin="3" Padding="5,5"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="CreateORG" Content="CREATE ORG" />
+                    <Button Margin="3" Padding="5,5"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="CreateORGDebug" Content="CREATE ORG DEBUG" />
+                    <Button Margin="3" Padding="5,5"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="VMove" Content="连续运动" />
+                    <Button Margin="3" Padding="5,5"
+                            FontSize="14" FontWeight="Bold"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="Save" Content="保存参数" />
+                    <Button Margin="3" Padding="15,3"
+                            FontSize="14" FontWeight="Bold"
+                            Background="Red"
+                            Command="{Binding AxisCommand}"
+                            CommandParameter="Stop" Content="STOP" />
+                </UniformGrid>
+
+            </Grid>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,159 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Vision.VariableEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Vision"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" d:Background="White"
+             d:DataContext="{d:DesignInstance Type=local:VariableEditorViewModel}"
+             d:DesignHeight="800" d:DesignWidth="600"
+             Width="400" Height="200">
+    <UserControl.Resources>
+        <local:VarTypeToVisibilityConverter x:Key="VarTypeToVisibility" />
+    </UserControl.Resources>
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+        </Style>
+    </prism:Dialog.WindowStyle>
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--  名称  -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="变量名称：" VerticalAlignment="Center" />
+            <TextBox Grid.Column="1" Text="{Binding VarName, UpdateSourceTrigger=PropertyChanged}" />
+        </Grid>
+
+        <!--  按类型显示不同编辑页  -->
+        <ScrollViewer Grid.Row="1" Margin="0,10">
+            <StackPanel>
+
+                <!--  ========== 坐标点 (Point) ==========  -->
+                <GroupBox Header="坐标点" Visibility="{Binding VarType, Converter={StaticResource VarTypeToVisibility}, ConverterParameter=Pos}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="X：" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Text="{Binding PointX, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="1" Text="Y：" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding PointY, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                </GroupBox>
+
+                <!--  ========== 直线 (Line) ==========  -->
+                <GroupBox Header="直线" Visibility="{Binding VarType, Converter={StaticResource VarTypeToVisibility}, ConverterParameter=Line}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Vx：" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Text="{Binding LineVx, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="1" Text="Vy：" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding LineVy, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="2" Text="X1：" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding LineX1, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="3" Text="Y1：" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding LineY1, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                </GroupBox>
+
+                <!--  ========== 圆 (Circle) ==========  -->
+                <GroupBox Header="圆" Visibility="{Binding VarType, Converter={StaticResource VarTypeToVisibility}, ConverterParameter=Circle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="中心 X：" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Text="{Binding CircleCx, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="1" Text="中心 Y：" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CircleCy, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="2" Text="半径：" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CircleR, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                </GroupBox>
+
+                <!--  ========== 矩形 (Rect) ==========  -->
+                <GroupBox Header="矩形" Visibility="{Binding VarType, Converter={StaticResource VarTypeToVisibility}, ConverterParameter=Rect}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="X：" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Text="{Binding RectX, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="1" Text="Y：" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding RectY, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="2" Text="宽度：" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RectW, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="3" Text="高度：" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding RectH, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                </GroupBox>
+
+                <!--  ========== 数值 (Double) ==========  -->
+                <GroupBox Header="数值" Visibility="{Binding VarType, Converter={StaticResource VarTypeToVisibility}, ConverterParameter=Double}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="值：" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Text="{Binding DoubleVal, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                </GroupBox>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!--  底部按钮  -->
+        <Grid Grid.Row="2" HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button Width="80" Height="30" Margin="5"
+                    Command="{Binding ConfirmCommand}"
+                    Content="确认" />
+            <Button Grid.Column="1"
+                    Width="80" Height="30" Margin="5"
+                    Command="{Binding CloseDialogCommand}"
+                    CommandParameter="cancel" Content="取消" />
+        </Grid>
+    </Grid>
+</UserControl>

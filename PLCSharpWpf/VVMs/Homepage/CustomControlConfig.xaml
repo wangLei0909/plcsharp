@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Homepage.CustomControlConfig"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Homepage"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:CustomControlConfigViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="AliceBlue">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+            <Setter Property="Width" Value="600" />
+            <Setter Property="Height" Value="450" />
+        </Style>
+    </prism:Dialog.WindowStyle>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+
+        <!-- 标题 -->
+        <TextBlock Grid.Row="0" Margin="10"
+                   FontSize="16" FontWeight="Bold"
+                   Text="{Binding SelectedCustomControl.Name, StringFormat='配置: {0}'}" />
+
+        <!-- 布局方式 (仅 State 类型) -->
+        <StackPanel Grid.Row="0" Margin="10,40,10,0"
+                    Visibility="{Binding IsStateType, Converter={StaticResource BoolToVis}}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Width="60" Text="布局方式:" VerticalAlignment="Center" />
+                <ComboBox SelectedIndex="{Binding SelectedCustomControl.Params.Layout}" Width="200">
+                    <ComboBoxItem Content=" 左 -&gt; 右  上 -&gt; 下 " />
+                    <ComboBoxItem Content=" 左 -&gt; 右  下 -&gt; 上 " />
+                    <ComboBoxItem Content=" 右 -&gt; 左  上 -&gt; 下 " />
+                    <ComboBoxItem Content=" 右 -&gt; 左  下 -&gt; 上 " />
+                    <ComboBoxItem Content=" 上 -&gt; 下  左 -&gt; 右 " />
+                    <ComboBoxItem Content=" 上 -&gt; 下  右 -&gt; 左 " />
+                    <ComboBoxItem Content=" 下 -&gt; 上  左 -&gt; 右 " />
+                    <ComboBoxItem Content=" 下 -&gt; 上  右 -&gt; 左 " />
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- RangeValue 编辑区 (仅 RangeValueTalbe 类型) -->
+        <Grid Grid.Row="1" Margin="10"
+              Visibility="{Binding IsRangeValueTalbeType, Converter={StaticResource BoolToVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,5">
+                <Button Width="80" Height="28" Margin="0,0,5,0"
+                        Command="{Binding AddRangeValueCommand}" Content="新增行" />
+                <Button Width="80" Height="28"
+                        Command="{Binding RemoveRangeValueCommand}" Content="删除行" />
+            </StackPanel>
+
+            <DataGrid Grid.Row="1"
+                      AutoGenerateColumns="False" CanUserAddRows="False"
+                      CanUserDeleteRows="False" CanUserSortColumns="False"
+                      ItemsSource="{Binding SelectedCustomControl.RangeValues}"
+                      SelectedItem="{Binding SelectedRangeValue}"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn MinWidth="80" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="名称" />
+                    <DataGridTextColumn MinWidth="60" Binding="{Binding MinValue, UpdateSourceTrigger=LostFocus}" Header="最小值" />
+                    <DataGridTextColumn MinWidth="60" Binding="{Binding MaxValue, UpdateSourceTrigger=LostFocus}" Header="最大值" />
+                    <DataGridTextColumn MinWidth="60" Binding="{Binding BaseValue, UpdateSourceTrigger=LostFocus}" Header="标准值" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <!-- 按钮区 -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+            <Button Width="80" Height="30" Margin="5"
+                    Command="{Binding CloseDialogCommand}" CommandParameter="ok" Content="确定" />
+            <Button Width="80" Height="30" Margin="5"
+                    Command="{Binding CloseDialogCommand}" CommandParameter="cancel" Content="取消" />
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,127 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Workflows.WorkflowConfig"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:editor="clr-namespace:PLCSharp.VVMs.Workflows.Script"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Workflows"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:WorkflowConfigViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="AliceBlue">
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+        </Style>
+    </prism:Dialog.WindowStyle>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="22" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="4*" />
+        </Grid.ColumnDefinitions>
+        <GroupBox Grid.Column="0" Margin="3" Header="快捷输入">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="网络收发" ToolTip="插入网络收发代码模板（连接→发送→接收）" />
+                    <Separator Margin="3" />
+                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="显示状态" ToolTip="插入控件状态更新代码模板（设置 CellState）" />
+                    <Separator Margin="3" />
+                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="视觉功能" ToolTip="插入视觉功能调用模板（获取→重置→运行，含超时检测）" />
+                    <Separator Margin="3" />
+                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="机器人运动" ToolTip="插入机器人点位运动模板（获取→运行→等待完成）" />
+                    <Separator Margin="3" />
+                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="运动控制" ToolTip="插入运动控制点位模板（获取点位→运行→等待完成，含超时检测）" />
+                    <Separator Margin="3" />
+                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="延时等待" ToolTip="插入延时等待模板（使用 CheckStepTime 实现固定时长等待）" />
+                    <Separator Margin="3" />
+                    <Button Margin="3" Command="{Binding FastEntry}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Content="延时等待" />
+
+                </StackPanel>
+            </ScrollViewer>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Margin="3" Header="{Binding SelectedFlowTask.Name}">
+            <editor:CustomTextEditor x:Name="editor"
+                                     Margin="5"
+                                     Text="{Binding SelectedFlowTask.Code}"
+                                     FontSize="20" FontFamily="Consolas"
+                                     Background="DarkSeaGreen" HorizontalScrollBarVisibility="Auto"
+                                     LineNumbersForeground="DarkSlateGray" ShowLineNumbers="true"
+                                     VerticalScrollBarVisibility="Auto">
+                <avalonEdit:TextEditor.Options>
+                    <avalonEdit:TextEditorOptions AllowScrollBelowDocument="True" ConvertTabsToSpaces="True"
+                                                  EnableRectangularSelection="True" HighlightCurrentLine="True"
+                                                  ShowColumnRuler="True" ShowEndOfLine="False" ShowSpaces="True"
+                                                  ShowTabs="False" />
+                </avalonEdit:TextEditor.Options>
+                <avalonEdit:TextEditor.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="ApplicationCommands.Cut" Header="剪切" />
+                        <MenuItem Command="ApplicationCommands.Copy" Header="复制" />
+                        <MenuItem Command="ApplicationCommands.Paste" Header="粘贴" />
+                        <Separator />
+                        <MenuItem HorizontalAlignment="Center" Command="{Binding Save}" Header="保存" InputGestureText="Ctrl+S" />
+                    </ContextMenu>
+                </avalonEdit:TextEditor.ContextMenu>
+            </editor:CustomTextEditor>
+        </GroupBox>
+
+        <GridSplitter Grid.Column="2" HorizontalAlignment="Stretch" Background="DimGray" />
+        <GroupBox Grid.Column="3" Margin="3" Header="输出">
+            <TextBox Text="{Binding SelectedFlowTask.DebugLog}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" />
+        </GroupBox>
+
+        <!-- 状态栏 -->
+        <StatusBar Grid.Row="1" Grid.ColumnSpan="4" Background="LightGray">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="tbStatus" Text="行: 1  列: 1" FontSize="12" FontFamily="Consolas" />
+                    <TextBlock Text=" | " FontSize="12" Margin="4,0" />
+                    <TextBlock x:Name="tbFontSize" Text="字号: 20" FontSize="12" FontFamily="Consolas" />
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="2" HorizontalAlignment="Right">
+                <TextBlock Text="{Binding SelectedFlowTask.Prompt}" FontSize="12" Foreground="Gray" />
+            </StatusBarItem>
+        </StatusBar>
+
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="4" Orientation="Horizontal">
+            <Button Margin="5" Padding="10" Command="{Binding Compile}" Content="  编译  " ToolTip="编译代码（Ctrl+S 格式化 + 自动保存后编译）" />
+            <Button Width="50" Margin="10,5" Command="{Binding Run}" Content="运行" ToolTip="手动执行一次（自动运行模式禁用）" />
+            <TextBlock Margin="5" Padding="10"
+                       Text="  已编译  "
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Background="{Binding SelectedFlowTask.IsCompiled, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+            <TextBlock Margin="5" Padding="10"
+                       Text="  运行中  "
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Background="{Binding SelectedFlowTask.IsRuning, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Lime, FallbackValue=Gray}" />
+            <TextBlock Margin="5" Padding="10"
+                       Text="执行异常"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Background="{Binding SelectedFlowTask.Exception, Converter={StaticResource BoolToValueConverter}, Mode=TwoWay, ConverterParameter=Red, FallbackValue=Gray}" />
+            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" Content="程序自动运行" IsChecked="{Binding SelectedFlowTask.AutomaticExecution}" />
+            <Button Width="50" Margin="10,5" Command="{Binding Save}" Content="保存" />
+        </StackPanel>
+    </Grid>
+</UserControl>

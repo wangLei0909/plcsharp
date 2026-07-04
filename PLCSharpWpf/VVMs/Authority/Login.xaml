@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Authority.Login"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:myControl="clr-namespace:PLCSharp.Core.UserControls"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:viewmodels="clr-namespace:PLCSharp.VVMs.Authority"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" d:Background="White"
+             d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
+             Width="400" Height="240">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <TextBlock Text="登录" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="7*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="用户:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <ComboBox Grid.Column="1"
+                      Width="200" Margin="10,0,0,0"
+                      FontSize="16"
+                      HorizontalAlignment="Left" VerticalAlignment="Center"
+                      DisplayMemberPath="Name"
+                      ItemsSource="{Binding Model.UserList}"
+                      SelectedItem="{Binding Model.SelectUser}" />
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="7*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="密码:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <myControl:PasswordBoxNew Grid.Column="1"
+                                      Width="200" Margin="10,0,0,0"
+                                      Text="{Binding Model.Password}"
+                                      FontSize="18"
+                                      HorizontalAlignment="Left" VerticalAlignment="Center" />
+        </Grid>
+        <Grid Grid.Row="3">
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <TextBlock d:Text="无效密码" Text="{Binding PasswordMsg}" FontSize="16" Foreground="Red" />
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Button Width="80" Height="28"
+                    FontSize="12"
+                    HorizontalAlignment="Center"
+                    Background="#5cb85c"
+                    Command="{Binding CloseDialogCommand}"
+                    CommandParameter="Login" Content="登录" Cursor="Hand" Foreground="White" />
+
+            <Button Grid.Column="1"
+                    Width="80" Height="28"
+                    FontSize="12"
+                    HorizontalAlignment="Center"
+                    Background="#b85c5c"
+                    Command="{Binding CloseDialogCommand}"
+                    CommandParameter="Logout" Content="注销" Cursor="Hand"
+                    Foreground="White" />
+            <Button Grid.Column="2"
+                    Width="80" Height="28"
+                    FontSize="12"
+                    HorizontalAlignment="Center"
+                    Background="#5c5cb8"
+                    Command="{Binding CloseDialogCommand}"
+                    CommandParameter="manage" Content="管理" Cursor="Hand"
+                    Foreground="White" />
+        </Grid>
+    </Grid>
+</UserControl>

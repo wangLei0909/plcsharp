@@ -1,0 +1,282 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Vision.VisionConfig"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:PLCSharp.Core.UserControls"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Vision"
+             xmlns:variables="clr-namespace:PLCSharp.VVMs.GlobalVariables"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:VisionConfigViewModel}"
+             d:DesignHeight="800" d:DesignWidth="1200">
+    <prism:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="Height" Value="800" />
+            <Setter Property="Width" Value="1200" />
+        </Style>
+    </prism:Dialog.WindowStyle>
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="FlowFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:VisionFlowType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <DataTemplate DataType="{x:Type local:FlowMenuItem}">
+            <TextBlock Text="{Binding Header}" />
+        </DataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type local:FlowMenuGroup}" ItemsSource="{Binding Items}">
+            <TextBlock Text="{Binding Header}" />
+        </HierarchicalDataTemplate>
+
+
+        <ObjectDataProvider x:Key="DataFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="variables:VariableDataType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+    </UserControl.Resources>
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="6*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <GroupBox Header="全局图像">
+                <Grid>
+                    <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                              Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                              HorizontalAlignment="Left" VerticalAlignment="Center"
+                              AutoGenerateColumns="False" CanUserAddRows="False"
+                              CanUserDeleteRows="False" CanUserSortColumns="False"
+                              ItemsSource="{Binding VisionsModel.ImageDatas}"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              SelectedItem="{Binding VisionsModel.SelectImageData}"
+                              Unloaded="DataGrid_Unloaded">
+                        <DataGrid.ItemContainerStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Prompt}" Value="已修改，请保存">
+                                        <Setter Property="Foreground" Value="Red" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Prompt}" Value="">
+                                        <Setter Property="Foreground" Value="Black" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.ItemContainerStyle>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu IsEnabled="True" StaysOpen="False">
+                                <MenuItem Command="{Binding VisionsModel.ImageManage}" CommandParameter="New" Header="新增" />
+                                <MenuItem Command="{Binding VisionsModel.ImageManage}" CommandParameter="Remove" Header="删除" />
+                                <MenuItem Command="{Binding VisionsModel.ImageManage}" CommandParameter="Save" Header="保存" />
+                                <MenuItem Command="{Binding VisionsModel.ImageManage}" CommandParameter="Show" Header="显示" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn MinWidth="60" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="名称" />
+                            <DataGridTextColumn MinWidth="100" Binding="{Binding Mat}" Header="图像" IsReadOnly="True" />
+                            <DataGridTextColumn MinWidth="100" Binding="{Binding Prompt}" Header="提示" IsReadOnly="True" />
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                </Grid>
+
+            </GroupBox>
+            <GroupBox Grid.Row="1" Header="局部图像">
+                <Grid>
+                    <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                              Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                              HorizontalAlignment="Left" VerticalAlignment="Center"
+                              AutoGenerateColumns="False" CanUserAddRows="False"
+                              CanUserDeleteRows="False" CanUserSortColumns="False"
+                              ItemsSource="{Binding SelectedVisionFunction.Params.Mats}"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              SelectedItem="{Binding GridSelectedMat}"
+                              Unloaded="DataGrid_Unloaded">
+                        <DataGrid.ItemContainerStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Prompt}" Value="已修改，请保存">
+                                        <Setter Property="Foreground" Value="Red" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Prompt}" Value="">
+                                        <Setter Property="Foreground" Value="Black" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.ItemContainerStyle>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu IsEnabled="True" StaysOpen="False">
+                                <MenuItem Command="{Binding MatManage}" CommandParameter="New" Header="新增" />
+                                <MenuItem Command="{Binding MatManage}" CommandParameter="Remove" Header="删除" />
+                                <MenuItem Command="{Binding MatManage}" CommandParameter="Show" Header="显示" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn MinWidth="100" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="名称" />
+                            <DataGridTextColumn MinWidth="100" Binding="{Binding Mat}" Header="图像" IsReadOnly="True" />
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                </Grid>
+
+            </GroupBox>
+
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="*" />
+
+            </Grid.RowDefinitions>
+            <ContentControl Grid.Column="1" MinWidth="300" Content="{Binding ImageEdit}" />
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <GroupBox Header="系统全局变量表">
+                    <Grid>
+                        <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                                  Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                  AutoGenerateColumns="False" CanUserAddRows="False"
+                                  CanUserDeleteRows="False" CanUserSortColumns="False"
+                                  ItemsSource="{Binding SystemVariables}"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  SelectedItem="{Binding SelectedSystemVariable}"
+                                  IsReadOnly="True" Unloaded="DataGrid_Unloaded">
+                            <DataGrid.ContextMenu>
+                                <ContextMenu IsEnabled="True" StaysOpen="False">
+                                    <MenuItem Command="{Binding SystemVariablesManage}" CommandParameter="Save" Header="保存" />
+                                    <MenuItem Command="{Binding SystemVariablesManage}" CommandParameter="New" Header="新增" />
+                                    <MenuItem Command="{Binding SystemVariablesManage}" CommandParameter="Delete" Header="删除" />
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn MinWidth="100" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="变量名" />
+                                <DataGridComboBoxColumn MinWidth="100" Header="数据类型" ItemsSource="{Binding Source={StaticResource DataFromEnum}}" SelectedValueBinding="{Binding Type}" />
+                                <DataGridTextColumn MinWidth="100" Binding="{Binding Value, UpdateSourceTrigger=LostFocus}" Header="当前值" />
+                                <DataGridTextColumn MinWidth="100" Binding="{Binding DefaultValue, UpdateSourceTrigger=LostFocus}" Header="初始值" />
+                                <DataGridTemplateColumn Header="保持">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <CheckBox IsChecked="{Binding RetainPersistent, UpdateSourceTrigger=LostFocus}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn MinWidth="200" Binding="{Binding Comment}" Header="备注" />
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Grid.Column="1" Header="局部变量表">
+                    <Grid>
+                        <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                                  Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                  AutoGenerateColumns="False" CanUserAddRows="False"
+                                  CanUserDeleteRows="False" CanUserSortColumns="False"
+                                  ItemsSource="{Binding SelectedVisionFunction.Params.Variables}"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  SelectedItem="{Binding SelectedLocalVariable}"
+                                  IsReadOnly="True" Unloaded="DataGrid_Unloaded">
+                            <DataGrid.ContextMenu>
+                                <ContextMenu IsEnabled="True" StaysOpen="False">
+                                    <MenuItem Command="{Binding LocalVariableManage}" CommandParameter="Edit" Header="编辑" />
+                                    <Separator />
+                                    <MenuItem Command="{Binding LocalVariableManage}" CommandParameter="AddPoint" Header="新增坐标点" />
+                                    <MenuItem Command="{Binding LocalVariableManage}" CommandParameter="AddLine" Header="新增直线" />
+                                    <MenuItem Command="{Binding LocalVariableManage}" CommandParameter="AddCircle" Header="新增圆" />
+                                    <MenuItem Command="{Binding LocalVariableManage}" CommandParameter="AddRect" Header="新增矩形" />
+                                    <Separator />
+                                    <MenuItem Command="{Binding LocalVariableManage}" CommandParameter="Remove" Header="删除选中" />
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn MinWidth="80" Binding="{Binding Name}" Header="名称" />
+                                <DataGridTextColumn MinWidth="80" Binding="{Binding VarType}" Header="类型" />
+                                <DataGridTextColumn Binding="{Binding StrValue}" Header="显示值" />
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </Grid>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="6*" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+
+            <GroupBox>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="1">
+                        <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                                  Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                                  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                  AutoGenerateColumns="False" CanUserAddRows="False"
+                                  CanUserDeleteRows="False" CanUserSortColumns="False"
+                                  ItemsSource="{Binding SelectedVisionFunction.VisionFlows}"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  SelectedValue="{Binding SelectVisionFlow}"
+                                  Unloaded="DataGrid_Unloaded">
+
+                            <DataGrid.ContextMenu>
+                                <ContextMenu IsEnabled="True" StaysOpen="False">
+                                    <!--<MenuItem Command="{Binding AddFlow}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Header}" Header="拍照" />-->
+                                    <MenuItem Header="添加流程" ItemsSource="{Binding FlowMenuGroups}" Click="OnAddFlowItemClick" />
+                                    <MenuItem Command="{Binding Manage}" CommandParameter="删除" Header="删除" />
+                                    <MenuItem Command="{Binding Manage}" CommandParameter="上移" Header="上移" />
+                                    <MenuItem Command="{Binding Manage}" CommandParameter="下移" Header="下移" />
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+                            <DataGrid.Columns>
+                                <DataGridComboBoxColumn MinWidth="100"
+                                                        Header="功能类型" IsReadOnly="True"
+                                                        ItemsSource="{Binding Source={StaticResource FlowFromEnum}}"
+                                                        SelectedItemBinding="{Binding Type}" />
+                                <DataGridTextColumn MinWidth=" 100" Binding="{Binding Comment, UpdateSourceTrigger=LostFocus}" Header="备注" />
+
+                            </DataGrid.Columns>
+
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </GroupBox>
+
+            <ContentControl Grid.Row="1" Content="{Binding ContentRegion}" />
+
+            <UniformGrid Grid.Row="2" Margin="3" Rows="1">
+
+                <Button Margin="3" Command="{Binding TestSelect}" Content="测试选中项" />
+                <Button Margin="3" Command="{Binding TestFunction}" Content="测试流程" />
+
+                <Button Margin="3" Command="{Binding Save}" Content="保存" />
+            </UniformGrid>
+
+        </Grid>
+    </Grid>
+</UserControl>

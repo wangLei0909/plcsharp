@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Prism DelegateCommand</Title>
+      <Shortcut>cmdp</Shortcut>
+      <Author>Brian Lagunas</Author>
+      <Description>Creates a DelegateCommand property with an Execute method</Description>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+ 
+        <Literal>
+          <ID>CommandName</ID>
+          <ToolTip>Name of the DelegateCommand</ToolTip>
+          <Default>CommandName</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp">
+        <![CDATA[private DelegateCommand<object> _$CommandName$;
+        public DelegateCommand<object> $CommandName$ => 
+            _$CommandName$ ??= new DelegateCommand<object>(Execute$CommandName$);
+            
+        void Execute$CommandName$(object param)
+        {
+            $end$
+        }]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

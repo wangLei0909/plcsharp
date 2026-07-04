@@ -1,0 +1,17 @@
+<UserControl x:Class="PLCSharp.VVMs.Vision.VisionFlowHandler.Access.ProcessImageSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Vision.VisionFlowHandler"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vision="clr-namespace:PLCSharp.VVMs.Vision"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vision:VisionConfigViewModel}"
+             d:DesignHeight="100" d:DesignWidth="300">
+    <StackPanel>
+        <Label Content="局部图像名称" />
+        <ComboBox IsEditable="False" ItemsSource="{Binding SelectedVisionFunction.Params.Mats}" SelectedItem="{Binding SelectedMat}" DisplayMemberPath="Name" />
+        <TextBlock Text="{Binding Path=SelectVisionFlow.StringParams[Image]}" />
+
+    </StackPanel>
+</UserControl>
