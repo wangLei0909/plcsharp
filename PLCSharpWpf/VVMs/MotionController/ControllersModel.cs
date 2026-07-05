@@ -532,8 +532,9 @@ namespace PLCSharp.VVMs.MotionController
 
                             _DatasContext.Controllers.Remove(remove);
                             SelectedController.Close();
+                            var id = SelectedController.ID;
                             Controllers.Remove(SelectedController);
-                            SendInfoDialog($"已删除控制器：{SelectedController.ID}");
+                            SendInfoDialog($"已删除控制器：{id}");
                             _DatasContext.Save();
                         }
                     }
@@ -1148,6 +1149,19 @@ namespace PLCSharp.VVMs.MotionController
                     }
                     break;
 
+                case "Remove":
+                    if (SelectedInterpolationGroup != null)
+                    {
+                        if (System.Windows.MessageBox.Show("确认删除插补组？", "确认删除", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                            break;
+                        var group = _DatasContext.InterpolationGroups.FirstOrDefault(h => h.ID == SelectedInterpolationGroup.ID);
+                        if (group != null)
+                            _DatasContext.InterpolationGroups.Remove(group);
+                        InterpolationGroups.Remove(SelectedInterpolationGroup);
+                        _DatasContext.Save();
+                    }
+                    break;
+
                 case "Save":
                     var names = new List<string>();
 
@@ -1189,6 +1203,8 @@ namespace PLCSharp.VVMs.MotionController
                     }
                     _DatasContext.Save();
                     break;
+
+
 
 
                 case "Go":
