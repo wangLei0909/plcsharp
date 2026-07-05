@@ -1,4 +1,4 @@
-namespace PLCSharp.Core.Common
+﻿namespace PLCSharp.Core.Common
 {
     /// <summary>
     /// 流程模型
@@ -75,5 +75,7 @@ namespace PLCSharp.Core.Common
             return FlowStarTime.AddSeconds(second) < DateTime.Now;
         }
 
+
+        public Task<bool> TaskBool { get; set; }
     }
 }

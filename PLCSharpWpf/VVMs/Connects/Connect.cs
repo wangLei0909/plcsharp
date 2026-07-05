@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using PLCSharp.VVMs.Connects.ModbusTcp;
 using PLCSharp.VVMs.Connects.Socket;
@@ -70,12 +70,10 @@ namespace PLCSharp.VVMs.Connects
 
         private ProtocolType _Type;
         /// <summary>
-        /// 类型
-        /// </summary>
-        [JsonIgnore]
-        /// <summary>
         /// 协议类型
         /// </summary>
+        [JsonIgnore]
+
         public ProtocolType Type
         {
             get { return _Type; }
@@ -111,12 +109,10 @@ namespace PLCSharp.VVMs.Connects
 
         private bool _LogSwitch;
         /// <summary>
-        /// 日志Switch
-        /// </summary>
-        [NotMapped]
-        /// <summary>
         /// 日志开关
         /// </summary>
+        [NotMapped]
+
         public bool LogSwitch
         {
             get { return _LogSwitch; }
@@ -125,12 +121,10 @@ namespace PLCSharp.VVMs.Connects
 
         private bool _Connected;
         /// <summary>
-        /// Connected
-        /// </summary>
-        [NotMapped]
-        /// <summary>
         /// 连接成功
         /// </summary>
+        [NotMapped]
+
         public bool Connected
         {
             get { return _Connected; }
@@ -139,12 +133,10 @@ namespace PLCSharp.VVMs.Connects
 
         private bool _Successful;
         /// <summary>
-        /// Successful
-        /// </summary>
-        [NotMapped]
-        /// <summary>
         /// 读写成功
         /// </summary>
+        [NotMapped]
+
         public bool Successful
         {
             get { return _Successful; }
@@ -154,12 +146,10 @@ namespace PLCSharp.VVMs.Connects
 
         private bool _Online;
         /// <summary>
-        /// Online
-        /// </summary>
-        [NotMapped]
-        /// <summary>
         /// 在线
         /// </summary>
+        [NotMapped]
+
         public bool Online
         {
             get { return _Online; }
@@ -167,9 +157,7 @@ namespace PLCSharp.VVMs.Connects
         }
 
         private string _ReceiveInfo;
-        /// <summary>
-        /// 接收信息
-        /// </summary>
+
         [NotMapped]
         /// <summary>
         /// 收到的信息
@@ -182,9 +170,7 @@ namespace PLCSharp.VVMs.Connects
 
 
         private byte[] _ReceiveData;
-        /// <summary>
-        /// 接收数据
-        /// </summary>
+
         [NotMapped]
         /// <summary>
         /// 收到的数据
@@ -195,9 +181,7 @@ namespace PLCSharp.VVMs.Connects
             set { SetProperty(ref _ReceiveData, value); }
         }
         private string _SendInfo;
-        /// <summary>
-        /// 发送信息
-        /// </summary>
+
         [NotMapped]
         /// <summary>
         /// 要发送的信息
@@ -207,6 +191,11 @@ namespace PLCSharp.VVMs.Connects
             get { return _SendInfo; }
             set { SetProperty(ref _SendInfo, value); }
         }
+        /// <summary>
+        /// 告警信息
+        /// </summary>
+        [NotMapped]
+        public string ErrInfo { get; set; } = "无异常";
 
         /// <summary>
         /// 序列化Params
@@ -336,7 +325,7 @@ namespace PLCSharp.VVMs.Connects
 
                 if (LogQueue.Count > 1000)
                     LogQueue.TryDequeue(out _);
-                RaisePropertyChanged("LogQueue");
+                RaisePropertyChanged(nameof(LogQueue));
             }
         }
         #endregion
@@ -395,11 +384,11 @@ namespace PLCSharp.VVMs.Connects
         /// </summary>
         /// <param name="msg">msg</param>
         /// <returns>返回结果</returns>
-        public virtual async Task SendAsync(string msg)
+        public virtual async Task<bool> SendAsync(string msg)
         {
             if (Params.DataType == CommunicationDataType.String)
             {
-                await SendMsgAsync(msg);
+                return await SendMsgAsync(msg);
 
             }
             else
@@ -407,11 +396,14 @@ namespace PLCSharp.VVMs.Connects
                 if (HexStringToBytes(msg, out List<byte> bytes, out string format))
                 {
                     SendInfo = format;
-                    await SendDataAsync([.. bytes]);
+                    return await SendDataAsync([.. bytes]);
                 }
                 else
                 {
-                    Log("请输入正确的十六进制字符串");
+                    ErrInfo = "请输入正确的十六进制字符串";
+                    Log(ErrInfo);
+                    return false;
+
                 }
             }
 
@@ -423,14 +415,14 @@ namespace PLCSharp.VVMs.Connects
         /// <param name="msg">msg</param>
         /// <param name="clientName">客户端名称</param>
         /// <returns>返回结果</returns>
-        public virtual async Task SendAsync(string msg, string clientName)
+        public virtual async Task<bool> SendAsync(string msg, string clientName)
         {
 
             if (this is SocketServer server)
             {
                 if (Params.DataType == CommunicationDataType.String)
                 {
-                    await server.SendMsgAsync(msg, clientName);
+                    return await server.SendMsgAsync(msg, clientName);
 
                 }
                 else
@@ -439,20 +431,29 @@ namespace PLCSharp.VVMs.Connects
                         if (HexStringToBytes(msg, out List<byte> bytes, out string format))
                         {
                             SendInfo = format;
-                            await server.SendDataAsync([.. bytes], clientName);
+                            return await server.SendDataAsync([.. bytes], clientName);
 
                         }
                         else
                         {
-                            Log("请输入正确的十六进制字符串");
+                            ErrInfo = "请输入正确的十六进制字符串";
+                            Log(ErrInfo);
+                            return false;
                         }
                     }
-
-
                 }
+            }
+            else
+            {
+                ErrInfo = "此连接不是服务器";
+                Log(ErrInfo);
+                return false;
+
             }
 
         }
+
+
         /// <summary>
         /// 发送HexMsgAsync
         /// </summary>
@@ -478,6 +479,7 @@ namespace PLCSharp.VVMs.Connects
         {
             if (string.IsNullOrEmpty(msg))
             {
+                ErrInfo = "消息为空，未发送";
                 Log($"{DateTime.Now:HH:mm:ss:fff} 消息为空，未发送");
                 return false;
             }

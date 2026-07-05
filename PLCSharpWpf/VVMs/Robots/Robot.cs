@@ -415,9 +415,9 @@ namespace PLCSharp.VVMs.Robots
         /// </summary>
         /// <param name="robotPoint">机器人点位</param>
         /// <returns>返回布尔值</returns>
-        public virtual bool RunPoint(string pointName)
+        public virtual void RunPoint(string pointName)
         {
-            return false;
+ 
 
         }
         /// <summary>
@@ -428,11 +428,9 @@ namespace PLCSharp.VVMs.Robots
         /// <param name="dist">dist</param>
         /// <param name="rate">rate</param>
         /// <returns>返回布尔值</returns>
-        public virtual bool Jog(string pointName, string cmd, double dist, double rate = 0)
+        public virtual void  Jog(string pointName, string cmd, double dist, double rate = 0)
         {
-
-            return false;
-
+ 
         }
 
         /// <summary>

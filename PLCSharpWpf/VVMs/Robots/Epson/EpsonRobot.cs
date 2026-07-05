@@ -278,33 +278,30 @@ public class EpsonRobot : Robot
     }
 
 
-    private bool SendCommand(RobotPoint point)
+    private void SendCommand(RobotPoint point)
     {
-        try
+        if (!ClientCtrl.Connected)
         {
-
-            ClientCommand.ReceiveInfo = "";
-            if (!point.Safe)
-            {
-                RcvShowInfo = "不安全，请检查点位";
-                return false;
-            }
-
-            Status[12] = false;
-            if (!ClientCommand.Connected) return false;
-
-            var speedPercent = (int)(point.Rate * Speed / 100);
-            var sendMsg =
-                $"@{point.Command} {speedPercent} {point.X} {point.Y} {point.Z} {point.U} {point.V} {point.W},{point.Hand}\r\n";
-            ClientCommand.SendMsg(sendMsg);
-
-            return true;
+            throw new Exception($"机器人未连接");
         }
-        catch (Exception ex)
+        if (!ClientCommand.Connected)
         {
-            System.Diagnostics.Debug.WriteLine($"SendCommand 失败: {ex.Message}");
-            return false;
+            throw new Exception($"机器人未启动");
         }
+        ClientCommand.ReceiveInfo = "";
+        if (!point.Safe)
+        {
+            throw new Exception($"机器人点位{point.Name}不安全");
+        }
+
+        Status[12] = false;
+
+
+        var speedPercent = (int)(point.Rate * Speed / 100);
+        var sendMsg =
+            $"@{point.Command} {speedPercent} {point.X} {point.Y} {point.Z} {point.U} {point.V} {point.W},{point.Hand}\r\n";
+        ClientCommand.SendMsg(sendMsg);
+
     }
 
     /// <summary>
@@ -312,17 +309,13 @@ public class EpsonRobot : Robot
     /// </summary>
     /// <param name="point">点位</param>
     /// <returns>返回布尔值</returns>
-    public override bool RunPoint(string pointName)
+    public override void RunPoint(string pointName)
     {
         PointDone = false;
-        var point = Points.FirstOrDefault(p => p.Name == pointName);
-        if (point == null)
-        {
-            return false;
-        }
+        var point = Points.FirstOrDefault(p => p.Name == pointName) ?? throw new Exception($"机器人点位{pointName}不存在");
         point.Command = "RunPoint";
         PointCommand = point.DeepCopy();
-        return SendCommand(PointCommand);
+        SendCommand(PointCommand);
     }
 
     /// <summary>
@@ -333,15 +326,11 @@ public class EpsonRobot : Robot
     /// <param name="dist"></param>
     /// <param name="rate"></param>
     /// <returns></returns>
-    public override bool Jog(string pointName, string cmd, double dist, double rate = 0)
+    public override void Jog(string pointName, string cmd, double dist, double rate = 0)
     {
         PointDone = false;
-        var cmdDone = false;
-        var point = Points.FirstOrDefault(p => p.Name == pointName);
-        if (point == null)
-        {
-            return false;
-        }
+ 
+        var point = Points.FirstOrDefault(p => p.Name == pointName) ?? throw new Exception($"机器人点位{pointName}不存在");
 
         PointCommand = CurrPoint.DeepCopy();
 
@@ -353,29 +342,29 @@ public class EpsonRobot : Robot
                 case "X-":
                     PointCommand.Command = cmd;
                     PointCommand.X = dist;
-                    PointCommand.Rate = rate > 0 ?  rate : point.Rate;
-                    cmdDone = SendCommand(PointCommand);
+                    PointCommand.Rate = rate > 0 ? rate : point.Rate;
+                    SendCommand(PointCommand);
                     break;
                 case "Y+":
                 case "Y-":
                     PointCommand.Command = cmd;
                     PointCommand.Y = dist;
                     PointCommand.Rate = rate > 0 ? rate : point.Rate;
-                    cmdDone = SendCommand(PointCommand);
+                    SendCommand(PointCommand);
                     break;
                 case "Z+":
                 case "Z-":
                     PointCommand.Command = cmd;
                     PointCommand.Z = dist;
                     PointCommand.Rate = rate > 0 ? rate : point.Rate;
-                    cmdDone = SendCommand(PointCommand);
+                    SendCommand(PointCommand);
                     break;
                 case "U+":
                 case "U-":
                     PointCommand.Command = cmd;
                     PointCommand.U = dist;
                     PointCommand.Rate = rate > 0 ? rate : point.Rate;
-                    cmdDone = SendCommand(PointCommand);
+                    SendCommand(PointCommand);
                     break;
             }
         }
@@ -386,24 +375,21 @@ public class EpsonRobot : Robot
 
             var tool = Tools.FirstOrDefault(w => w.Key == point.ToolNum);
 
-            if (tool.Value == null) return false;
+            if (tool.Value == null) throw new Exception("工具坐标配置");
             var pointTool = ToolFrame4Axis.WorldToTool(PointCommand, tool.Value);
 
             switch (cmd)
             {
-
                 case "X+":
                     pointTool.X += dist;
                     break;
                 case "X-":
-
                     pointTool.X -= dist;
                     break;
                 case "Y+":
                     pointTool.Y += dist;
                     break;
                 case "Y-":
-
                     pointTool.Y -= dist;
                     break;
                 case "Z+":
@@ -422,10 +408,9 @@ public class EpsonRobot : Robot
 
             }
             var pointWord = ToolFrame4Axis.ToolToWorld(pointTool, tool.Value);
-            cmdDone = SendCommand(pointWord);
+            SendCommand(pointWord);
         }
 
-        return cmdDone;
     }
 
     /// <summary>

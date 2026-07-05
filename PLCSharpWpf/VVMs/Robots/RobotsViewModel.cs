@@ -296,38 +296,46 @@ namespace PLCSharp.VVMs.Robots
 
         void ExecuteRobotPointCommand(object cmd)
         {
-
-            var cmdStr = cmd as string;
-            if (SelectedRobot.SelectedPoint == null)
+            try
             {
-                SendInfoDialog("请选择点位");
-                return;
-            }
-            SelectedRobot.SelectedPoint.Safe = true;
-            switch (cmdStr)
+                var cmdStr = cmd as string;
+                if (SelectedRobot.SelectedPoint == null)
+                {
+                    SendInfoDialog("请选择点位");
+                    return;
+                }
+                SelectedRobot.SelectedPoint.Safe = true;
+                switch (cmdStr)
 
+                {
+                    case "RunPoint":
+
+                        SelectedRobot.RunPoint(SelectedRobot.SelectedPoint.Name);
+                        break;
+
+
+                    case "X+":
+                    case "X-":
+
+                    case "Y+":
+                    case "Y-":
+
+                    case "Z+":
+                    case "Z-":
+
+                    case "U+":
+                    case "U-":
+
+                        SelectedRobot.Jog(SelectedRobot.SelectedPoint.Name, cmdStr, RelativeDistance);
+                        break;
+                }
+            }
+            catch (Exception ex)
             {
-                case "RunPoint":
-
-                    SelectedRobot.RunPoint(SelectedRobot.SelectedPoint.Name);
-                    break;
-
-
-                case "X+":
-                case "X-":
-
-                case "Y+":
-                case "Y-":
-
-                case "Z+":
-                case "Z-":
-
-                case "U+":
-                case "U-":
-
-                    SelectedRobot.Jog(SelectedRobot.SelectedPoint.Name, cmdStr, RelativeDistance);
-                    break;
+                SendErrDialog(ex.Message);
             }
+
+
 
 
         }

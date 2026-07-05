@@ -1,0 +1,21 @@
+﻿//机器人绝对运动
+case 3:
+    CurrRobot = globalModel.GetRobot("机器人名称");//如果前面已经获取过机器人对象，这里可以省略
+    flow.Step++;
+    break;
+case 4:
+    CurrRobot.RunPoint("点位名称");
+    flow.Step++;
+    break;
+
+case 5:
+    if (CurrRobot.PointDone) // 等待运动完成
+    {
+        flow.Step++;
+    }
+    else if (flow.CheckStepTime(3)) // 超时处理
+    {
+        flow.Step--;
+        throw new Exception("机器人点位运动超时!");
+    }
+    break;

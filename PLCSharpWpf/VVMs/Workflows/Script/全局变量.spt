@@ -1,0 +1,6 @@
+﻿//全局变量
+case 2:
+    CurrVariable = globalModel.GetVariable("变量名");//如果前面已经获取，这里可以省略
+    CurrVariable.Value = 100; // 设置变量值
+    flow.Step++;
+    break;

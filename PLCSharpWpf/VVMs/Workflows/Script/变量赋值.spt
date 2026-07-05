@@ -1,7 +1,0 @@
-﻿                        case 0:
-                            {
-                                CurrVariable = globalModel.GetVariable("变量名");
-                                CurrVariable.Value = 100; // 设置变量值
-                                flow.Step++;
-                            }
-                        break;

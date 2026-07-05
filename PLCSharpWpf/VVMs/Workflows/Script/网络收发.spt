@@ -1,17 +1,38 @@
-                        case 0:
-                       
-                                CurrConnect = globalModel.GetConnect("网络连接名");
-                                _ = CurrConnect.SendAsync("要发送的消息"); 
-                                flow.Step++;
-                       
-                        break;
-                        case 1:
-                
-                   
-                                if (string.IsNullOrEmpty(CurrConnect.ReceiveInfo))
-                                {
- 
-                                        flow.Step++;
+﻿//网络通信  SocketServer广播 /SocketClient / FreeSerialProtocol
+case 9:
 
-                            }
-                        break;
+    CurrConnect = globalModel.GetConnect("网络连接名");
+    flow.TaskBool = CurrConnect.SendAsync("要发送的消息");
+    flow.Step++;
+
+    break;
+case 10:
+    if (flow.TaskBool.IsCompleted)
+    {
+        if (flow.TaskBool.Result)
+        {
+            if (string.IsNullOrEmpty(CurrConnect.ReceiveInfo))
+            {
+                //这里处理 接收到的消息 CurrConnect.ReceiveInfo
+                flow.Step++;
+            }
+            else if (flow.CheckStepTime(3)) // 如果不需要判断超时，可以不写这个判断
+            {
+                flow.Step--;
+                throw new Exception("回复超时!");
+            }
+
+        }
+        else
+        {
+            flow.Step--;
+            throw new Exception($"发送失败!{CurrConnect.ErrInfo}");
+        }
+    }
+    else if (flow.CheckStepTime(3))
+    {
+        flow.Step--;
+        throw new Exception("发送超时!");
+    }
+
+    break;
