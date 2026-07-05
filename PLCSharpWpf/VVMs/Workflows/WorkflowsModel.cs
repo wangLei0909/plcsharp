@@ -77,32 +77,34 @@ namespace PLCSharp.VVMs.Workflows
 @"
 using System;
 using System.Linq;
-using System.Collections.ObjectModel;
 using PLCSharp.Models;
-using PLCSharp.VVMs.Homepage;
 using PLCSharp.Core.Common;
-using System.Windows.Shapes;
-using System.Windows.Media;
-using System.Windows;
-using PLCSharp.Core.UserControls;
+using PLCSharp.VVMs.Connects;
+using PLCSharp.VVMs.GlobalVariables;
+using PLCSharp.VVMs.Homepage;
+using PLCSharp.VVMs.MotionController;
 using PLCSharp.VVMs.Robots;
 using PLCSharp.VVMs.Vision;
 
 public class Extension_" + newTask.ID.ToString().Replace("-", "") +
 @" 
 {
-    Robot CurrRobot; //机器人
-    CustomControl CurrtateControl; //显示控件
-    VisionFunction CurrVF; //视觉功能
+    private Robot CurrRobot;
+    private CustomControl CurrtateControl;
+    private VisionFunction CurrVF;
+    private Connect CurrConnect;
+    private AxisPoint CurrAxisPoint;
+    private Variable CurrVariable;
+    private CustomControl CurrControl;
     public void Run(GlobalModel globalModel,FlowModel flow)
     {
-             switch (flow.Step)
-            {
-                //插入代码              
-                case 0:
-                    break;
+        switch (flow.Step)
+        {
+            //插入代码              
+            case 0:
+                break;
  
-            }
+        }
     }
 }
 ";

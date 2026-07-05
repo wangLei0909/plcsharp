@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 
@@ -214,7 +215,17 @@ namespace PLCSharp.VVMs.Workflows
                     Prompt = "";
                     IsCompiled = true;
                     Exception = false;
-                    action = Assembly.GetDelegateFromShortName<Action<GlobalModel, FlowModel>>("Extension_" + ID.ToString().Replace("-", ""), "Run");
+                    var typeName = "Extension_" + ID.ToString().Replace("-", "");
+                    var extType = Assembly.GetTypes().FirstOrDefault(t => t.Name == typeName || t.FullName == typeName);
+                    if (extType != null)
+                    {
+                        var instance = Activator.CreateInstance(extType)!;
+                        action = Assembly.GetDelegateFromShortName<Action<GlobalModel, FlowModel>>(typeName, "Run", target: instance);
+                    }
+                    else
+                    {
+                        DebugLog += "编译错误：无法找到 Extension 类型。\n";
+                    }
                 }
                 catch (Exception e)
                 {

@@ -156,7 +156,7 @@ namespace PLCSharp.VVMs.Connects
             set { SetProperty(ref _Online, value); }
         }
 
-        private string _ReceiveInfo;
+        private string _ReceiveInfo = "";
 
         [NotMapped]
         /// <summary>
