@@ -1,4 +1,4 @@
-using PLCSharp.Core.Common;
+﻿using PLCSharp.Core.Common;
 using PLCSharp.Models;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -255,6 +255,7 @@ namespace PLCSharp.VVMs.Workflows
             catch (Exception ex)
             {
                 DebugLog += $"运行时异常: {ex}\n";
+                globalModel.SendErr($"运行时异常: {ex}\n");
                 Exception = true;
             }
 
