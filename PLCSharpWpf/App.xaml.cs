@@ -1,4 +1,4 @@
-using DryIoc;
+﻿using DryIoc;
 using Newtonsoft.Json;
 using PLCSharp.Core.Prism;
 using PLCSharp.Models;
@@ -40,6 +40,7 @@ namespace PLCSharp
             }
             //数据库
             _ = containerRegistry.RegisterSingleton<DatasContext>();
+            _ = Container.Resolve<DatasContext>();
 
             RegisterEvents(); // 捕获全局异常
             LoadConfig();

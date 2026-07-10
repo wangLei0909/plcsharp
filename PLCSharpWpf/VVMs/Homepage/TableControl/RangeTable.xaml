@@ -20,13 +20,13 @@
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   Unloaded="DataGrid_Unloaded">
             <DataGrid.Columns>
-                <DataGridTextColumn MinWidth="50" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="名称" />
-                <DataGridTextColumn MinWidth="50" Binding="{Binding MinValue, Mode=OneWay}" Header="最小值" IsReadOnly="True" />
-                <DataGridTextColumn MinWidth="50" Binding="{Binding MaxValue, Mode=OneWay}" Header="最大值" IsReadOnly="True" />
-                <DataGridTextColumn MinWidth="50" Binding="{Binding BaseValue, Mode=OneWay}" Header="标准值" IsReadOnly="True" />
-                <DataGridTextColumn MinWidth="50" Binding="{Binding ShowValue, UpdateSourceTrigger=LostFocus}" Header="检测值" />
-                <DataGridTextColumn MinWidth="50" Binding="{Binding Offs, Mode=OneWay}" Header="偏差" IsReadOnly="True" />
-                <DataGridTextColumn MinWidth="50" Binding="{Binding ResultStr, Mode=OneWay}" Header="结果" IsReadOnly="True">
+                <DataGridTextColumn MinWidth="50" IsReadOnly="True" Binding="{Binding Name}" Header="名称" />
+                <DataGridTextColumn MinWidth="50" IsReadOnly="True" Binding="{Binding MinValue}" Header="最小值" />
+                <DataGridTextColumn MinWidth="50" IsReadOnly="True" Binding="{Binding MaxValue}" Header="最大值" />
+                <DataGridTextColumn MinWidth="50" IsReadOnly="True" Binding="{Binding BaseValue}" Header="标准值" />
+                <DataGridTextColumn MinWidth="50" IsReadOnly="True" Binding="{Binding ShowValue, UpdateSourceTrigger=LostFocus}" Header="检测值" />
+                <DataGridTextColumn MinWidth="50" IsReadOnly="True" Binding="{Binding Offs}" Header="偏差" />
+                <DataGridTextColumn MinWidth="50" IsReadOnly="True" Binding="{Binding ResultStr}" Header="结果">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="TextAlignment" Value="Center" />

@@ -38,11 +38,28 @@ namespace PLCSharp.VVMs.MotionController
             };
             bkgWorker = new BackgroundWorker { WorkerSupportsCancellation = true };
             bkgWorker.DoWork += BackgroundWork;
+        }
+        #region BackgroundWork
+        public void Start()
+        {
 
             if (!bkgWorker.IsBusy)
                 bkgWorker.RunWorkerAsync();
+
         }
-        private readonly BackgroundWorker bkgWorker;
+
+        public void Stop()
+        {
+
+            bkgWorker.CancelAsync();
+
+            while (bkgWorker.IsBusy)
+            {
+                Thread.Sleep(10);
+            }
+
+        }
+        private BackgroundWorker bkgWorker;
 
         /// <summary>
         /// OnExit
@@ -70,13 +87,26 @@ namespace PLCSharp.VVMs.MotionController
                     AxisPoints[i].Run();
                 }
 
+                for (int i = 0; i < Matrices.Count; i++)
+                {
+                    for (int j = 0; j < Matrices[i].Points.Count; j++)
+                    {
+                        Matrices[i].Points[j].Run();
+                    }
+                }
                 for (int i = 0; i < InterpolationGroups.Count; i++)
                 {
                     InterpolationGroups[i].Run();
                 }
 
+
             }
+            e.Cancel = true; // 标记任务已被取消
+
         }
+        #endregion
+
+        #region Controller
         /// <summary>
         /// 初始化
         /// </summary>
@@ -155,30 +185,8 @@ namespace PLCSharp.VVMs.MotionController
             }
 
         }
-        private double _Rate = 100;
-        /// <summary>
-        /// 速率 1-100
-        /// </summary>
-        public double Rate
-        {
-            get { return _Rate; }
-            set
-            {
-                if (value > 100)
-                    value = 100;
-                else if (value < 1)
-                    value = 1;
-                SetProperty(ref _Rate, value);
-                foreach (var item in AxisPoints)
-                {
-                    item.Rate = value;
-                }
-            }
-        }
-        /// <summary>
-        /// Axes
-        /// </summary>
-        public ObservableCollection<Axis> Axes { get; set; } = [];
+
+
         /// <summary>
         /// DI
         /// </summary>
@@ -191,7 +199,6 @@ namespace PLCSharp.VVMs.MotionController
         /// 全局模型
         /// </summary>
         public GlobalModel GlobalModel { get; set; }
-        #region Controller
 
         private ObservableCollection<Controller> _Controllers = [];
 
@@ -592,7 +599,13 @@ namespace PLCSharp.VVMs.MotionController
             set { SetProperty(ref _InterpolationConfig, value); }
         }
         #endregion Controller
+
         #region Axis
+
+        /// <summary>
+        /// Axes
+        /// </summary>
+        public ObservableCollection<Axis> Axes { get; set; } = [];
         private DelegateCommand<object> _AxisCommand;
         /// <summary>
         /// 轴Command
@@ -901,6 +914,7 @@ namespace PLCSharp.VVMs.MotionController
             }
         }
         #endregion Axis
+
         #region AxisPoint
         private ObservableCollection<AxisPoint> _AxisPoints = [];
         /// <summary>
@@ -1110,6 +1124,237 @@ namespace PLCSharp.VVMs.MotionController
         }
         #endregion Point
 
+        #region Matrix
+        private ObservableCollection<Matrix> _Matrices = [];
+        /// <summary>
+        /// 矩阵列表
+        /// </summary>
+        public ObservableCollection<Matrix> Matrices
+        {
+            get { return _Matrices; }
+            set { SetProperty(ref _Matrices, value); }
+        }
+
+        private Matrix _SelectedMatrix;
+        /// <summary>
+        /// 
+        /// </summary>
+        public Matrix SelectedMatrix
+        {
+            get { return _SelectedMatrix; }
+            set { SetProperty(ref _SelectedMatrix, value); }
+        }
+
+
+        private DelegateCommand<object> _MatricesManage;
+        public DelegateCommand<object> MatricesManage =>
+            _MatricesManage ??= new DelegateCommand<object>(ExecuteMatricesManage);
+        void ExecuteMatricesManage(object param)
+        {
+            var cmd = param as string;
+            switch (cmd)
+            {
+                case "New":
+                    {
+                        var matrix = new Matrix
+                        {
+                            RecipeID = GlobalModel.CurrentRecipe.ID,
+                        };
+                        Matrices.Add(matrix);
+                    }
+                    break;
+                case "Create":
+                    if (SelectedMatrix != null)
+                    {
+                        Create(SelectedMatrix);
+                    }
+
+                    break;
+
+                case "Save":
+                    var names = new List<string>();
+
+                    foreach (var item in Matrices)
+                    {
+                        if (string.IsNullOrEmpty(item.Name))
+                        {
+                            SendInfoDialog($"保存失败，名称{item.Name}不合适！");
+                            return;
+                        }
+
+                        if (names.Contains(item.Name))
+                        {
+                            SendInfoDialog($"保存失败，重复的名称{item.Name}！");
+                            return;
+                        }
+                        else
+                        {
+                            names.Add(item.Name);
+                        }
+                    }
+                    foreach (var item in Matrices)
+                    {
+                        if (!_DatasContext.Matrices.Any(h => h.ID == item.ID))
+                        {
+                            _DatasContext.Matrices.Add(item);
+                        }
+                        else
+                        {
+                            var matrix = _DatasContext.Matrices.Where(c => c.ID == item.ID).FirstOrDefault();
+                            matrix.Name = item.Name;
+                            matrix.StartName = item.StartName;
+                            matrix.XEndName = item.XEndName;
+                            matrix.YEndName = item.YEndName;
+                            matrix.XCount = item.XCount;
+                            matrix.YCount = item.YCount;
+                            matrix.MatrixType = item.MatrixType;
+
+
+                        }
+                    }
+                    _DatasContext.Save();
+                    break;
+
+                case "Remove":
+                    if (SelectedMatrix != null)
+                    {
+                        if (System.Windows.MessageBox.Show($"确认删除矩阵 [{SelectedMatrix.Name}]？", "确认删除", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                            break;
+
+                        var removedb = _DatasContext.Matrices.Where(h => h.ID == SelectedMatrix.ID).FirstOrDefault();
+                        if (removedb != null)
+                        {
+                            _DatasContext.Matrices.Remove(removedb);
+                            _DatasContext.Save();
+                        }
+                        var remove = Matrices.Where(h => h.ID == SelectedMatrix.ID).FirstOrDefault();
+
+                        if (remove != null)
+                        {
+                            Matrices.Remove(remove);
+                            var name = remove.Name;
+                            SendInfoDialog($"已删除矩阵：{name}");
+
+                        }
+
+                    }
+
+                    break;
+
+                case "Jump":
+                    var pointJump = SelectedMatrix.GetPoint(SelectedMatrix.XTarget, SelectedMatrix.YTarget);
+
+                    if (pointJump == null)
+                    {
+
+                        SendInfoDialog("目标点不存在，请检查目标设置");
+                        return;
+
+                    }
+                    pointJump.Jump();
+
+                    break;
+                case "Go":
+                    if (SelectedMatrix == null) return;
+
+                    var point = SelectedMatrix.GetPoint(SelectedMatrix.XTarget, SelectedMatrix.YTarget);
+
+                    if (point == null)
+                    {
+
+                        SendInfoDialog("目标点不存在，请检查目标设置");
+                        return;
+
+                    }
+
+                    _dialogService.Show("AlertDialog", new DialogParameters($"message=choose:直接运行至此点吗？"), r =>
+                    {
+                        if (r.Result == ButtonResult.Yes)
+                        {
+
+                            point.Go();
+                        }
+
+                    });
+                    break;
+            }
+        }
+        internal void Create(Matrix matrix)
+        {
+            matrix.Points.Clear();
+            matrix.XCount = matrix.XCount > 0 ? matrix.XCount : 1;
+            matrix.YCount = matrix.YCount > 0 ? matrix.YCount : 1;
+            int xCount = matrix.XCount;
+            int yCount = matrix.YCount;
+            int total = xCount * yCount;
+
+            // 从 AxisPoints 中查找三个角点
+            var startPoint = AxisPoints.FirstOrDefault(p => p.Name == matrix.StartName);
+            var xEndPoint = AxisPoints.FirstOrDefault(p => p.Name == matrix.XEndName);
+            var yEndPoint = AxisPoints.FirstOrDefault(p => p.Name == matrix.YEndName);
+
+            if (startPoint == null || xEndPoint == null || yEndPoint == null)
+            {
+
+                SendErr("基准点位名称错误，创建失败！");
+                return;
+            }
+
+            // 计算 X/Y 方向基向量（当 XCount/YCount 为 1 时间距为 0）
+            double xBasisX = xCount > 1 ? (xEndPoint.X - startPoint.X) / (xCount - 1) : 0;
+            double xBasisY = xCount > 1 ? (xEndPoint.Y - startPoint.Y) / (xCount - 1) : 0;
+            double yBasisX = yCount > 1 ? (yEndPoint.X - startPoint.X) / (yCount - 1) : 0;
+            double yBasisY = yCount > 1 ? (yEndPoint.Y - startPoint.Y) / (yCount - 1) : 0;
+            double zBasisX = xCount > 1 ? (xEndPoint.Z - startPoint.Z) / (xCount - 1) : 0;
+            double zBasisY = yCount > 1 ? (yEndPoint.Z - startPoint.Z) / (yCount - 1) : 0;
+
+            double originX = startPoint.X;
+            double originY = startPoint.Y;
+            double originZ = startPoint.Z;
+
+            // 按 MatrixType 确定遍历顺序
+            // 0 = 先X后Y (外层Y, 内层X); 1 = 先Y后X (外层X, 内层Y)
+            for (int i = 0; i < total; i++)
+            {
+                int x, y;
+                if (matrix.MatrixType == 0)
+                {
+                    // 先X后Y: X变快, Y变慢
+                    x = i % xCount;
+                    y = i / xCount;
+                }
+                else
+                {
+                    // 先Y后X: Y变快, X变慢
+                    y = i % yCount;
+                    x = i / yCount;
+                }
+
+                // 平行四边形插值坐标：P = start + x*xBasis + y*yBasis
+                double px = originX + x * xBasisX + y * yBasisX;
+                double py = originY + x * xBasisY + y * yBasisY;
+                double pz = originZ + x * zBasisX + y * zBasisY;
+
+                var point = new AxisPoint
+                {
+                    XIndex = x,
+                    YIndex = y,
+                    X = px,
+                    Y = py,
+                    Z = pz,
+                    // 复制起始点的轴配置
+                    AxisX = startPoint.AxisX,
+                    AxisY = startPoint.AxisY,
+                    AxisZ = startPoint.AxisZ,
+                    AxisU = startPoint.AxisU,
+                    U = startPoint.U
+                };
+
+                matrix.Points.Add(point);
+            }
+        }
+        #endregion
+
         #region Interpolation
 
         /// <summary>
@@ -1175,7 +1420,7 @@ namespace PLCSharp.VVMs.MotionController
 
                         if (names.Contains(item.Name))
                         {
-                            SendInfoDialog($"保存失败，重复的名称{item.Name}！"    );
+                            SendInfoDialog($"保存失败，重复的名称{item.Name}！");
                             return;
                         }
                         else
@@ -1405,6 +1650,8 @@ namespace PLCSharp.VVMs.MotionController
             }
 
         }
+
+
 
         #endregion
     }

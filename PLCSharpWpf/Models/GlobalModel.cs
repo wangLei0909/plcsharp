@@ -1147,6 +1147,7 @@ namespace PLCSharp.Models
                 VisionsModel.VisionFunctions.Add(itemcopy);
             }
             //加载当前配方的点位列表
+            ControllersModel.Stop();
             ControllersModel.AxisPoints.Clear();
             var currRecipeAxisPoints = _DatasContext.AxisPoints.Where(c => c.RecipeID == CurrentRecipe.ID);
             foreach (var item in currRecipeAxisPoints)
@@ -1166,6 +1167,19 @@ namespace PLCSharp.Models
                 if (axisU != null)
                     axisPoint.AxisU = axisU;
             }
+            //加载当前西方的矩阵列表
+            ControllersModel.Matrices.Clear();
+            var currRecipeMatrices = _DatasContext.Matrices.Where(c => c.RecipeID == CurrentRecipe.ID);
+            foreach (var item in currRecipeMatrices)
+            {
+                var matrix = item.DeepCopy();
+                ControllersModel.Matrices.Add(matrix);
+
+                ControllersModel.Create(matrix);
+
+
+            }
+
             //加载当前配方的插补列表
 
             ControllersModel.InterpolationGroups.Clear();
@@ -1181,6 +1195,8 @@ namespace PLCSharp.Models
                 if (axisY != null)
                     itemcopy.AxisY = axisY;
             }
+            ControllersModel.Start();
+
             //加载当前配方的任务列表
             WorkflowsModel.Workflows.Clear();
             var currRecipeWorkflows = _DatasContext.Workflows.Where(c => c.RecipeID == CurrentRecipe.ID);

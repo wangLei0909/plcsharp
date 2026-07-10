@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using PLCSharp.Core.Common;
 using Prism.Mvvm;
 using System.ComponentModel.DataAnnotations;
@@ -303,9 +303,6 @@ namespace PLCSharp.VVMs.MotionController
         /// 参数集合
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 配置项
-        /// </summary>
         public AxisPointParams Params
         {
             get
@@ -319,6 +316,17 @@ namespace PLCSharp.VVMs.MotionController
                 SetProperty(ref _Params, value);
             }
         }
+        /// <summary>
+        /// 在矩阵中的X索引
+        /// </summary>
+        [NotMapped]
+        public int XIndex { get; internal set; }
+        /// <summary>
+        /// 在矩阵中的Y索引
+        /// </summary>
+        [NotMapped]
+        public int YIndex { get; internal set; }
+
         /// <summary>
         /// 轴点位Params
         /// </summary>

@@ -77,6 +77,12 @@ namespace PLCSharp.Models
         /// 轴Points
         /// </summary>
         public DbSet<AxisPoint> AxisPoints { get; set; }
+
+        /// <summary>
+        /// 轴Points
+        /// </summary>
+        public DbSet<Matrix> Matrices { get; set; }
+
         /// <summary>
         /// 插补Groups
         /// </summary>

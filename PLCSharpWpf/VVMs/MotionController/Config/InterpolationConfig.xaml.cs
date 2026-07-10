@@ -1,7 +1,7 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace PLCSharp.VVMs.MotionController
+namespace PLCSharp.VVMs.MotionController.Config
 {
     /// <summary>
     /// InterpolationConfig.xaml 的交互逻辑
