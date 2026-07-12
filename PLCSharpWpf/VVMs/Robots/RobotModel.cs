@@ -1,4 +1,4 @@
-using PLCSharp.Core.Prism;
+﻿using PLCSharp.Core.Prism;
 using PLCSharp.Core.Tools;
 using PLCSharp.Models;
 using PLCSharp.VVMs.Robots.Epson;
@@ -66,13 +66,14 @@ namespace PLCSharp.VVMs.Robots
             GlobalModel = globalModel;
             foreach (var item in _DatasContext.Robots)
             {
-
+              
                 switch (item.Type)
                 {
                     case RobotType.Undefined:
                         break;
                     case RobotType.Epson:
                         var epsonRobot = EpsonRobot.Create(item);
+                        epsonRobot.Model = this;
                         Robots.Add(epsonRobot);
                         break;
                     default:
@@ -82,14 +83,47 @@ namespace PLCSharp.VVMs.Robots
 
 
             }
-            foreach (var item in _DatasContext.RobotPoints)
-            {
-                var point = item.DeepCopy();
-                var robot = Robots.FirstOrDefault(r => r.ID == point.RobotID);
-                robot?.Points.Add(point);
-            }
+
         }
         #endregion
+
+        public void LoadRecipe(Guid CurrentRecipeID)
+        {
+
+
+            foreach (var robot in Robots)
+            {
+                robot.Points.Clear();
+
+                foreach (var item in _DatasContext.RobotPoints)
+                {
+                    if (item.RobotID == robot.ID && item.RecipeID == CurrentRecipeID)
+                    {
+
+                        var point = item.DeepCopy();
+
+                        robot.Points.Add(point);
+                    }
+                }
+
+                robot.RobotMatrices.Clear();
+                foreach (var item in _DatasContext.RobotMatrices)
+                {
+
+
+                    if (item.RobotID == robot.ID && item.RecipeID == CurrentRecipeID)
+                    {
+
+                        var matrix = item.DeepCopy();
+                        robot.Create(matrix);
+                        robot.RobotMatrices.Add(matrix);
+                    }
+                }
+
+            }
+
+
+        }
 
 
     }

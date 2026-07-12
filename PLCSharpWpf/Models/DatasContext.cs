@@ -105,6 +105,10 @@ namespace PLCSharp.Models
         /// </summary>
         public DbSet<RobotPoint> RobotPoints { get; set; }
         /// <summary>
+        /// 机器人矩阵
+        /// </summary>
+        public DbSet<RobotMatrix> RobotMatrices { get; set; }
+        /// <summary>
         /// 错误Logs
         /// </summary>
         public DbSet<ErrorLog> ErrorLogs { get; set; }

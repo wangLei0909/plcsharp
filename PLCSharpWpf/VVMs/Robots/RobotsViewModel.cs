@@ -170,6 +170,133 @@ namespace PLCSharp.VVMs.Robots
             }
         }
         #endregion
+
+        #region RobotMatrix CRUD
+
+        private RobotMatrix _SelectedRobotMatrix;
+        /// <summary>
+        /// Selected机器人矩阵
+        /// </summary>
+        public RobotMatrix SelectedRobotMatrix
+        {
+            get { return _SelectedRobotMatrix; }
+            set { SetProperty(ref _SelectedRobotMatrix, value); }
+        }
+
+        private DelegateCommand<object> _RobotMatrixManage;
+        /// <summary>
+        /// 机器人矩阵管理
+        /// </summary>
+        public DelegateCommand<object> RobotMatrixManage =>
+            _RobotMatrixManage ??= new DelegateCommand<object>(ExecuteRobotMatrixManage);
+
+        void ExecuteRobotMatrixManage(object param)
+        {
+
+            if (SelectedRobot == null)
+            {
+                SendInfoDialog("请先选择机器人");
+                return;
+            }
+            var cmd = param as string;
+
+
+            switch (cmd)
+            {
+                case "New":
+          
+                    var newMatrix = new RobotMatrix
+                    {
+                        RobotID = SelectedRobot.ID,
+                        RecipeID = RobotModel.GlobalModel.CurrentRecipe.ID ,
+                        Name = "新矩阵",
+                        XCount = 2,
+                        YCount = 2,
+                    };
+                    SelectedRobot.RobotMatrices.Add(newMatrix);
+                    SelectedRobotMatrix = newMatrix;
+                    break;
+
+                case "Create":
+    
+                    if (SelectedRobotMatrix == null)
+                    {
+                        SendInfoDialog("请先选择矩阵");
+                        return;
+                    }
+                    SelectedRobot.Create(SelectedRobotMatrix);
+                    SendInfoDialog("矩阵计算完成");
+                    break;
+
+                case "Save":
+ 
+                    var names = new List<string>();
+                    foreach (var item in SelectedRobot.RobotMatrices)
+                    {
+                        if (string.IsNullOrEmpty(item.Name))
+                        {
+                            SendInfoDialog($"保存失败，矩阵名称不能为空");
+                            return;
+                        }
+                        if (names.Contains(item.Name))
+                        {
+                            SendInfoDialog($"保存失败，重复名称：{item.Name}");
+                            return;
+                        }
+                        names.Add(item.Name);
+
+                        if (!RobotModel._DatasContext.RobotMatrices.Any(h => h.ID == item.ID))
+                        {
+                            RobotModel._DatasContext.RobotMatrices.Add(item);
+                        }
+                        else
+                        {
+                            var exist = RobotModel._DatasContext.RobotMatrices.FirstOrDefault(m => m.ID == item.ID);
+                            if (exist != null)
+                            {
+                                exist.Name = item.Name;
+                                exist.StartName = item.StartName;
+                                exist.XEndName = item.XEndName;
+                                exist.YEndName = item.YEndName;
+                                exist.XCount = item.XCount;
+                                exist.YCount = item.YCount;
+                                exist.MatrixType = item.MatrixType;
+                            }
+                        }
+                    }
+                    RobotModel._DatasContext.Save();
+                    SendInfoDialog("矩阵保存成功");
+                    break;
+
+                case "Remove":
+ 
+                    if (SelectedRobotMatrix != null)
+                    {
+                        if (RobotModel._DatasContext.RobotMatrices.Any(h => h.ID == SelectedRobotMatrix.ID))
+                        {
+                            var remove = RobotModel._DatasContext.RobotMatrices.FirstOrDefault(m => m.ID == SelectedRobotMatrix.ID);
+                            if (remove != null)
+                                RobotModel._DatasContext.RobotMatrices.Remove(remove);
+                        }
+                        SelectedRobot.RobotMatrices.Remove(SelectedRobotMatrix);
+                        RobotModel._DatasContext.Save();
+                        SelectedRobotMatrix = null;
+                    }
+                    break;
+
+                case "RunPoint":
+
+                    if (SelectedRobotMatrix != null) {
+ 
+                        SelectedRobot.RunMatrixPoint(SelectedRobotMatrix,SelectedRobotMatrix.XTarget, SelectedRobotMatrix.YTarget);
+                    }
+
+                    break;
+            }
+        }
+
+        #endregion
+
         #region Robot CRUD
 
 

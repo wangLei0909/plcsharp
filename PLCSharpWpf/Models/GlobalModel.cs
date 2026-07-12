@@ -11,7 +11,6 @@ using PLCSharp.VVMs.MotionController;
 using PLCSharp.VVMs.Recipe;
 using PLCSharp.VVMs.Robots;
 using PLCSharp.VVMs.Vision;
-using PLCSharp.VVMs.Vision.Camera;
 using PLCSharp.VVMs.Workflows;
 using Prism.Commands;
 using Prism.Dialogs;
@@ -160,6 +159,7 @@ namespace PLCSharp.Models
         }
 
         #endregion
+
         #region 硬件
         /// <summary>
         /// 连接模型
@@ -190,7 +190,7 @@ namespace PLCSharp.Models
         {
             var connect = Connects.Connects.FirstOrDefault(c => c.Name == name)
                                 ?? throw new Exception("网络未配置!");
- 
+
             return connect;
         }
         /// <summary>
@@ -202,7 +202,7 @@ namespace PLCSharp.Models
         {
             var robot = RobotModel.Robots.FirstOrDefault(c => c.Name == name)
                                 ?? throw new Exception("Robot未配置!");
- 
+
             return robot;
         }
         /// <summary>
@@ -230,6 +230,7 @@ namespace PLCSharp.Models
 
 
         #endregion
+
         #region 任务
         /// <summary>
         /// Workflows模型
@@ -250,6 +251,7 @@ namespace PLCSharp.Models
             return WorkflowsModel.Workflows.FirstOrDefault(t => t.Name == name);
         }
         #endregion
+
         #region 日志
         private ObservableCollection<ErrorLog> _ErrorLogs = [];
 
@@ -362,6 +364,7 @@ namespace PLCSharp.Models
 
         }
         #endregion
+
         #region 模式与状态
         private ModeState _ModeState = new();
         /// <summary>
@@ -403,6 +406,7 @@ namespace PLCSharp.Models
             }
         }
         #endregion
+
         #region 配方
 
 
@@ -1086,116 +1090,18 @@ namespace PLCSharp.Models
             {
                 Target = "UIReLoad"
             });
-            //加载当前配方的用户变量列表
-            VariablesModel.Variables.Clear();
-            var variables = _DatasContext.Variables.Where(c => c.RecipeID == CurrentRecipe.ID);
-            foreach (var item in variables)
-            {
-                if (item.RetainPersistent)
-                {
 
-                    item.Value = Variable.DynamicValue(item.ValueStr, item.Type);
-
-                }
-                else
-                {
-                    item.Value = Variable.DynamicValue(item.DefaultValueStr, item.Type);
-                    item.DefaultValue = item.Value;
-
-                }
-                VariablesModel.Variables.Add(item);
-            }
-            //加载当前配方的系统变量列表
-            VariablesModel.SystemVariables.Clear();
-            var systemVariables = _DatasContext.SystemVariables.Where(c => c.RecipeID == CurrentRecipe.ID);
-            foreach (var item in systemVariables)
-            {
-                if (item.RetainPersistent)
-                {
-
-                    item.Value = Variable.DynamicValue(item.ValueStr, item.Type);
-
-                }
-                else
-                {
-                    item.Value = Variable.DynamicValue(item.DefaultValueStr, item.Type);
-                    item.DefaultValue = item.Value;
-
-                }
-                VariablesModel.SystemVariables.Add(item);
-            }
-            //加载当前配方的图像数据列表
-            VisionsModel.ImageDatas.Clear();
-            var currRecipeImageDatas = _DatasContext.ImageDatas.Where(c => c.RecipeID == CurrentRecipe.ID);
-            foreach (var item in currRecipeImageDatas)
-            {
-                var itemcopy = item.DeepCopy();
-                itemcopy.Prompt = "";
-                VisionsModel.ImageDatas.Add(itemcopy);
-            }
-
+            //加载当前配方的全局变量列表
+            VariablesModel.LoadRecipe(CurrentRecipe.ID);
+ 
             //加载当前配方的视觉功能列表
-            VisionsModel.VisionFunctions.Clear();
-            var currRecipeVisionFunctions = _DatasContext.VisionFunctions.Where(c => c.RecipeID == CurrentRecipe.ID);
-            foreach (var item in currRecipeVisionFunctions)
-            {
-                var itemcopy = item.DeepCopy();
-                itemcopy.Prompt = "";
-                itemcopy.VisionsModel = VisionsModel;
-                itemcopy.ImageDatas = VisionsModel.ImageDatas;
-                itemcopy.GlobalModel = this;
-                VisionsModel.VisionFunctions.Add(itemcopy);
-            }
+            VisionsModel.LoadRecipe(CurrentRecipe.ID);
+
             //加载当前配方的点位列表
-            ControllersModel.Stop();
-            ControllersModel.AxisPoints.Clear();
-            var currRecipeAxisPoints = _DatasContext.AxisPoints.Where(c => c.RecipeID == CurrentRecipe.ID);
-            foreach (var item in currRecipeAxisPoints)
-            {
-                var axisPoint = item.DeepCopy();
-                ControllersModel.AxisPoints.Add(axisPoint);
-                var axisX = ControllersModel.Axes.Where(a => a.Name == axisPoint.AxisXName).FirstOrDefault();
-                if (axisX != null)
-                    axisPoint.AxisX = axisX;
-                var axisY = ControllersModel.Axes.Where(a => a.Name == axisPoint.AxisYName).FirstOrDefault();
-                if (axisY != null)
-                    axisPoint.AxisY = axisY;
-                var axisZ = ControllersModel.Axes.Where(a => a.Name == axisPoint.AxisZName).FirstOrDefault();
-                if (axisZ != null)
-                    axisPoint.AxisZ = axisZ;
-                var axisU = ControllersModel.Axes.Where(a => a.Name == axisPoint.AxisUName).FirstOrDefault();
-                if (axisU != null)
-                    axisPoint.AxisU = axisU;
-            }
-            //加载当前西方的矩阵列表
-            ControllersModel.Matrices.Clear();
-            var currRecipeMatrices = _DatasContext.Matrices.Where(c => c.RecipeID == CurrentRecipe.ID);
-            foreach (var item in currRecipeMatrices)
-            {
-                var matrix = item.DeepCopy();
-                ControllersModel.Matrices.Add(matrix);
+            ControllersModel.LoadRecipe(CurrentRecipe.ID);
 
-                ControllersModel.Create(matrix);
-
-
-            }
-
-            //加载当前配方的插补列表
-
-            ControllersModel.InterpolationGroups.Clear();
-            var currRecipeInterpolationGroups = _DatasContext.InterpolationGroups.Where(c => c.RecipeID == CurrentRecipe.ID);
-            foreach (var item in currRecipeInterpolationGroups)
-            {
-                var itemcopy = item.DeepCopy();
-                ControllersModel.InterpolationGroups.Add(itemcopy);
-                var axisX = ControllersModel.Axes.Where(a => a.Name == itemcopy.AxisXName).FirstOrDefault();
-                if (axisX != null)
-                    itemcopy.AxisX = axisX;
-                var axisY = ControllersModel.Axes.Where(a => a.Name == itemcopy.AxisYName).FirstOrDefault();
-                if (axisY != null)
-                    itemcopy.AxisY = axisY;
-            }
-            ControllersModel.Start();
+            //加载当前配方的机器人点位和矩阵列表
+            RobotModel.LoadRecipe(CurrentRecipe.ID);
 
             //加载当前配方的任务列表
             WorkflowsModel.Workflows.Clear();
@@ -1324,6 +1230,7 @@ namespace PLCSharp.Models
 
         }
         #endregion
+
         #region 主页面
         private ObservableCollection<CustomControl> _CustomControls = [];
         /// <summary>

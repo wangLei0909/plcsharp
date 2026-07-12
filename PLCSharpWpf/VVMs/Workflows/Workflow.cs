@@ -285,6 +285,10 @@ namespace PLCSharp.VVMs.Workflows
             {
                 _BackgroundWorker.CancelAsync();
             }
+            while (_BackgroundWorker.IsBusy)
+            {
+
+            }
             IsRuning = false;
         }
         private void BackgroundWork(object sender, DoWorkEventArgs e)
@@ -308,6 +312,7 @@ namespace PLCSharp.VVMs.Workflows
                 sw.Stop();
                 CycleTime = sw.Elapsed.TotalSeconds;
             }
+     
         }
         GlobalModel GlobalModel;
         private FlowModel _Flow = new();

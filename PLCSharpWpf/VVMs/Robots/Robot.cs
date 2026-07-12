@@ -14,6 +14,11 @@ namespace PLCSharp.VVMs.Robots
     /// </summary>
     public class Robot : BindableBase
     {
+        [NotMapped]
+
+        public RobotModel Model { get; set; }
+
+
         /// <summary>
         /// 唯一标识
         /// </summary>
@@ -414,10 +419,9 @@ namespace PLCSharp.VVMs.Robots
         /// 运行点位
         /// </summary>
         /// <param name="robotPoint">机器人点位</param>
-        /// <returns>返回布尔值</returns>
         public virtual void RunPoint(string pointName)
         {
- 
+
 
         }
         /// <summary>
@@ -428,16 +432,16 @@ namespace PLCSharp.VVMs.Robots
         /// <param name="dist">dist</param>
         /// <param name="rate">rate</param>
         /// <returns>返回布尔值</returns>
-        public virtual void  Jog(string pointName, string cmd, double dist, double rate = 0)
+        public virtual void Jog(string pointName, string cmd, double dist, double rate = 0)
         {
- 
+
         }
 
         /// <summary>
         /// 点位运行完成
         /// </summary>
         [NotMapped]
-        
+
         public bool PointDone { get; set; }
 
         private DelegateCommand _HomeCmd;
@@ -484,6 +488,104 @@ namespace PLCSharp.VVMs.Robots
 
 
         }
+
+
+        #region RobotMatrix
+
+        private ObservableCollection<RobotMatrix> _RobotMatrices = [];
+        /// <summary>
+        /// 机器人矩阵列表
+        /// </summary>
+        [NotMapped]
+        public ObservableCollection<RobotMatrix> RobotMatrices
+        {
+            get { return _RobotMatrices; }
+            set { SetProperty(ref _RobotMatrices, value); }
+        }
+
+        /// <summary>
+        /// 根据矩阵配置生成点位网格（平行四边形插值）
+        /// </summary>
+        /// <param name="matrix">矩阵配置</param>
+        internal void Create(RobotMatrix matrix)
+        {
+            matrix.Points.Clear();
+
+
+
+            int xCount = matrix.XCount > 0 ? matrix.XCount : 1;
+            int yCount = matrix.YCount > 0 ? matrix.YCount : 1;
+            int total = xCount * yCount;
+
+            // 从机器人的点位列表中查找三个角点
+            var startPoint = Points.FirstOrDefault(p => p.Name == matrix.StartName);
+            var xEndPoint = Points.FirstOrDefault(p => p.Name == matrix.XEndName);
+            var yEndPoint = Points.FirstOrDefault(p => p.Name == matrix.YEndName);
+
+            if (startPoint == null || xEndPoint == null || yEndPoint == null)
+            {
+                Model.SendInfoDialog("基准点位名称错误，创建失败！");
+                return;
+            }
+
+            // 计算 X/Y/Z 方向基向量（平行四边形插值）
+            double xBasisX = xCount > 1 ? (xEndPoint.X - startPoint.X) / (xCount - 1) : 0;
+            double xBasisY = xCount > 1 ? (xEndPoint.Y - startPoint.Y) / (xCount - 1) : 0;
+            double xBasisZ = xCount > 1 ? (xEndPoint.Z - startPoint.Z) / (xCount - 1) : 0;
+            double yBasisX = yCount > 1 ? (yEndPoint.X - startPoint.X) / (yCount - 1) : 0;
+            double yBasisY = yCount > 1 ? (yEndPoint.Y - startPoint.Y) / (yCount - 1) : 0;
+            double yBasisZ = yCount > 1 ? (yEndPoint.Z - startPoint.Z) / (yCount - 1) : 0;
+
+            double originX = startPoint.X;
+            double originY = startPoint.Y;
+            double originZ = startPoint.Z;
+
+            // 按 MatrixType 确定遍历顺序
+            for (int i = 0; i < total; i++)
+            {
+                int x, y;
+                if (matrix.MatrixType == 0)
+                {
+                    x = i % xCount;
+                    y = i / xCount;
+                }
+                else
+                {
+                    y = i % yCount;
+                    x = i / yCount;
+                }
+
+                // 平行四边形插值坐标（X/Y/Z 线性插值，U/V/W 取自起始点）
+                double px = originX + x * xBasisX + y * yBasisX;
+                double py = originY + x * xBasisY + y * yBasisY;
+                double pz = originZ + x * xBasisZ + y * yBasisZ;
+
+                var point = new RobotPoint
+                {
+                    RobotID = matrix.RobotID,
+                    XIndex = x,
+                    YIndex = y,
+                    X = px,
+                    Y = py,
+                    Z = pz,
+                    U = startPoint.U,
+                    V = startPoint.V,
+                    W = startPoint.W,
+                    Rate = startPoint.Rate,
+                    Hand = startPoint.Hand,
+                    ToolNum = startPoint.ToolNum,
+                };
+
+                matrix.Points.Add(point);
+            }
+        }
+
+        public virtual void RunMatrixPoint(RobotMatrix matrix, int xTarget, int yTarget)
+        {
+
+        }
+
+        #endregion
 
 
     }

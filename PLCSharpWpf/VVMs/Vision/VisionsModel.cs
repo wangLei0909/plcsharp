@@ -60,6 +60,8 @@ namespace PLCSharp.VVMs.Vision
         /// </summary>
         public GlobalModel GlobalModel { get; set; }
 
+
+
         /// <summary>
         /// 初始化
         /// </summary>
@@ -69,6 +71,35 @@ namespace PLCSharp.VVMs.Vision
             GlobalModel = globalModel;
             Connects = GlobalModel.Connects;
         }
+
+        public void LoadRecipe(Guid CurrentRecipeID)
+        {
+
+            //加载当前配方的图像数据列表
+            ImageDatas.Clear();
+            var currRecipeImageDatas = _DatasContext.ImageDatas.Where(c => c.RecipeID == CurrentRecipeID);
+            foreach (var item in currRecipeImageDatas)
+            {
+                var itemcopy = item.DeepCopy();
+                itemcopy.Prompt = "";
+                ImageDatas.Add(itemcopy);
+            }
+
+
+            VisionFunctions.Clear();
+            var currRecipeVisionFunctions = _DatasContext.VisionFunctions.Where(c => c.RecipeID == CurrentRecipeID);
+            foreach (var item in currRecipeVisionFunctions)
+            {
+                var itemcopy = item.DeepCopy();
+                itemcopy.Prompt = "";
+                itemcopy.VisionsModel = this;
+                itemcopy.ImageDatas = ImageDatas;
+                itemcopy.GlobalModel = GlobalModel;
+                VisionFunctions.Add(itemcopy);
+            }
+
+        }
+
 
         /// <summary>
         /// SearchCameras
@@ -417,7 +448,7 @@ namespace PLCSharp.VVMs.Vision
                     {
                         if (string.IsNullOrEmpty(item.Name))
                         {
-                            SendInfoDialog($"保存失败，名称{item.Name}不合适！"    );
+                            SendInfoDialog($"保存失败，名称{item.Name}不合适！");
                             return;
                         }
 

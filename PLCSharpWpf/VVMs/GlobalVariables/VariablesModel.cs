@@ -45,9 +45,47 @@ namespace PLCSharp.VVMs.GlobalVariables
                 item._DatasContext = _DatasContext;
             }
         }
+        internal void LoadRecipe(Guid CurrentRecipeID)
+        {
+            Variables.Clear();
+            var variables = _DatasContext.Variables.Where(c => c.RecipeID == CurrentRecipeID);
+            foreach (var item in variables)
+            {
+                if (item.RetainPersistent)
+                {
 
+                    item.Value = Variable.DynamicValue(item.ValueStr, item.Type);
 
+                }
+                else
+                {
+                    item.Value = Variable.DynamicValue(item.DefaultValueStr, item.Type);
+                    item.DefaultValue = item.Value;
 
+                }
+                Variables.Add(item);
+            }
+
+            //加载当前配方的系统变量列表
+            SystemVariables.Clear();
+            var systemVariables = _DatasContext.SystemVariables.Where(c => c.RecipeID == CurrentRecipeID);
+            foreach (var item in systemVariables)
+            {
+                if (item.RetainPersistent)
+                {
+
+                    item.Value = Variable.DynamicValue(item.ValueStr, item.Type);
+
+                }
+                else
+                {
+                    item.Value = Variable.DynamicValue(item.DefaultValueStr, item.Type);
+                    item.DefaultValue = item.Value;
+
+                }
+                SystemVariables.Add(item);
+            }
+        }
         /// <summary>
         /// 局部变量集合
         /// </summary>

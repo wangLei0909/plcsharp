@@ -220,6 +220,17 @@ namespace PLCSharp.VVMs.Robots
         public string Command { get; set; }
 
         /// <summary>
+        /// 在矩阵中的X索引
+        /// </summary>
+        [NotMapped]
+        public int XIndex { get; internal set; }
+        /// <summary>
+        /// 在矩阵中的Y索引
+        /// </summary>
+        [NotMapped]
+        public int YIndex { get; internal set; }
+
+        /// <summary>
         /// 点位Params
         /// </summary>
         public class PointParams : BindableBase

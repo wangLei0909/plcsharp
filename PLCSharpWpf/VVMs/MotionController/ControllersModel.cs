@@ -101,7 +101,7 @@ namespace PLCSharp.VVMs.MotionController
 
 
             }
-            e.Cancel = true; // 标记任务已被取消
+
 
         }
         #endregion
@@ -186,6 +186,15 @@ namespace PLCSharp.VVMs.MotionController
 
         }
 
+        private double _Rate = 100;
+        /// <summary>
+        /// 
+        /// </summary>
+        public double Rate
+        {
+            get { return _Rate; }
+            set { SetProperty(ref _Rate, value); }
+        }
 
         /// <summary>
         /// DI
@@ -1648,6 +1657,61 @@ namespace PLCSharp.VVMs.MotionController
                     SelectedInterpolationGroup.AxisY.AbsoluteMotion();
                     break;
             }
+
+        }
+
+        internal void LoadRecipe(Guid CurrentRecipeID)
+        {
+
+
+            Stop();
+            AxisPoints.Clear();
+            var currRecipeAxisPoints = _DatasContext.AxisPoints.Where(c => c.RecipeID == CurrentRecipeID);
+            foreach (var item in currRecipeAxisPoints)
+            {
+                var axisPoint = item.DeepCopy();
+                AxisPoints.Add(axisPoint);
+                var axisX = Axes.Where(a => a.Name == axisPoint.AxisXName).FirstOrDefault();
+                if (axisX != null)
+                    axisPoint.AxisX = axisX;
+                var axisY = Axes.Where(a => a.Name == axisPoint.AxisYName).FirstOrDefault();
+                if (axisY != null)
+                    axisPoint.AxisY = axisY;
+                var axisZ = Axes.Where(a => a.Name == axisPoint.AxisZName).FirstOrDefault();
+                if (axisZ != null)
+                    axisPoint.AxisZ = axisZ;
+                var axisU = Axes.Where(a => a.Name == axisPoint.AxisUName).FirstOrDefault();
+                if (axisU != null)
+                    axisPoint.AxisU = axisU;
+            }
+            //加载当前配方的矩阵列表
+            Matrices.Clear();
+            var currRecipeMatrices = _DatasContext.Matrices.Where(c => c.RecipeID == CurrentRecipeID);
+            foreach (var item in currRecipeMatrices)
+            {
+                var matrix = item.DeepCopy();
+                Matrices.Add(matrix);
+
+                Create(matrix);
+
+
+            }
+
+            //加载当前配方的插补列表
+            InterpolationGroups.Clear();
+            var currRecipeInterpolationGroups = _DatasContext.InterpolationGroups.Where(c => c.RecipeID == CurrentRecipeID);
+            foreach (var item in currRecipeInterpolationGroups)
+            {
+                var itemcopy = item.DeepCopy();
+                InterpolationGroups.Add(itemcopy);
+                var axisX = Axes.Where(a => a.Name == itemcopy.AxisXName).FirstOrDefault();
+                if (axisX != null)
+                    itemcopy.AxisX = axisX;
+                var axisY = Axes.Where(a => a.Name == itemcopy.AxisYName).FirstOrDefault();
+                if (axisY != null)
+                    itemcopy.AxisY = axisY;
+            }
+            Start();
 
         }
 

@@ -119,7 +119,7 @@ public class EpsonRobot : Robot
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Epson状态轮询异常: {ex.Message}");
+                Model.SendErr($"Epson状态轮询异常: {ex.Message}");
             }
         }
     }
@@ -185,7 +185,7 @@ public class EpsonRobot : Robot
 
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Epson状态解析异常: {ex.Message}");
+                        Model.SendErr($"Epson状态解析异常: {ex.Message}");
                         Thread.Sleep(1000);
                         break;
                     }
@@ -193,7 +193,7 @@ public class EpsonRobot : Robot
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Epson状态轮询外异常: {ex.Message}");
+                Model.SendErr($"Epson状态轮询外异常: {ex.Message}");
                 Thread.Sleep(1000);
             }
     }
@@ -319,7 +319,7 @@ public class EpsonRobot : Robot
     }
 
     /// <summary>
-    ///     点动
+    /// 点动
     /// </summary>
     /// <param name="pointBase"></param>
     /// <param name="cmd"></param>
@@ -329,7 +329,7 @@ public class EpsonRobot : Robot
     public override void Jog(string pointName, string cmd, double dist, double rate = 0)
     {
         PointDone = false;
- 
+
         var point = Points.FirstOrDefault(p => p.Name == pointName) ?? throw new Exception($"机器人点位{pointName}不存在");
 
         PointCommand = CurrPoint.DeepCopy();
@@ -410,6 +410,17 @@ public class EpsonRobot : Robot
             var pointWord = ToolFrame4Axis.ToolToWorld(pointTool, tool.Value);
             SendCommand(pointWord);
         }
+
+    }
+
+
+    public override void RunMatrixPoint(RobotMatrix matrix, int xTarget, int yTarget)
+    {
+ 
+        var point = matrix.GetPoint(xTarget, yTarget) ?? throw new Exception($"机器人矩阵点位{xTarget} , {yTarget}不存在");
+        point.Command = "RunPoint";
+        PointCommand = point.DeepCopy();
+        SendCommand(PointCommand);
 
     }
 

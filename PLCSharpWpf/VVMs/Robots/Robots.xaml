@@ -30,6 +30,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="160" />
+            <RowDefinition Height="2*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="200" />
         </Grid.RowDefinitions>
@@ -167,8 +168,11 @@
 
 
         <!--  状态显示  -->
-        <GroupBox Grid.Row="1" Header="点位配置">
-            <Grid Grid.ColumnSpan="4" Tag="表">
+        <GroupBox Grid.Row="1" Header="点位表">
+
+
+
+            <Grid Margin="3">
                 <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
                           Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
                           HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -200,8 +204,46 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
+
+
         </GroupBox>
-        <GroupBox Grid.Row="2" Header="点位配置">
+        <GroupBox Grid.Row="2" Header="矩阵表">
+            <Grid Margin="3">
+
+                <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualWidth}"
+                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=1}, Path=ActualHeight}"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                          AutoGenerateColumns="False" CanUserAddRows="False"
+                          CanUserDeleteRows="False" CanUserSortColumns="False"
+                          ItemsSource="{Binding SelectedRobot.RobotMatrices}"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          SelectedItem="{Binding SelectedRobotMatrix}"
+                          Unloaded="DataGrid_Unloaded">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu IsEnabled="True" StaysOpen="False">
+                            <MenuItem Command="{Binding RobotMatrixManage}" CommandParameter="New" Header="新增" />
+                            <MenuItem Command="{Binding RobotMatrixManage}" CommandParameter="Create" Header="计算矩阵" />
+                            <MenuItem Command="{Binding RobotMatrixManage}" CommandParameter="Save" Header="保存" />
+                            <MenuItem Command="{Binding RobotMatrixManage}" CommandParameter="Remove" Header="删除" />
+                            <MenuItem Command="{Binding RobotMatrixManage}" CommandParameter="RunPoint" Header="运行到" />
+
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn MinWidth="80" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Header="名称" />
+                        <DataGridTextColumn MinWidth="80" Binding="{Binding StartName, UpdateSourceTrigger=LostFocus}" Header="首点" />
+                        <DataGridTextColumn MinWidth="80" Binding="{Binding XEndName, UpdateSourceTrigger=LostFocus}" Header="X尾点" />
+                        <DataGridTextColumn MinWidth="80" Binding="{Binding YEndName, UpdateSourceTrigger=LostFocus}" Header="Y尾点" />
+                        <DataGridTextColumn MinWidth="50" Binding="{Binding XCount, UpdateSourceTrigger=LostFocus}" Header="X点数" />
+                        <DataGridTextColumn MinWidth="50" Binding="{Binding YCount, UpdateSourceTrigger=LostFocus}" Header="Y点数" />
+                        <DataGridTextColumn MinWidth="50" Binding="{Binding XTarget, UpdateSourceTrigger=LostFocus}" Header="目标X" />
+                        <DataGridTextColumn MinWidth="50" Binding="{Binding YTarget, UpdateSourceTrigger=LostFocus}" Header="目标Y" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+
+        </GroupBox>
+        <GroupBox Grid.Row="3" Header="点位配置">
             <ContentControl Content="{Binding RobotPointsConfig}" />
         </GroupBox>
 
