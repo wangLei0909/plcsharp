@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 
@@ -246,14 +245,18 @@ namespace PLCSharp.VVMs.Workflows
         {
             if (Assembly == null || !IsCompiled || Exception)
             {
+                IsRuning = false;
                 return;
             }
+
             try
             {
+                IsRuning = true;
                 action?.Invoke(globalModel, Flow);
             }
             catch (Exception ex)
             {
+                IsRuning = false;
                 DebugLog += $"运行时异常: {ex}\n";
                 globalModel.SendErr($"运行时异常: {ex}\n");
                 Exception = true;
@@ -302,7 +305,7 @@ namespace PLCSharp.VVMs.Workflows
                 Thread.Sleep((int)(CycleDelayTime * 1000));
                 if (AutomaticExecution)
                 {
-                    IsRuning = true;
+        
                     Run(GlobalModel);
                 }
                 else
@@ -311,8 +314,18 @@ namespace PLCSharp.VVMs.Workflows
                 }
                 sw.Stop();
                 CycleTime = sw.Elapsed.TotalSeconds;
+                if (Exception)
+                {
+                    GlobalModel.ModeState.Sc.Stop = true;
+                    if (GlobalModel.ModeState.State.Stopped)
+                    {
+                        Exception = false;
+                       
+                    }
+
+                }
             }
-     
+
         }
         GlobalModel GlobalModel;
         private FlowModel _Flow = new();
