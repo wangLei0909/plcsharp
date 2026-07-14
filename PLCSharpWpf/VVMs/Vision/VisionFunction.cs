@@ -9,6 +9,7 @@ using PLCSharp.VVMs.Vision.VisionFlowHandler.Access;
 using PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm;
 using PLCSharp.VVMs.Vision.VisionFlowHandler.Processing;
 using Prism.Mvvm;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -215,6 +216,14 @@ namespace PLCSharp.VVMs.Vision
                     }
                     else
                     {
+
+                        var customControl = GlobalModel.GetCustomControl(ControlName);
+                        if (customControl != null && Src!=null)
+                        {
+                            customControl.ShowMat(Src);
+                       
+                        }
+
                         flow.Done = true;
 
                     }
