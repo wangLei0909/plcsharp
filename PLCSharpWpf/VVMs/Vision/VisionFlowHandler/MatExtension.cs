@@ -1,6 +1,8 @@
 ﻿using DryIoc.ImTools;
 
 using OpenCvSharp;
+using OpenCvSharp.Dnn;
+using static OpenCvSharp.Cv2;
 namespace PLCSharp.VVMs.Vision.VisionFlowHandler
 {
 
@@ -688,4 +690,5 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler
 
     }
 
+ 
 }

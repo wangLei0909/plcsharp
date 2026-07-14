@@ -5,6 +5,7 @@
     public record struct Circle(Pos Center, double Radius);
     public record struct Line(Pos From,Pos To);
     public record struct Rect(Pos Center, double Width,double Height);
+    public record struct Barcode(Pos Box, string Info);
 
 
 }

@@ -55,9 +55,9 @@ namespace PLCSharp.VVMs.Vision
                         case "Pos":
                             {
                                 var r = new Pos();
-                                if (value is Pos line)
+                                if (value is Pos pos)
                                 {
-                                    r = line;
+                                    r = pos;
                                 }
                                 else
                                 {
@@ -97,9 +97,9 @@ namespace PLCSharp.VVMs.Vision
                         case "Rect":
                             {
                                 var r = new Rect();
-                                if (value is Rect line)
+                                if (value is Rect rect)
                                 {
-                                    r = line;
+                                    r = rect;
                                 }
                                 else
                                 {
@@ -112,6 +112,22 @@ namespace PLCSharp.VVMs.Vision
                         case "Double":
                             SetProperty(ref _RawValue, value);
                             break;
+                        case "Barcode":
+                            {
+                                var r = new Barcode();
+                                if (value is Barcode barcode)
+                                {
+                                    r = barcode;
+                                }
+                                else
+                                {
+                                    r = JsonConvert.DeserializeObject<Barcode>(value.ToString());
+                                }
+
+                                SetProperty(ref _RawValue, r);
+                            }
+                            break;
+
 
                     }
 
@@ -180,6 +196,12 @@ namespace PLCSharp.VVMs.Vision
                         
                     case "Double":
                         return ((double)val).ToString("F4");
+
+                    case "Barcode":
+                        if (val is Barcode b)
+                            return $"位置：(X:{b.Box.X:F4}, Y:{b.Box.Y:F4}) 内容:（{b.Info})";
+                        else
+                            return val?.ToString() ?? "";
 
                     default:
                         return val?.ToString() ?? "";

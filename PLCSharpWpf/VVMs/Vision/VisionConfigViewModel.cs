@@ -346,6 +346,17 @@ namespace PLCSharp.VVMs.Vision
                         newFlow.DoubleParams["ImageY"] = 0;
                         newFlow.StringParams["TransformMat"] = "";
                         break;
+                    case VisionFlowType.ROI解码:
+                        newFlow.IntParams["DecodeType"] = 0;
+                        newFlow.BoolParams["EnableMirror"] = false;
+                        newFlow.BoolParams["EnableUpscale"] = true;
+                        newFlow.BoolParams["UsePureBarcode"] = false;
+                        newFlow.StringParams["ResultVarName"] = "条码解码_Result";
+                        break;
+                    case VisionFlowType.微信解码:
+                        newFlow.BoolParams["EnableMirror"] = false;
+                        newFlow.StringParams["ResultVarName"] = "微信解码_Result";
+                        break;
                     default:
                         break;
                 }
@@ -550,6 +561,12 @@ namespace PLCSharp.VVMs.Vision
                     break;
                 case VisionFlowType.坐标转换:
                     ContentRegion = new CoordTransform();
+                    break;
+                case VisionFlowType.ROI解码:
+                    ContentRegion = new BarcodeDecode();
+                    break;
+                case VisionFlowType.微信解码:
+                    ContentRegion = new WeChatDecode();
                     break;
 
             }
@@ -1566,6 +1583,58 @@ namespace PLCSharp.VVMs.Vision
                 Name = templateName,
                 Mat = templateMat
             });
+        }
+
+        private AsyncDelegateCommand _DrawBarcodeROI;
+        /// <summary>
+        /// 绘制条码解码 ROI 区域
+        /// </summary>
+        public AsyncDelegateCommand DrawBarcodeROI =>
+            _DrawBarcodeROI ??= new AsyncDelegateCommand(ExecuteDrawBarcodeROIAsync);
+
+        private async Task ExecuteDrawBarcodeROIAsync()
+        {
+            var window = System.Windows.Application.Current.Windows.OfType<System.Windows.Window>()
+                .FirstOrDefault(w => w.IsActive);
+            var imageEdit = WpfTool.FindVisualChild<ImageEdit>(window);
+            if (imageEdit?.ImageSource == null)
+            {
+                SendInfoDialog("请先获取图片！");
+                return;
+            }
+
+            try
+            {
+                var roi = await imageEdit.DrawROIAsync("条码解码");
+                if (roi == null) return;
+
+                if (SelectVisionFlow == null) return;
+
+                SelectVisionFlow.DoubleParams["ROILeft"] = roi.Left;
+                SelectVisionFlow.DoubleParams["ROITop"] = roi.Top;
+                SelectVisionFlow.DoubleParams["ROIWidth"] = roi.Width;
+                SelectVisionFlow.DoubleParams["ROIHeight"] = roi.Height;
+
+                // 画矩形边框
+                var rect = new System.Windows.Shapes.Rectangle
+                {
+                    Width = roi.Width,
+                    Height = roi.Height,
+                    Stroke = Brushes.Lime,
+                    StrokeThickness = 2,
+                    StrokeDashArray = new System.Windows.Media.DoubleCollection { 4, 2 },
+                    Tag = "条码解码",
+                };
+                Canvas.SetLeft(rect, roi.Left);
+                Canvas.SetTop(rect, roi.Top);
+                imageEdit.Draw(rect);
+
+                SendInfoDialog("条码解码 ROI 已保存");
+            }
+            catch (Exception ex)
+            {
+                SendInfoDialog($"ROI 绘制失败：{ex.Message}");
+            }
         }
 
         /// <summary>

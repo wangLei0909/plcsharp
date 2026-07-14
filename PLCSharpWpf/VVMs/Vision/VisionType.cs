@@ -65,6 +65,11 @@
         [FlowCategory("算法")]
         卡尺找旋转矩形 = 35,
         清除绘制 = 36,
+
+        [FlowCategory("算法")]
+        ROI解码 = 37,
+        [FlowCategory("算法")]
+        微信解码 = 39,
     }
 
 

@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm.BarcodeDecode"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Vision.VisionFlowHandler"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vision="clr-namespace:PLCSharp.VVMs.Vision"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vision:VisionConfigViewModel}"
+             d:DesignHeight="450" d:DesignWidth="300">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <!--  ROI 区域  -->
+            <GroupBox Header="ROI 区域">
+                <StackPanel>
+                    <Button Height="25" Margin="5" Command="{Binding DrawBarcodeROI}" Content="框选 ROI 区域" />
+                    <Grid Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Margin="3,0" Text="Left" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[ROILeft], TargetNullValue=—, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="0" Grid.Column="2"
+                                   Margin="3,0"
+                                   Text="Top"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding SelectVisionFlow.DoubleParams[ROITop], TargetNullValue=—, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="1" Margin="3,0" Text="Width" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[ROIWidth], TargetNullValue=—, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="1" Grid.Column="2"
+                                   Margin="3,0"
+                                   Text="Height"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectVisionFlow.DoubleParams[ROIHeight], TargetNullValue=—, UpdateSourceTrigger=LostFocus}" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!--  解码参数  -->
+            <GroupBox Header="解码参数">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="解码类型" VerticalAlignment="Center" ToolTip="选择要解码的条码类型" />
+                    <ComboBox Grid.Column="1" SelectedIndex="{Binding SelectVisionFlow.IntParams[DecodeType], Mode=TwoWay}">
+                        <ComboBoxItem Content="DataMatrix" />
+                        <ComboBoxItem Content="QR Code" />
+                        <ComboBoxItem Content="DataMatrix + QR" />
+                        <ComboBoxItem Content="全部 2D 条码" />
+                    </ComboBox>
+
+                    <TextBlock Grid.Row="1" Text="镜像 ROI" VerticalAlignment="Center" ToolTip="对 ROI 区域的图像做水平镜像翻转，应对镜像的码" />
+                    <CheckBox Grid.Row="1" Grid.Column="1" Margin="5,0" IsChecked="{Binding SelectVisionFlow.BoolParams[EnableMirror], Mode=TwoWay}" />
+
+                    <TextBlock Grid.Row="2" Text="自动放大" VerticalAlignment="Center" ToolTip="小码自动放大 2-4 倍，帮助 ZXing 检测器识别 L 型边框" />
+                    <CheckBox Grid.Row="2" Grid.Column="1"
+                              Margin="5,0"
+                              IsChecked="{Binding SelectVisionFlow.BoolParams[EnableUpscale], Mode=TwoWay}"
+                              IsThreeState="False" />
+
+                    <TextBlock Grid.Row="3" Text="PureBarcode" VerticalAlignment="Center" ToolTip="跳过检测器直接采样（需 ROI 紧密框住码，适用于严重破损码）" />
+                    <CheckBox Grid.Row="3" Grid.Column="1"
+                              Margin="5,0"
+                              IsChecked="{Binding SelectVisionFlow.BoolParams[UsePureBarcode], Mode=TwoWay}"
+                              IsThreeState="False" />
+
+                    <TextBlock Grid.Row="4" Text="结果变量名" VerticalAlignment="Center" ToolTip="解码结果写入的局部变量名称" />
+                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding SelectVisionFlow.StringParams[ResultVarName], Mode=TwoWay, TargetNullValue=条码解码_Result, UpdateSourceTrigger=LostFocus}" />
+                </Grid>
+            </GroupBox>
+
+            <!--  解码结果  -->
+            <GroupBox Header="解码结果">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="解码状态" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding SelectedVisionFunction.Params.ResultDoubles[DecodeSuccess], Mode=OneWay}" IsReadOnly="True" Background="#FFF0F0F0" />
+
+                    <TextBlock Grid.Row="1" Text="使用管线" VerticalAlignment="Center" ToolTip="-1=失败，0=原图，1=CLAHE+Otsu，2=自适应阈值，3=形态学闭运算，4=锐化+Otsu" />
+                    <TextBox Grid.Row="1" Grid.Column="1"
+                             Text="{Binding SelectVisionFlow.IntParams[UsedPipeline], Mode=OneWay, TargetNullValue=—}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+
+                    <TextBlock Grid.Row="2" Text="解码内容" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="2" Grid.Column="1"
+                             MinHeight="60"
+                             Text="{Binding SelectVisionFlow.StringParams[DecodeResult], Mode=OneWay}"
+                             TextWrapping="Wrap"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
