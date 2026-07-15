@@ -297,6 +297,13 @@ namespace PLCSharp.Core.UserControls
                     double width = _tempRoi.Width;
                     double height = _tempRoi.Height;
 
+                    // 点击不拖动（宽度或高度 < 1）视为误操作，不创建 pending，保持 drawing=true 让用户重试
+                    if (width < 1 || height < 1)
+                    {
+                        isMouseLeftButtonDown = false;
+                        return;
+                    }
+
                     if (_roiMode == ROIType.RotateRect)
                     {
                         _pendingRotateRoi = new RotateRectROI

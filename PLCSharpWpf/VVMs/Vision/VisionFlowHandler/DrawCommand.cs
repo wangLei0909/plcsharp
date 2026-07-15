@@ -33,6 +33,9 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler
         public static DrawCommand FilledCircle(double cx, double cy, double r, Color color)
             => new() { Shape = Type.Circle, X1 = cx, Y1 = cy, Radius = r, Color = color, Filled = true, Thickness = 0 };
 
+        public static DrawCommand TextBlock(double x, double y, string text, Color color, double fontSize = 12)
+            => new() { Shape = Type.Text, X1 = x, Y1 = y, Text = text, Color = color, FontSize = fontSize };
+
         public static DrawCommand Polygon(System.Windows.Point[] pts, Color color, double thickness = 1)
             => new() { Shape = Type.Polygon, Points = pts.Select(p => new Point(p.X, p.Y)).ToArray(), Color = color, Thickness = thickness };
     }

@@ -293,6 +293,7 @@ namespace PLCSharp.VVMs.Vision
             [VisionFlowType.坐标转换] = new CoordinateTransformHandler(),
             [VisionFlowType.ROI解码] = new BarcodeDecodeHandler(),
             [VisionFlowType.微信解码] = new WeChatDecodeHandler(),
+            [VisionFlowType.颜色面积] = new ColorAreaHandler(),
 
         };
         [NotMapped]

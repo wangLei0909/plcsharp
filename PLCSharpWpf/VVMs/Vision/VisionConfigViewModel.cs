@@ -357,6 +357,17 @@ namespace PLCSharp.VVMs.Vision
                         newFlow.BoolParams["EnableMirror"] = false;
                         newFlow.StringParams["ResultVarName"] = "微信解码_Result";
                         break;
+                    case VisionFlowType.颜色面积:
+                        newFlow.IntParams["HMin"] = 0;
+                        newFlow.IntParams["HMax"] = 180;
+                        newFlow.IntParams["SMin"] = 0;
+                        newFlow.IntParams["SMax"] = 255;
+                        newFlow.IntParams["VMin"] = 0;
+                        newFlow.IntParams["VMax"] = 255;
+                        newFlow.DoubleParams["AreaMinPercent"] = 0;
+                        newFlow.DoubleParams["AreaMaxPercent"] = 100;
+                        newFlow.StringParams["ResultVarName"] = "颜色面积_Result";
+                        break;
                     default:
                         break;
                 }
@@ -567,6 +578,9 @@ namespace PLCSharp.VVMs.Vision
                     break;
                 case VisionFlowType.微信解码:
                     ContentRegion = new WeChatDecode();
+                    break;
+                case VisionFlowType.颜色面积:
+                    ContentRegion = new ColorArea();
                     break;
 
             }
@@ -1630,6 +1644,58 @@ namespace PLCSharp.VVMs.Vision
                 imageEdit.Draw(rect);
 
                 SendInfoDialog("条码解码 ROI 已保存");
+            }
+            catch (Exception ex)
+            {
+                SendInfoDialog($"ROI 绘制失败：{ex.Message}");
+            }
+        }
+
+        private AsyncDelegateCommand _DrawColorAreaROI;
+        /// <summary>
+        /// 绘制颜色面积 ROI 区域
+        /// </summary>
+        public AsyncDelegateCommand DrawColorAreaROI =>
+            _DrawColorAreaROI ??= new AsyncDelegateCommand(ExecuteDrawColorAreaROIAsync);
+
+        private async Task ExecuteDrawColorAreaROIAsync()
+        {
+            var window = System.Windows.Application.Current.Windows.OfType<System.Windows.Window>()
+                .FirstOrDefault(w => w.IsActive);
+            var imageEdit = WpfTool.FindVisualChild<ImageEdit>(window);
+            if (imageEdit?.ImageSource == null)
+            {
+                SendInfoDialog("请先获取图片！");
+                return;
+            }
+
+            try
+            {
+                var roi = await imageEdit.DrawROIAsync("颜色面积");
+                if (roi == null) return;
+
+                if (SelectVisionFlow == null) return;
+
+                SelectVisionFlow.DoubleParams["ROILeft"] = roi.Left;
+                SelectVisionFlow.DoubleParams["ROITop"] = roi.Top;
+                SelectVisionFlow.DoubleParams["ROIWidth"] = roi.Width;
+                SelectVisionFlow.DoubleParams["ROIHeight"] = roi.Height;
+
+                // 画矩形边框
+                var rect = new System.Windows.Shapes.Rectangle
+                {
+                    Width = roi.Width,
+                    Height = roi.Height,
+                    Stroke = Brushes.Lime,
+                    StrokeThickness = 2,
+                    StrokeDashArray = new System.Windows.Media.DoubleCollection { 4, 2 },
+                    Tag = "颜色面积",
+                };
+                Canvas.SetLeft(rect, roi.Left);
+                Canvas.SetTop(rect, roi.Top);
+                imageEdit.Draw(rect);
+
+                SendInfoDialog("颜色面积 ROI 已保存");
             }
             catch (Exception ex)
             {

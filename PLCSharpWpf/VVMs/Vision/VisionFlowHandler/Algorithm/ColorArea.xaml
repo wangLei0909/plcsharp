@@ -1,0 +1,136 @@
+<UserControl x:Class="PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm.ColorArea"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Vision.VisionFlowHandler"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vision="clr-namespace:PLCSharp.VVMs.Vision"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vision:VisionConfigViewModel}"
+             d:DesignHeight="500" d:DesignWidth="300">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <!--  ROI 区域  -->
+            <GroupBox Header="ROI 区域">
+                <StackPanel>
+                    <Button Height="25" Margin="5" Command="{Binding DrawColorAreaROI}" Content="框选 ROI 区域" />
+                    <Grid Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Margin="3,0" Text="Left" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[ROILeft], TargetNullValue=—, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Column="2" Margin="3,0" Text="Top" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="3" Text="{Binding SelectVisionFlow.DoubleParams[ROITop], TargetNullValue=—, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="1" Margin="3,0" Text="Width" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[ROIWidth], TargetNullValue=—, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="1" Grid.Column="2" Margin="3,0" Text="Height" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectVisionFlow.DoubleParams[ROIHeight], TargetNullValue=—, UpdateSourceTrigger=LostFocus}" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!--  HSV 范围  -->
+            <GroupBox Header="HSV 范围">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  H  -->
+                    <TextBlock Text="H 最小值" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.IntParams[HMin], TargetNullValue=0, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Grid.Column="2" Text="H 最大值" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="3" Text="{Binding SelectVisionFlow.IntParams[HMax], TargetNullValue=180, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock Grid.Row="1" Text="S 最小值" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.IntParams[SMin], TargetNullValue=0, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="S 最大值" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectVisionFlow.IntParams[SMax], TargetNullValue=255, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock Grid.Row="2" Text="V 最小值" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectVisionFlow.IntParams[VMin], TargetNullValue=0, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Grid.Row="2" Grid.Column="2" Text="V 最大值" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="2" Grid.Column="3" Text="{Binding SelectVisionFlow.IntParams[VMax], TargetNullValue=255, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+            </GroupBox>
+
+            <!--  面积阈值  -->
+            <GroupBox Header="面积阈值（%）">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="下限 %" VerticalAlignment="Center" ToolTip="颜色面积占比低于此值判定为 NG" />
+                    <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[AreaMinPercent], TargetNullValue=0, UpdateSourceTrigger=LostFocus}" />
+
+                    <TextBlock Grid.Row="1" Text="上限 %" VerticalAlignment="Center" ToolTip="颜色面积占比高于此值判定为 NG" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[AreaMaxPercent], TargetNullValue=100, UpdateSourceTrigger=LostFocus}" />
+                </Grid>
+            </GroupBox>
+
+            <!--  结果变量  -->
+            <GroupBox Header="结果配置">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="结果变量名" VerticalAlignment="Center" ToolTip="计算结果写入的局部变量名称" />
+                    <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.StringParams[ResultVarName], Mode=TwoWay, TargetNullValue=颜色面积_Result, UpdateSourceTrigger=LostFocus}" />
+                </Grid>
+            </GroupBox>
+
+            <!--  执行结果  -->
+            <GroupBox Header="执行结果">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="面积占比" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Text="{Binding SelectedVisionFunction.Params.ResultDoubles[ColorAreaPercent], Mode=OneWay, StringFormat={}{0:F1}%}" IsReadOnly="True" Background="#FFF0F0F0" />
+
+                    <TextBlock Grid.Row="1" Text="颜色像素" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedVisionFunction.Params.ResultDoubles[ColorPixelCount], Mode=OneWay}" IsReadOnly="True" Background="#FFF0F0F0" />
+
+                    <TextBlock Grid.Row="2" Text="判定结果" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="2" Grid.Column="1"
+                             Text="{Binding SelectVisionFlow.StringParams[ColorAreaResult], Mode=OneWay, TargetNullValue=—}"
+                             IsReadOnly="True" Background="#FFF0F0F0"
+                             FontWeight="Bold" />
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
