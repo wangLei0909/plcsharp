@@ -69,6 +69,8 @@
         [FlowCategory("算法")]
         ROI解码 = 37,
         [FlowCategory("算法")]
+        灰度面积 = 38,
+        [FlowCategory("算法")]
         微信解码 = 39,
     }
 

@@ -1,15 +1,14 @@
 ﻿using OpenCvSharp;
-using System.Linq;
 using System.Windows.Media;
 
 namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
 {
     /// <summary>
-    /// 颜色面积Handler — 计算ROI内指定HSV范围的颜色面积占比，超出上下限输出NG
+    /// 灰度面积Handler — 计算ROI内指定灰度范围的面积占比，超出上下限输出NG
     /// </summary>
-    public class ColorAreaHandler : IVisionFlowHandler
+    public class GrayAreaHandler : IVisionFlowHandler
     {
-        public VisionFlowType Type => VisionFlowType.颜色面积;
+        public VisionFlowType Type => VisionFlowType.灰度面积;
 
         public bool Execute(VisionFunction func, VisionFlow item)
         {
@@ -22,13 +21,9 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
                 !item.DoubleParams.TryGetValue("ROIHeight", out double roiHeight))
                 throw new Exception("ROI未配置，请先框选ROI区域！");
 
-            // 读取HSV范围
-            int hMin = item.IntParams.TryGetValue("HMin", out int hm) ? Math.Clamp(hm, 0, 180) : 0;
-            int hMax = item.IntParams.TryGetValue("HMax", out int hmx) ? Math.Clamp(hmx, 0, 180) : 180;
-            int sMin = item.IntParams.TryGetValue("SMin", out int sm) ? Math.Clamp(sm, 0, 255) : 0;
-            int sMax = item.IntParams.TryGetValue("SMax", out int smx) ? Math.Clamp(smx, 0, 255) : 255;
-            int vMin = item.IntParams.TryGetValue("VMin", out int vm) ? Math.Clamp(vm, 0, 255) : 0;
-            int vMax = item.IntParams.TryGetValue("VMax", out int vmx) ? Math.Clamp(vmx, 0, 255) : 255;
+            // 读取灰度范围
+            int grayMin = item.IntParams.TryGetValue("GrayMin", out int gm) ? Math.Clamp(gm, 0, 255) : 0;
+            int grayMax = item.IntParams.TryGetValue("GrayMax", out int gmx) ? Math.Clamp(gmx, 0, 255) : 255;
 
             // 读取面积百分比上下限
             double areaMinPercent = item.DoubleParams.TryGetValue("AreaMinPercent", out double minP) ? minP : 0;
@@ -45,52 +40,50 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
 
             using Mat roi = new Mat(src, new OpenCvSharp.Rect(x, y, w, h));
 
-            // 转换到HSV
-            using Mat hsv = new Mat();
-            Cv2.CvtColor(roi, hsv, ColorConversionCodes.BGR2HSV);
+            // 转灰度
+            using Mat gray = new Mat();
+            if (roi.Channels() == 3)
+                Cv2.CvtColor(roi, gray, ColorConversionCodes.BGR2GRAY);
+            else
+                roi.CopyTo(gray);
 
-            // 创建HSV范围掩码
+            // 创建灰度范围掩码
             using Mat mask = new Mat();
-            var lower = new Scalar(hMin, sMin, vMin);
-            var upper = new Scalar(hMax, sMax, vMax);
-            Cv2.InRange(hsv, lower, upper, mask);
+            Cv2.InRange(gray, new Scalar(grayMin), new Scalar(grayMax), mask);
 
-            // 统计颜色像素数
-            int colorPixelCount = Cv2.CountNonZero(mask);
+            // 统计目标像素数
+            int targetPixelCount = Cv2.CountNonZero(mask);
 
             // ROI总像素数
             int roiPixelCount = w * h;
 
             // 计算面积百分比
             double areaPercent = roiPixelCount > 0
-                ? (double)colorPixelCount / roiPixelCount * 100.0
+                ? (double)targetPixelCount / roiPixelCount * 100.0
                 : 0;
-
+            func.ResultDouble = areaPercent;
             // 判断OK/NG
             bool isPass = areaPercent >= areaMinPercent && areaPercent <= areaMaxPercent;
             string result = isPass ? "OK" : "NG";
-
+            func.ResultString = result;
             // 在原始图像上绘制ROI边框
             func.DrawCommands.Add(DrawCommand.Line(x, y, x + w, y, Colors.Lime, 2));
             func.DrawCommands.Add(DrawCommand.Line(x + w, y, x + w, y + h, Colors.Lime, 2));
             func.DrawCommands.Add(DrawCommand.Line(x + w, y + h, x, y + h, Colors.Lime, 2));
             func.DrawCommands.Add(DrawCommand.Line(x, y + h, x, y, Colors.Lime, 2));
 
-            // 绘制颜色区域的轮廓（在掩码上找轮廓并绘制到原图位置）
+            // 绘制目标区域的轮廓
             using Mat maskForContour = mask.Clone();
             Cv2.FindContours(maskForContour, out Point[][] contours, out _, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
 
             if (contours.Length > 0)
             {
-                // 按面积排序，取最大的轮廓
                 var sorted = contours.OrderByDescending(c => Cv2.ContourArea(c)).ToArray();
                 var largest = sorted[0];
 
-                // 将轮廓点偏移回原图坐标系
                 var offsetPts = largest.Select(p => new System.Windows.Point(p.X + x, p.Y + y)).ToArray();
                 func.DrawCommands.Add(DrawCommand.Polygon(offsetPts, Colors.Yellow, 2));
 
-                // 如果有多个较大轮廓，也画出来（面积大于最大轮廓20%的）
                 double maxArea = Cv2.ContourArea(largest);
                 foreach (var contour in sorted.Skip(1))
                 {
@@ -103,19 +96,16 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
             }
 
             // 在图像上显示结果文本
-            string text = $"颜色面积: {areaPercent:F1}%  [{result}]";
+            string text = $"灰度面积: {areaPercent:F1}%  [{result}]";
             func.DrawCommands.Add(DrawCommand.TextBlock(x, y - 20 < 0 ? y + h + 5 : y - 20, text, Colors.Cyan, 14));
 
             // 写入结果到ResultDoubles
-            func.Params.ResultDoubles["ColorAreaPercent"] = Math.Round(areaPercent, 2);
-            func.Params.ResultDoubles["ColorPixelCount"] = colorPixelCount;
+            func.Params.ResultDoubles["GrayAreaPercent"] = Math.Round(areaPercent, 2);
+            func.Params.ResultDoubles["GrayPixelCount"] = targetPixelCount;
             func.Params.ResultDoubles["ROIPixelCount"] = roiPixelCount;
 
-            // 写入OK/NG到ResultString
-            func.ResultString = result;
-            func.ResultDouble = areaPercent;
             // 写入判定结果到StringParams（用于UI绑定显示）
-            item.StringParams["ColorAreaResult"] = result;
+            item.StringParams["GrayAreaResult"] = result;
 
             item.Flow.Done = true;
             _ = func.RenderDrawAsync();

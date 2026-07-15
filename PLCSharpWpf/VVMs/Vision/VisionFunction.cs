@@ -109,7 +109,7 @@ namespace PLCSharp.VVMs.Vision
         public double ResultDouble { get; set; }
 
         [NotMapped]
-        public string RusultString { get; set; }
+        public string ResultString { get; set; }
 
         [NotMapped]
         public List<Pos> ResultPosList { get; set; } = [];
@@ -130,7 +130,7 @@ namespace PLCSharp.VVMs.Vision
         public List<double> ResultDoubleList { get; set; } = [];
 
         [NotMapped]
-        public List<string> RusultStringList { get; set; } = [];
+        public List<string> ResultStringList { get; set; } = [];
         #endregion
 
 
@@ -336,6 +336,7 @@ namespace PLCSharp.VVMs.Vision
             [VisionFlowType.ROI解码] = new BarcodeDecodeHandler(),
             [VisionFlowType.微信解码] = new WeChatDecodeHandler(),
             [VisionFlowType.颜色面积] = new ColorAreaHandler(),
+            [VisionFlowType.灰度面积] = new GrayAreaHandler(),
 
         };
         [NotMapped]
