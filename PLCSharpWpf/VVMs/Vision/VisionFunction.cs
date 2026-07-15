@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using OpenCvSharp;
 using PLCSharp.Core.Common;
 using PLCSharp.Core.Prism;
@@ -16,7 +17,7 @@ using System.Windows.Media;
 
 namespace PLCSharp.VVMs.Vision
 {
-    /// <summary>
+ 
     /// <summary>
     /// 视觉功能的执行单元，包含流程步骤列表（VisionFlows）、参数集合（Params）和运行时图像缓存
     /// </summary>
@@ -27,6 +28,7 @@ namespace PLCSharp.VVMs.Vision
         /// </summary>
         [Key]
         public Guid ID { get; set; } = Guid.NewGuid();
+
         /// <summary>
         /// 配方标识
         /// </summary>
@@ -65,7 +67,6 @@ namespace PLCSharp.VVMs.Vision
         /// 备注
         /// </summary>
         public string Comment
-
         {
             get { return _Comment; }
             set
@@ -89,9 +90,47 @@ namespace PLCSharp.VVMs.Vision
             set { SetProperty(ref _ControlName, value); }
         }
         #region 结果
+        [NotMapped]
+        public Pos ResultPos { get; set; } = new();
 
-        public Pos Pos { get; set; }
+        [NotMapped]
+        public Rect ResultRect { get; set; } = new();
 
+        [NotMapped]
+        public Circle ResultCircle { get; set; } = new();
+
+        [NotMapped]
+        public Line ResultLine { get; set; } = new();
+
+        [NotMapped]
+        public Barcode ResultBarcode { get; set; } = new();
+
+        [NotMapped]
+        public double ResultDouble { get; set; }
+
+        [NotMapped]
+        public string RusultString { get; set; }
+
+        [NotMapped]
+        public List<Pos> ResultPosList { get; set; } = [];
+
+        [NotMapped]
+        public List<Rect> ResultRectList { get; set; } = [];
+
+        [NotMapped]
+        public List<Circle> ResultCircleList { get; set; } = [];
+
+        [NotMapped]
+        public List<Line> ResultLineList { get; set; } = [];
+
+        [NotMapped]
+        public List<Barcode> ResultBarcodeList { get; set; } = [];
+
+        [NotMapped]
+        public List<double> ResultDoubleList { get; set; } = [];
+
+        [NotMapped]
+        public List<string> RusultStringList { get; set; } = [];
         #endregion
 
 
