@@ -48,9 +48,6 @@ namespace PLCSharp.VVMs.Vision
         /// 提示
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 提示
-        /// </summary>
         public string Prompt
         {
             get { return _Prompt; }

@@ -139,9 +139,6 @@ namespace PLCSharp.VVMs.Robots
         /// 提示
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 提示
-        /// </summary>
         public string Prompt
         {
             get { return _Prompt; }
@@ -165,9 +162,6 @@ namespace PLCSharp.VVMs.Robots
         /// 状态信息
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 状态信息
-        /// </summary> 
         public ObservableCollection<string> StatusInfo
         {
             get { return _StatusInfo; }

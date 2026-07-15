@@ -66,9 +66,6 @@ namespace PLCSharp.VVMs.Homepage
         /// 提示
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 提示
-        /// </summary>
         public string Prompt
         {
             get { return _Prompt; }
@@ -149,9 +146,6 @@ namespace PLCSharp.VVMs.Homepage
         /// </summary>
         [JsonIgnore]
         [NotMapped]
-        /// <summary>
-        /// 自定义控件属性
-        /// </summary>
         public ControlParams Params
         {
             get
@@ -172,9 +166,6 @@ namespace PLCSharp.VVMs.Homepage
         /// RangeValues
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 自定义控件属性
-        /// </summary>
         public ObservableCollection<RangeValue> RangeValues
         {
             get { return _RangeValues; }

@@ -271,9 +271,6 @@ namespace PLCSharp.VVMs.MotionController
         /// Rate
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 速率 1-100
-        /// </summary>
         public double Rate
         {
             get { return _Rate; }

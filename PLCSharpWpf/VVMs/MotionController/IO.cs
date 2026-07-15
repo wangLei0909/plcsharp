@@ -27,9 +27,6 @@ namespace PLCSharp.VVMs.MotionController
         /// </summary>
         [NotMapped]
         [ExcelIgnore]
-        /// <summary>
-        /// 所属的控制序号
-        /// </summary>
         public ushort ControllerNo
         {
             get { return _ControllerNumber; }
@@ -71,9 +68,6 @@ namespace PLCSharp.VVMs.MotionController
         /// </summary>
         [NotMapped]
         [ExcelIgnore]
-        /// <summary>
-        /// 状态
-        /// </summary>
         public bool Status
         {
             get { return _Status; }
@@ -104,9 +98,6 @@ namespace PLCSharp.VVMs.MotionController
         /// </summary>
         [NotMapped]
         [ExcelIgnore]
-        /// <summary>
-        /// 所属的控制序号
-        /// </summary>
         public ushort ControllerNo
         {
             get { return _ControllerNumber; }
@@ -148,9 +139,6 @@ namespace PLCSharp.VVMs.MotionController
         /// </summary>
         [ExcelIgnore]
         [NotMapped]
-        /// <summary>
-        /// 状态
-        /// </summary>
         public bool Status
         {
             get { return _Status; }

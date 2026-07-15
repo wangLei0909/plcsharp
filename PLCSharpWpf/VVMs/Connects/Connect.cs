@@ -159,9 +159,6 @@ namespace PLCSharp.VVMs.Connects
         private string _ReceiveInfo = "";
 
         [NotMapped]
-        /// <summary>
-        /// 收到的信息
-        /// </summary>
         public string ReceiveInfo
         {
             get { return _ReceiveInfo; }
@@ -172,9 +169,6 @@ namespace PLCSharp.VVMs.Connects
         private byte[] _ReceiveData;
 
         [NotMapped]
-        /// <summary>
-        /// 收到的数据
-        /// </summary>
         public byte[] ReceiveData
         {
             get { return _ReceiveData; }
@@ -183,9 +177,6 @@ namespace PLCSharp.VVMs.Connects
         private string _SendInfo;
 
         [NotMapped]
-        /// <summary>
-        /// 要发送的信息
-        /// </summary>
         public string SendInfo
         {
             get { return _SendInfo; }
@@ -257,9 +248,6 @@ namespace PLCSharp.VVMs.Connects
         /// 参数集合
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 连接配置
-        /// </summary>
         public ConnectParams Params
         {
             get
@@ -279,9 +267,6 @@ namespace PLCSharp.VVMs.Connects
         /// Clients
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 连接 服务器 的 客户端
-        /// </summary>
         public ObservableCollection<Connect> Clients
         {
             get { return _Clients; }
@@ -528,9 +513,6 @@ namespace PLCSharp.VVMs.Connects
             /// 提示
             /// </summary>
             [JsonIgnore]
-            /// <summary>
-            /// 提示
-            /// </summary>
             public string Prompt
             {
                 get { return _Prompt; }

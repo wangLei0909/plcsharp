@@ -85,9 +85,6 @@ namespace PLCSharp.VVMs.MotionController
             /// 提示
             /// </summary>
             [JsonIgnore]
-            /// <summary>
-            /// 提示
-            /// </summary>
             public string Prompt
             {
                 get { return _Prompt; }

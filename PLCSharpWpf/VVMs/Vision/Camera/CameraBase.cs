@@ -85,9 +85,6 @@ namespace PLCSharp.VVMs.Vision.Camera
         /// </summary>
         [JsonIgnore]
         [NotMapped]
-        /// <summary>
-        /// 日志开关
-        /// </summary>
         public bool LogSwitch
         {
             get { return _LogSwitch; }
@@ -115,9 +112,6 @@ namespace PLCSharp.VVMs.Vision.Camera
         /// </summary>
         [JsonIgnore]
         [NotMapped]
-        /// <summary>
-        /// 提示
-        /// </summary>
         public string Prompt
         {
             get { return _Prompt; }
@@ -131,9 +125,6 @@ namespace PLCSharp.VVMs.Vision.Camera
         /// </summary>
         [JsonIgnore]
         [NotMapped]
-        /// <summary>
-        /// 连接成功
-        /// </summary>
         public bool Connected
         {
             get { return _Connected; }
@@ -146,9 +137,6 @@ namespace PLCSharp.VVMs.Vision.Camera
         /// </summary>
         [JsonIgnore]
         [NotMapped]
-        /// <summary>
-        /// 相机配置
-        /// </summary>
         public CameraParams Params
         {
             get

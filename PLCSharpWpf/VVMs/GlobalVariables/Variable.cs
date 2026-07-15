@@ -41,9 +41,6 @@ namespace PLCSharp.VVMs.GlobalVariables
         /// 值
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 当前值
-        /// </summary>
         public dynamic Value
         {
             get => _Value;
@@ -86,9 +83,6 @@ namespace PLCSharp.VVMs.GlobalVariables
         /// 默认值
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 初始值
-        /// </summary>
         public dynamic DefaultValue
         {
             get => _DefaultValue;
@@ -127,9 +121,6 @@ namespace PLCSharp.VVMs.GlobalVariables
         /// RetainPersistent
         /// </summary>
         [Column(TypeName = "INTEGER")]
-        /// <summary>
-        /// 保持
-        /// </summary>
         public bool RetainPersistent { get; set; }
 
         private static bool IsValidValue(dynamic value, VariableDataType type)
@@ -210,9 +201,6 @@ namespace PLCSharp.VVMs.GlobalVariables
         /// 值
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 当前值
-        /// </summary>
         public dynamic Value
         {
             get => _Value;
@@ -255,9 +243,6 @@ namespace PLCSharp.VVMs.GlobalVariables
         /// 默认值
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 初始值
-        /// </summary>
         public dynamic DefaultValue
         {
             get => _DefaultValue;
@@ -296,9 +281,6 @@ namespace PLCSharp.VVMs.GlobalVariables
         /// RetainPersistent
         /// </summary>
         [Column(TypeName = "INTEGER")]
-        /// <summary>
-        /// 保持
-        /// </summary>
         public bool RetainPersistent { get; set; }
 
         private static bool IsValidValue(dynamic value, VariableDataType type)

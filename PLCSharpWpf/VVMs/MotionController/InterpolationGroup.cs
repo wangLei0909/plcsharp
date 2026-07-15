@@ -135,9 +135,6 @@ namespace PLCSharp.VVMs.MotionController
         /// 参数集合
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 配置项
-        /// </summary>
         public InterpolationGroupParams Params
         {
             get
@@ -162,9 +159,6 @@ namespace PLCSharp.VVMs.MotionController
             /// 提示
             /// </summary>
             [JsonIgnore]
-            /// <summary>
-            /// 提示
-            /// </summary>
             public string Prompt
             {
                 get { return _Prompt; }

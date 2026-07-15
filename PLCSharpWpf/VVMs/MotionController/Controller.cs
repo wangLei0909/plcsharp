@@ -412,9 +412,6 @@ namespace PLCSharp.VVMs.MotionController
         /// 提示
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 提示
-        /// </summary>
         public string Prompt
         {
             get { return _Prompt; }
@@ -426,9 +423,6 @@ namespace PLCSharp.VVMs.MotionController
         /// Online
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 在线
-        /// </summary>
         public bool Online
         {
             get { return _Online; }
@@ -440,9 +434,6 @@ namespace PLCSharp.VVMs.MotionController
         /// Connected
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 连接成功
-        /// </summary>
         public bool Connected
         {
             get { return _Connected; }
@@ -528,9 +519,6 @@ namespace PLCSharp.VVMs.MotionController
         /// 参数集合
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 配置项
-        /// </summary>
         public ControllerParams Params
         {
             get
@@ -556,9 +544,6 @@ namespace PLCSharp.VVMs.MotionController
             /// 提示
             /// </summary>
             [JsonIgnore]
-            /// <summary>
-            /// 提示
-            /// </summary>
             public string Prompt
             {
                 get { return _Prompt; }

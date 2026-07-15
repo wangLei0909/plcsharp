@@ -9,7 +9,6 @@ using PLCSharp.VVMs.Vision.VisionFlowHandler.Access;
 using PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm;
 using PLCSharp.VVMs.Vision.VisionFlowHandler.Processing;
 using Prism.Mvvm;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -55,9 +54,6 @@ namespace PLCSharp.VVMs.Vision
         /// 提示
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 提示
-        /// </summary>
         public string Prompt
         {
             get { return _Prompt; }
@@ -92,11 +88,18 @@ namespace PLCSharp.VVMs.Vision
             get { return _ControlName; }
             set { SetProperty(ref _ControlName, value); }
         }
+        #region 结果
 
-        [NotMapped]
+        public Pos Pos { get; set; }
+
+        #endregion
+
+
         /// <summary>
         /// 编辑时显示的控件
         /// </summary>
+        [NotMapped]
+
 
         public ImageEdit EditImageEdit { get; set; }
 
@@ -218,10 +221,10 @@ namespace PLCSharp.VVMs.Vision
                     {
 
                         var customControl = GlobalModel.GetCustomControl(ControlName);
-                        if (customControl != null && Src!=null)
+                        if (customControl != null && Src != null)
                         {
                             customControl.ShowMat(Src);
-                       
+
                         }
 
                         flow.Done = true;
@@ -297,16 +300,10 @@ namespace PLCSharp.VVMs.Vision
 
         };
         [NotMapped]
-        /// <summary>
-        /// 全局模型
-        /// </summary>
         public GlobalModel GlobalModel { get; set; }
 
 
         [NotMapped]
-        /// <summary>
-        /// 绘制命令列表，用于在图像上绘制线条、圆形等图形
-        /// </summary>
         public List<DrawCommand> DrawCommands { get; set; } = [];
         public async Task RenderDrawAsync()
         {

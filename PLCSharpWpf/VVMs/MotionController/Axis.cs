@@ -56,9 +56,6 @@ namespace PLCSharp.VVMs.MotionController
         /// 提示
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 提示
-        /// </summary>
         public string Prompt
         {
             get { return _Prompt; }
@@ -113,9 +110,6 @@ namespace PLCSharp.VVMs.MotionController
         /// PowerOn
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 使能
-        /// </summary>
         public bool PowerOn
         {
             get { return _PowerOn; }
@@ -189,9 +183,6 @@ namespace PLCSharp.VVMs.MotionController
         /// Interlock
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 安全联锁
-        /// </summary>
         public AxisLock Interlock
         {
             get { return _Interlock; }
@@ -366,9 +357,6 @@ namespace PLCSharp.VVMs.MotionController
         /// Velocity
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 当前速度
-        /// </summary>
         public double Velocity
         {
             get { return _Velocity; }
@@ -391,9 +379,6 @@ namespace PLCSharp.VVMs.MotionController
         /// 参数集合
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 配置项
-        /// </summary>
         public AxisParams Params
         {
             get
@@ -487,9 +472,6 @@ namespace PLCSharp.VVMs.MotionController
             /// Rate
             /// </summary>
             [JsonIgnore]
-            /// <summary>
-            /// 速率 1-100
-            /// </summary>
             public double Rate
             {
                 get { return _Rate; }

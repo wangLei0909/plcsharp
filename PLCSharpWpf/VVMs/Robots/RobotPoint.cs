@@ -181,9 +181,6 @@ namespace PLCSharp.VVMs.Robots
         /// Safe
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 是否安全可运行
-        /// </summary>
         public bool Safe { get; set; } = true;
 
         /// <summary>

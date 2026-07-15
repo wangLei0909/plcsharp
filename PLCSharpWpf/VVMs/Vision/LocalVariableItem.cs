@@ -30,9 +30,6 @@ namespace PLCSharp.VVMs.Vision
 
         private string _StrValue;
         [JsonIgnore]
-        /// <summary>
-        ///  变量值的文本表示（UI 显示用，反序列化后自动计算）
-        /// </summary>
         public string StrValue
         {
             get { return _StrValue; }

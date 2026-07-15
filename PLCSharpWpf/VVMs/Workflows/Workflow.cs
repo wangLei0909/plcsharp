@@ -48,9 +48,6 @@ namespace PLCSharp.VVMs.Workflows
         /// 提示
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 提示
-        /// </summary>
         public string Prompt
         {
             get { return _Prompt; }
@@ -129,9 +126,6 @@ namespace PLCSharp.VVMs.Workflows
         /// IsCompiled
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 已编译
-        /// </summary>
         public bool IsCompiled
         {
             get { return _IsCompiled; }
@@ -160,9 +154,6 @@ namespace PLCSharp.VVMs.Workflows
         /// Debug日志
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 调试日志
-        /// </summary>
         public string DebugLog
         {
             get { return _DebugLog; }
@@ -175,9 +166,6 @@ namespace PLCSharp.VVMs.Workflows
         /// 异常
         /// </summary>
         [NotMapped]
-        /// <summary>
-        /// 异常
-        /// </summary>
         public bool Exception
         {
             get { return _Exception; }
