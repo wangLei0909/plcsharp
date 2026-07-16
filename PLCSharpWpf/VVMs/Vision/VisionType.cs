@@ -48,6 +48,8 @@
         阈值 = 17,
         [FlowCategory("图像处理")]
         图像翻转 = 19,
+        [FlowCategory("图像处理")]
+        图像旋转 = 20,
 
         [FlowCategory("图像处理")]
         坐标转换 = 18,

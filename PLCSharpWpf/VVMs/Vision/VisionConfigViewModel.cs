@@ -349,6 +349,10 @@ namespace PLCSharp.VVMs.Vision
                     case VisionFlowType.图像翻转:
                         newFlow.IntParams["FlipDirection"] = 0;
                         break;
+                    case VisionFlowType.图像旋转:
+                        newFlow.DoubleParams["RotateAngle"] = 0;
+                        newFlow.IntParams["ResizeMode"] = 0;
+                        break;
                     case VisionFlowType.ROI解码:
                         newFlow.IntParams["DecodeType"] = 0;
                         newFlow.BoolParams["EnableMirror"] = false;
@@ -585,6 +589,9 @@ namespace PLCSharp.VVMs.Vision
                     break;
                 case VisionFlowType.图像翻转:
                     ContentRegion = new ImageFlip();
+                    break;
+                case VisionFlowType.图像旋转:
+                    ContentRegion = new ImageRotate();
                     break;
                 case VisionFlowType.ROI解码:
                     ContentRegion = new BarcodeDecode();

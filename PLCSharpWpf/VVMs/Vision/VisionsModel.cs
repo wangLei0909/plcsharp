@@ -154,6 +154,7 @@ namespace PLCSharp.VVMs.Vision
                     {
                         VisionsModel = this,
                         ImageDatas = ImageDatas,
+                        GlobalModel = GlobalModel,
                     };
                     VisionFunctions.Add(newFunction);
 
