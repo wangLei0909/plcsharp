@@ -337,6 +337,7 @@ namespace PLCSharp.VVMs.Vision
             [VisionFlowType.微信解码] = new WeChatDecodeHandler(),
             [VisionFlowType.颜色面积] = new ColorAreaHandler(),
             [VisionFlowType.灰度面积] = new GrayAreaHandler(),
+            [VisionFlowType.图像翻转] = new ImageFlipHandler(),
 
         };
         [NotMapped]

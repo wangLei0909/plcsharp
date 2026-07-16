@@ -46,6 +46,8 @@
         各通道最大值 = 16,
         [FlowCategory("图像处理")]
         阈值 = 17,
+        [FlowCategory("图像处理")]
+        图像翻转 = 19,
 
         [FlowCategory("图像处理")]
         坐标转换 = 18,
