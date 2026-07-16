@@ -1054,17 +1054,7 @@ namespace PLCSharp.VVMs.Vision
 
         private async Task ExecuteComputeEdgeTemplateAsync()
         {
-            if (SelectVisionFlow == null || SelectedVisionFunction == null) return;
-            SelectVisionFlow.StringParams["ComputeTemplate"] = "1";
-            try
-            {
-                if (!SelectedVisionFunction.RunItem(SelectVisionFlow))
-                    SendInfoDialog("模板计算失败");
-                else
-                    SendInfoDialog("模板已保存");
-            }
-            catch (Exception ex) { SendInfoDialog(ex.Message); }
-            finally { SelectVisionFlow.StringParams.Remove("ComputeTemplate"); }
+            await ComputeTemplateAsync();
         }
 
 
@@ -1331,23 +1321,7 @@ namespace PLCSharp.VVMs.Vision
             _ComputeTwoLineTemplate ??= new AsyncDelegateCommand(ExecuteComputeTwoLineTemplateAsync);
         private async Task ExecuteComputeTwoLineTemplateAsync()
         {
-            if (SelectVisionFlow == null || SelectedVisionFunction == null) return;
-            SelectVisionFlow.StringParams["ComputeTemplate"] = "1";
-            try
-            {
-                if (!SelectedVisionFunction.RunItem(SelectVisionFlow))
-                    SendInfoDialog("模板计算失败");
-                else
-                    SendInfoDialog("模板已保存");
-            }
-            catch (Exception ex)
-            {
-                SendInfoDialog(ex.Message);
-            }
-            finally
-            {
-                SelectVisionFlow.StringParams.Remove("ComputeTemplate");
-            }
+            await ComputeTemplateAsync();
         }
 
 
@@ -1357,23 +1331,7 @@ namespace PLCSharp.VVMs.Vision
 
         private async Task ExecuteComputeCircleTemplateAsync()
         {
-            if (SelectVisionFlow == null || SelectedVisionFunction == null) return;
-            SelectVisionFlow.StringParams["ComputeTemplate"] = "1";
-            try
-            {
-                if (!SelectedVisionFunction.RunItem(SelectVisionFlow))
-                    SendInfoDialog("模板计算失败");
-                else
-                    SendInfoDialog("模板已保存");
-            }
-            catch (Exception ex)
-            {
-                SendInfoDialog(ex.Message);
-            }
-            finally
-            {
-                SelectVisionFlow.StringParams.Remove("ComputeTemplate");
-            }
+            await ComputeTemplateAsync();
         }
 
 
@@ -1386,23 +1344,22 @@ namespace PLCSharp.VVMs.Vision
 
         private async Task ExecuteComputeRectTemplateAsync()
         {
-            if (SelectVisionFlow == null || SelectedVisionFunction == null)
-                return;
+            await ComputeTemplateAsync();
+        }
 
-            // 设标记让 handler 保存模板
+        /// <summary>
+        /// 通用模板计算：设标记 → RunItem → 弹提示 → 清标记
+        /// </summary>
+        private async Task ComputeTemplateAsync()
+        {
+            if (SelectVisionFlow == null || SelectedVisionFunction == null) return;
             SelectVisionFlow.StringParams["ComputeTemplate"] = "1";
-
             try
             {
-                // 执行一次找矩形
                 if (!SelectedVisionFunction.RunItem(SelectVisionFlow))
-                {
                     SendInfoDialog("模板计算失败");
-                }
                 else
-                {
                     SendInfoDialog("模板已保存");
-                }
             }
             catch (Exception ex)
             {
