@@ -1,4 +1,4 @@
-using OpenCvSharp;
+﻿using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using PLCSharp.Core.Common;
 using PLCSharp.Core.Prism;
@@ -46,7 +46,7 @@ namespace PLCSharp.VVMs.Vision.Camera
             {
                 SetProperty(ref _ShowMat, value);
                 if (value == null) return;
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     if (_ImgSrc != null
                     && _ShowMat.Width == _ImgSrc.PixelWidth

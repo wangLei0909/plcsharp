@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System.Collections.Specialized;
 using System.ComponentModel;
 
@@ -170,7 +170,7 @@ namespace PLCSharp.Core.Prism
             if (dispatcher != null && !dispatcher.CheckAccess())
             {
 #pragma warning disable VSTHRD001 // 同步事件通知无法 async，与本项目其他 Dispatcher.Invoke 保持一致
-                dispatcher.Invoke((Action)Raise);
+                dispatcher.Invoke(Raise);
 #pragma warning restore VSTHRD001
             }
             else

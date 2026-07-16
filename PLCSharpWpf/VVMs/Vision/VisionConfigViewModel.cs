@@ -21,7 +21,6 @@ using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -53,7 +52,7 @@ namespace PLCSharp.VVMs.Vision
             ImageEdit.SetBinding(ImageEdit.ImageSourceProperty, binding);
         }
 
- 
+
 
         private ImageEdit _ImageEdit;
         /// <summary>
@@ -78,7 +77,7 @@ namespace PLCSharp.VVMs.Vision
                  /// </summary>
         public override void OnDialogClosed()
         {
-            SelectedVisionFunction.EditImageEdit = null;    
+            SelectedVisionFunction.EditImageEdit = null;
         }
 
         #region 视觉流程
@@ -121,8 +120,8 @@ namespace PLCSharp.VVMs.Vision
 
             ShowMat = SelectedVisionFunction.Src;
 
-        
-             
+
+
         }
         private DelegateCommand _Save;
         /// <summary>
@@ -182,7 +181,7 @@ namespace PLCSharp.VVMs.Vision
 
             ShowMat = SelectedVisionFunction.Src;
 
- 
+
         }
         private DelegateCommand<string> _Manage;
         /// <summary>
@@ -459,7 +458,7 @@ namespace PLCSharp.VVMs.Vision
                     SelectVisionFlow.StringParams["Variable"] = value.Name;
             }
         }
- 
+
 
         private ImageData _SelectImageData;
         /// <summary>
@@ -619,7 +618,7 @@ namespace PLCSharp.VVMs.Vision
 
 
         #endregion
- 
+
         #region 局部图像管理
 
         private DelegateCommand<string> _MatManage;
@@ -834,31 +833,31 @@ namespace PLCSharp.VVMs.Vision
             {
                 SetProperty(ref _ShowMat, value);
                 if (value == null) return;
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    try
-                    {
-                        if (_ImgSrc != null
-                   && _ShowMat.Width == _ImgSrc.PixelWidth
-                   && _ShowMat.Height == _ImgSrc.PixelHeight
-                   && _ShowMat.Channels() == _ImgSrc.Format.BitsPerPixel / 8
-                       )
-                        {
-                            WriteableBitmapConverter.ToWriteableBitmap(_ShowMat, _ImgSrc);
+                _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                 {
+                     try
+                     {
+                         if (_ImgSrc != null
+                          && _ShowMat.Width == _ImgSrc.PixelWidth
+                          && _ShowMat.Height == _ImgSrc.PixelHeight
+                          && _ShowMat.Channels() == _ImgSrc.Format.BitsPerPixel / 8
+                        )
+                         {
+                             WriteableBitmapConverter.ToWriteableBitmap(_ShowMat, _ImgSrc);
 
-                        }
-                        else
-                        {
-                            ImgSrc = WriteableBitmapConverter.ToWriteableBitmap(_ShowMat);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        SendErr($"图像转换失败: {ex.Message}");
+                         }
+                         else
+                         {
+                             ImgSrc = WriteableBitmapConverter.ToWriteableBitmap(_ShowMat);
+                         }
+                     }
+                     catch (Exception ex)
+                     {
+                         SendErr($"图像转换失败: {ex.Message}");
 
-                    }
+                     }
 
-                }));
+                 }));
 
 
             }
@@ -945,7 +944,7 @@ namespace PLCSharp.VVMs.Vision
         }
 
 
-  
+
 
 
 
@@ -967,7 +966,7 @@ namespace PLCSharp.VVMs.Vision
             {
                 SendInfoDialog("请先获取图片！");
                 return;
-            }   
+            }
 
             try
             {
@@ -1322,9 +1321,9 @@ namespace PLCSharp.VVMs.Vision
                 SendInfoDialog("标定成功");
             }
             catch (Exception ex) { SendInfoDialog(ex.Message); }
-        }    
-     
-     
+        }
+
+
 
         private AsyncDelegateCommand _ComputeTwoLineTemplate;
         public AsyncDelegateCommand ComputeTwoLineTemplate =>
@@ -1906,7 +1905,7 @@ namespace PLCSharp.VVMs.Vision
             imageEdit.Draw(crossV);
         }
 
-#endregion
+        #endregion
 
 
 

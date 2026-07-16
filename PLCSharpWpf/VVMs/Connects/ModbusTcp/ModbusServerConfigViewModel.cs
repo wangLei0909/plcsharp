@@ -1,4 +1,4 @@
-using DryIoc;
+﻿using DryIoc;
 using PLCSharp.Core.Common;
 using PLCSharp.Core.Prism;
 using Prism.Commands;
@@ -193,17 +193,17 @@ namespace PLCSharp.VVMs.Connects.ModbusTcp
 
             while (!worker.CancellationPending)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(100);
                 if (Server != null && Server.LogSwitch)
                 {
                     if (!Server.LogQueue.IsEmpty)
                     {
                         if (Server.LogQueue.TryDequeue(out string log))
                         {
-                            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                            {
-                                Logs.Add(new ErrorLog(log));
-                            }));
+                            _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                              {
+                                  Logs.Add(new ErrorLog(log));
+                              }));
                         }
                     }
                 }

@@ -1,6 +1,5 @@
-#nullable enable
+﻿#nullable enable
 using OpenCvSharp;
-using PLCSharp.Core.Common;
 using System.Windows.Media;
 
 namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
@@ -122,8 +121,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
                     if (existingVar == null)
                     {
                         existingVar = new LocalVariableItem(varName, "Barcode", new Barcode(new Pos(), ""));
-                        System.Windows.Application.Current.Dispatcher.Invoke(
-                            () => func.Params.Variables.Add(existingVar));
+                        System.Windows.Application.Current.Dispatcher.Invoke(() => func.Params.Variables.Add(existingVar));
                     }
                     existingVar.RawValue = new Barcode(new Pos(boxCX, boxCY, 0, 0), text);
                 }

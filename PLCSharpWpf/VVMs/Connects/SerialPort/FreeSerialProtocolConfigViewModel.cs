@@ -1,4 +1,4 @@
-using PLCSharp.Core.Common;
+﻿using PLCSharp.Core.Common;
 using PLCSharp.Core.Prism;
 using Prism.Commands;
 using Prism.Dialogs;
@@ -94,7 +94,7 @@ namespace PLCSharp.VVMs.Connects.SerialPort
 
             while (!worker.CancellationPending)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(100);
                 if (Client == null) continue;
 
                 // 日志轮询
@@ -102,7 +102,7 @@ namespace PLCSharp.VVMs.Connects.SerialPort
                 {
                     if (Client.LogQueue.TryDequeue(out string log))
                     {
-                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
                             Logs.Add(new ErrorLog(log));
                         }));

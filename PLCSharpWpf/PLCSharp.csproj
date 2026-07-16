@@ -95,7 +95,7 @@
     <Compile Update="VVMs\Vision\VisionFlowHandler\Access\ImagesPool.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="VVMs\Vision\VisionFlowHandler\Access\ImageToFile .xaml.cs">
+    <Compile Update="VVMs\Vision\VisionFlowHandler\Access\ImageToFile.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

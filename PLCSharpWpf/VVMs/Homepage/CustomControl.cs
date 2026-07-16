@@ -212,9 +212,9 @@ namespace PLCSharp.VVMs.Homepage
             get { return _ImgSrc; }
             set { SetProperty(ref _ImgSrc, value); }
         }
-        private void Dispatch(Action action)
+        private static void Dispatch(Action action)
         {
-            Application.Current.Dispatcher.Invoke(action);
+          _=  Application.Current.Dispatcher.BeginInvoke(action);
         }
 
         /// <summary>

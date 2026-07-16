@@ -95,24 +95,21 @@ namespace PLCSharp.VVMs.Connects.Socket
 
             while (!worker.CancellationPending)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(100);
                 if (Server != null)
                 {
-
                     for (int i = 0; i < Server.Clients.Count; i++)
                     {
                         Server.Clients[i].Online = NetTool.PingIP(Server.Clients[i].IP_SerialPort);
-
                     }
                     if (Server.LogSwitch)
                     {
                         if (!(Server as SocketServer).LogQueue.IsEmpty)
                         {
                             if ((Server as SocketServer).LogQueue.TryDequeue(out string log))
-
-                                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                                _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                                 {
-                                    Logs.Add(new(log));
+                                    Logs.Add(new ErrorLog(log));
                                 }));
                         }
                     }

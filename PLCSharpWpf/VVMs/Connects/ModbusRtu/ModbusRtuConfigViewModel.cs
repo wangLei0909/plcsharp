@@ -1,4 +1,4 @@
-using PLCSharp.Core.Common;
+﻿using PLCSharp.Core.Common;
 using PLCSharp.Core.Prism;
 using PLCSharp.VVMs.Connects.ModbusTcp;
 using Prism.Commands;
@@ -180,7 +180,7 @@ namespace PLCSharp.VVMs.Connects.ModbusRtu
                 {
                     if (Client.LogQueue.TryDequeue(out string log))
                     {
-                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                         {
                             Logs.Add(new ErrorLog(log));
                         }));

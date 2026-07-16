@@ -64,7 +64,8 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
 
                 var offVarName = item.StringParams.TryGetValue("IntersectOffsetVar", out var ov) && !string.IsNullOrEmpty(ov) ? ov : "两线交点_Offset";
                 var offVar = func.Params.Variables.FirstOrDefault(v => v.Name == offVarName);
-                if (offVar == null) { offVar = new LocalVariableItem(offVarName, "Pos", new Pos()); System.Windows.Application.Current.Dispatcher.Invoke(() => func.Params.Variables.Add(offVar)); }
+                if (offVar == null) { offVar = new LocalVariableItem(offVarName, "Pos", new Pos());
+                    System.Windows.Application.Current.Dispatcher.Invoke(() => func.Params.Variables.Add(offVar)); }
                 offVar.RawValue = new Pos(offX, offY, 0, offAngle);
             }
 

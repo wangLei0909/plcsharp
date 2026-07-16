@@ -92,7 +92,7 @@ namespace PLCSharp.VVMs.Connects.Socket
             var worker = (BackgroundWorker)sender;
             while (!worker.CancellationPending)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(100);
                 if (Client != null)
                 {
 
@@ -102,9 +102,9 @@ namespace PLCSharp.VVMs.Connects.Socket
                         {
                             if ((Client as SocketClient).LogQueue.TryDequeue(out string log))
 
-                                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                                _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                                 {
-                                    Logs.Add(new(log));
+                                    Logs.Add(new ErrorLog(log));
                                 }));
                         }
                     }

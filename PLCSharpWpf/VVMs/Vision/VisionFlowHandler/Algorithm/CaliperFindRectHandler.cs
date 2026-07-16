@@ -1,6 +1,4 @@
 ﻿using OpenCvSharp;
-using System.Linq;
-using System.Windows.Media;
 
 namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
 {
@@ -227,7 +225,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
             var rr = new RotatedRect(new Point2f((float)fitCx, (float)fitCy), new Size2f((float)fitW, (float)fitH), (float)fitAngle);
             var rrPts = rr.Points();
             for (int i = 0; i < 4; i++)
-                func.DrawCommands.Add(DrawCommand.Line(rrPts[i].X, rrPts[i].Y, rrPts[(i+1)%4].X, rrPts[(i+1)%4].Y, System.Windows.Media.Color.FromArgb(128, 255, 0, 255), 3));
+                func.DrawCommands.Add(DrawCommand.Line(rrPts[i].X, rrPts[i].Y, rrPts[(i + 1) % 4].X, rrPts[(i + 1) % 4].Y, System.Windows.Media.Color.FromArgb(128, 255, 0, 255), 3));
             func.DrawCommands.Add(DrawCommand.FilledCircle(fitCx, fitCy, 4, System.Windows.Media.Color.FromArgb(128, 255, 0, 255)));
             // 保存结果
             func.Params.ResultDoubles["InlierCount"] = inliers;
@@ -272,7 +270,11 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
             {
                 var offsetVarName = item.StringParams.TryGetValue("RectOffsetVar", out var ov) && !string.IsNullOrEmpty(ov) ? ov : "找矩形_Offset";
                 var offsetVar = func.Params.Variables.FirstOrDefault(v => v.Name == offsetVarName);
-                if (offsetVar == null) { offsetVar = new LocalVariableItem(offsetVarName, "Pos", new Pos()); System.Windows.Application.Current.Dispatcher.Invoke(() => func.Params.Variables.Add(offsetVar)); }
+                if (offsetVar == null)
+                {
+                    offsetVar = new LocalVariableItem(offsetVarName, "Pos", new Pos());
+                    System.Windows.Application.Current.Dispatcher.Invoke(() => func.Params.Variables.Add(offsetVar));
+                }
                 offsetVar.RawValue = new Pos(offsetX, offsetY, 0, offsetAngle);
             }
 

@@ -93,7 +93,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
             var inls = RansacInliers(edgePoints, inlierTh);
 
             // 可视化 — 写入 DrawCommands
-      
+
             var cyan = Color.FromArgb(128, 0, 255, 255);
             var lime = Color.FromArgb(128, 0, 255, 0);
             var magenta = Color.FromArgb(128, 255, 0, 255);
@@ -198,7 +198,11 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
 
                 var offVarName = item.StringParams.TryGetValue("LineOffsetVar", out var ov) && !string.IsNullOrEmpty(ov) ? ov : "找线_Offset";
                 var offVar = func.Params.Variables.FirstOrDefault(v => v.Name == offVarName);
-                if (offVar == null) { offVar = new LocalVariableItem(offVarName, "Pos", new Pos()); System.Windows.Application.Current.Dispatcher.Invoke(() => func.Params.Variables.Add(offVar)); }
+                if (offVar == null)
+                {
+                    offVar = new LocalVariableItem(offVarName, "Pos", new Pos());
+                    System.Windows.Application.Current.Dispatcher.Invoke(() => func.Params.Variables.Add(offVar));
+                }
                 offVar.RawValue = new Pos(offsetX, offsetY, 0, offsetAngle);
             }
             _ = func.RenderDrawAsync();
@@ -231,8 +235,10 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
                 vx /= len; vy /= len;
                 int cnt = 0;
                 for (int i = 0; i < n; i++)
-                { double dx = points[i].X - points[i1].X, dy = points[i].Y - points[i1].Y;
-                  if (Math.Abs(dx * vy - dy * vx) <= threshold) cnt++; }
+                {
+                    double dx = points[i].X - points[i1].X, dy = points[i].Y - points[i1].Y;
+                    if (Math.Abs(dx * vy - dy * vx) <= threshold) cnt++;
+                }
                 if (cnt > bestCnt) { bestCnt = cnt; bvx = vx; bvy = vy; bx = points[i1].X; by = points[i1].Y; }
             }
             var result = points.Where(p => Math.Abs((p.X - bx) * bvy - (p.Y - by) * bvx) <= threshold).ToList();

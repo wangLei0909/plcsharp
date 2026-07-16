@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
@@ -30,53 +30,53 @@ namespace PLCSharp.Core.Tools
                     PointsQueue.TryDequeue(out PointF point);
                     Points.Add(point);
                 }
-                Application.Current?.Dispatcher.Invoke(delegate
-                {
-                    WriteableBitmap writeableBitmap = _imgSource;
-                    int width = (int)writeableBitmap.Width;
-                    int height = (int)writeableBitmap.Height;
-                    writeableBitmap.Lock();
-                    using var bitmap = new Bitmap(width, height, writeableBitmap.BackBufferStride, System.Drawing.Imaging.PixelFormat.Format24bppRgb, writeableBitmap.BackBuffer);
-                    using Graphics graphics = Graphics.FromImage(bitmap);
-                    graphics.Clear(System.Drawing.Color.Black);
-                    //System.Drawing.FontFamily family = new("微软雅黑");
+                await Application.Current?.Dispatcher.BeginInvoke(() =>
+                  {
+                      WriteableBitmap writeableBitmap = _imgSource;
+                      int width = (int)writeableBitmap.Width;
+                      int height = (int)writeableBitmap.Height;
+                      writeableBitmap.Lock();
+                      using var bitmap = new Bitmap(width, height, writeableBitmap.BackBufferStride, System.Drawing.Imaging.PixelFormat.Format24bppRgb, writeableBitmap.BackBuffer);
+                      using Graphics graphics = Graphics.FromImage(bitmap);
+                      graphics.Clear(System.Drawing.Color.Black);
+                      //System.Drawing.FontFamily family = new("微软雅黑");
 
-                    //求最小点，看是否为负；为负则整体偏移
-                    var min_x = Points.Min(p => p.X);
-                    var min_y = Points.Min(p => p.Y);
+                      //求最小点，看是否为负；为负则整体偏移
+                      var min_x = Points.Min(p => p.X);
+                      var min_y = Points.Min(p => p.Y);
 
-                    var points = Points.ToArray();
-                    if (min_x < 0)
-                        for (int i = 0; i < Points.Count; i++)
-                        {
-                            points[i] = new PointF(Points[i].X - min_x, Points[i].Y);
-                        }
-                    if (min_y < 0)
-                        for (int i = 0; i < Points.Count; i++)
-                        {
-                            points[i] = new(Points[i].X, Points[i].Y - min_y);
-                        }
-                    for (int i = 0; i < Points.Count; i++)
-                    {
-                        points[i] = new(points[i].X + 100, points[i].Y + 100);
-                    }
-                    var max_x = points.Max(p => p.X);
-                    var max_y = points.Max(p => p.Y);
-                    var scalex = max_x / width;
-                    var scaley = max_y / height;
-                    var scale = Math.Max(scaley, scalex);
-                    foreach (var point in points)
-                    {
+                      var points = Points.ToArray();
+                      if (min_x < 0)
+                          for (int i = 0; i < Points.Count; i++)
+                          {
+                              points[i] = new PointF(Points[i].X - min_x, Points[i].Y);
+                          }
+                      if (min_y < 0)
+                          for (int i = 0; i < Points.Count; i++)
+                          {
+                              points[i] = new(Points[i].X, Points[i].Y - min_y);
+                          }
+                      for (int i = 0; i < Points.Count; i++)
+                      {
+                          points[i] = new(points[i].X + 100, points[i].Y + 100);
+                      }
+                      var max_x = points.Max(p => p.X);
+                      var max_y = points.Max(p => p.Y);
+                      var scalex = max_x / width;
+                      var scaley = max_y / height;
+                      var scale = Math.Max(scaley, scalex);
+                      foreach (var point in points)
+                      {
 
-                        graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Color.White), new Rectangle((int)(point.X / scale), (int)(point.Y / scale), 1, 1));
+                          graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Color.White), new Rectangle((int)(point.X / scale), (int)(point.Y / scale), 1, 1));
 
-                    }
+                      }
 
-                    graphics.Flush();
-                    writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
-                    writeableBitmap.Unlock();
+                      graphics.Flush();
+                      writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
+                      writeableBitmap.Unlock();
 
-                });
+                  });
             }
         }
 
