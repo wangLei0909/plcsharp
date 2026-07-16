@@ -1636,47 +1636,7 @@ namespace PLCSharp.VVMs.Vision
 
         private async Task ExecuteDrawBarcodeROIAsync()
         {
-            var window = System.Windows.Application.Current.Windows.OfType<System.Windows.Window>()
-                .FirstOrDefault(w => w.IsActive);
-            var imageEdit = WpfTool.FindVisualChild<ImageEdit>(window);
-            if (imageEdit?.ImageSource == null)
-            {
-                SendInfoDialog("请先获取图片！");
-                return;
-            }
-
-            try
-            {
-                var roi = await imageEdit.DrawROIAsync("条码解码");
-                if (roi == null) return;
-
-                if (SelectVisionFlow == null) return;
-
-                SelectVisionFlow.DoubleParams["ROILeft"] = roi.Left;
-                SelectVisionFlow.DoubleParams["ROITop"] = roi.Top;
-                SelectVisionFlow.DoubleParams["ROIWidth"] = roi.Width;
-                SelectVisionFlow.DoubleParams["ROIHeight"] = roi.Height;
-
-                // 画矩形边框
-                var rect = new System.Windows.Shapes.Rectangle
-                {
-                    Width = roi.Width,
-                    Height = roi.Height,
-                    Stroke = Brushes.Lime,
-                    StrokeThickness = 2,
-                    StrokeDashArray = new System.Windows.Media.DoubleCollection { 4, 2 },
-                    Tag = "条码解码",
-                };
-                Canvas.SetLeft(rect, roi.Left);
-                Canvas.SetTop(rect, roi.Top);
-                imageEdit.Draw(rect);
-
-                SendInfoDialog("条码解码 ROI 已保存");
-            }
-            catch (Exception ex)
-            {
-                SendInfoDialog($"ROI 绘制失败：{ex.Message}");
-            }
+            await DrawRectROIAsync("条码解码");
         }
 
         private AsyncDelegateCommand _DrawColorAreaROI;
@@ -1688,47 +1648,7 @@ namespace PLCSharp.VVMs.Vision
 
         private async Task ExecuteDrawColorAreaROIAsync()
         {
-            var window = System.Windows.Application.Current.Windows.OfType<System.Windows.Window>()
-                .FirstOrDefault(w => w.IsActive);
-            var imageEdit = WpfTool.FindVisualChild<ImageEdit>(window);
-            if (imageEdit?.ImageSource == null)
-            {
-                SendInfoDialog("请先获取图片！");
-                return;
-            }
-
-            try
-            {
-                var roi = await imageEdit.DrawROIAsync("颜色面积");
-                if (roi == null) return;
-
-                if (SelectVisionFlow == null) return;
-
-                SelectVisionFlow.DoubleParams["ROILeft"] = roi.Left;
-                SelectVisionFlow.DoubleParams["ROITop"] = roi.Top;
-                SelectVisionFlow.DoubleParams["ROIWidth"] = roi.Width;
-                SelectVisionFlow.DoubleParams["ROIHeight"] = roi.Height;
-
-                // 画矩形边框
-                var rect = new System.Windows.Shapes.Rectangle
-                {
-                    Width = roi.Width,
-                    Height = roi.Height,
-                    Stroke = Brushes.Lime,
-                    StrokeThickness = 2,
-                    StrokeDashArray = new System.Windows.Media.DoubleCollection { 4, 2 },
-                    Tag = "颜色面积",
-                };
-                Canvas.SetLeft(rect, roi.Left);
-                Canvas.SetTop(rect, roi.Top);
-                imageEdit.Draw(rect);
-
-                SendInfoDialog("颜色面积 ROI 已保存");
-            }
-            catch (Exception ex)
-            {
-                SendInfoDialog($"ROI 绘制失败：{ex.Message}");
-            }
+            await DrawRectROIAsync("颜色面积");
         }
 
         private AsyncDelegateCommand _DrawGrayAreaROI;
@@ -1740,47 +1660,7 @@ namespace PLCSharp.VVMs.Vision
 
         private async Task ExecuteDrawGrayAreaROIAsync()
         {
-            var window = System.Windows.Application.Current.Windows.OfType<System.Windows.Window>()
-                .FirstOrDefault(w => w.IsActive);
-            var imageEdit = WpfTool.FindVisualChild<ImageEdit>(window);
-            if (imageEdit?.ImageSource == null)
-            {
-                SendInfoDialog("请先获取图片！");
-                return;
-            }
-
-            try
-            {
-                var roi = await imageEdit.DrawROIAsync("灰度面积");
-                if (roi == null) return;
-
-                if (SelectVisionFlow == null) return;
-
-                SelectVisionFlow.DoubleParams["ROILeft"] = roi.Left;
-                SelectVisionFlow.DoubleParams["ROITop"] = roi.Top;
-                SelectVisionFlow.DoubleParams["ROIWidth"] = roi.Width;
-                SelectVisionFlow.DoubleParams["ROIHeight"] = roi.Height;
-
-                // 画矩形边框
-                var rect = new System.Windows.Shapes.Rectangle
-                {
-                    Width = roi.Width,
-                    Height = roi.Height,
-                    Stroke = Brushes.Lime,
-                    StrokeThickness = 2,
-                    StrokeDashArray = new System.Windows.Media.DoubleCollection { 4, 2 },
-                    Tag = "灰度面积",
-                };
-                Canvas.SetLeft(rect, roi.Left);
-                Canvas.SetTop(rect, roi.Top);
-                imageEdit.Draw(rect);
-
-                SendInfoDialog("灰度面积 ROI 已保存");
-            }
-            catch (Exception ex)
-            {
-                SendInfoDialog($"ROI 绘制失败：{ex.Message}");
-            }
+            await DrawRectROIAsync("灰度面积");
         }
 
         private AsyncDelegateCommand _DrawROICropROI;
@@ -1791,6 +1671,14 @@ namespace PLCSharp.VVMs.Vision
             _DrawROICropROI ??= new AsyncDelegateCommand(ExecuteDrawROICropROIAsync);
 
         private async Task ExecuteDrawROICropROIAsync()
+        {
+            await DrawRectROIAsync("ROI剪切");
+        }
+
+        /// <summary>
+        /// 通用矩形 ROI 绘制：在活动窗口的 ImageEdit 上拖拽矩形 → 保存参数 → 绘制边框 → 弹窗提示
+        /// </summary>
+        private async Task DrawRectROIAsync(string roiName)
         {
             var window = System.Windows.Application.Current.Windows.OfType<System.Windows.Window>()
                 .FirstOrDefault(w => w.IsActive);
@@ -1803,7 +1691,7 @@ namespace PLCSharp.VVMs.Vision
 
             try
             {
-                var roi = await imageEdit.DrawROIAsync("ROI剪切");
+                var roi = await imageEdit.DrawROIAsync(roiName);
                 if (roi == null) return;
 
                 if (SelectVisionFlow == null) return;
@@ -1821,13 +1709,13 @@ namespace PLCSharp.VVMs.Vision
                     Stroke = Brushes.Lime,
                     StrokeThickness = 2,
                     StrokeDashArray = new System.Windows.Media.DoubleCollection { 4, 2 },
-                    Tag = "ROI剪切",
+                    Tag = roiName,
                 };
                 Canvas.SetLeft(rect, roi.Left);
                 Canvas.SetTop(rect, roi.Top);
                 imageEdit.Draw(rect);
 
-                SendInfoDialog("ROI剪切 ROI 已保存");
+                SendInfoDialog($"{roiName} ROI 已保存");
             }
             catch (Exception ex)
             {
