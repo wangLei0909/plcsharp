@@ -339,6 +339,7 @@ namespace PLCSharp.VVMs.Vision
             [VisionFlowType.灰度面积] = new GrayAreaHandler(),
             [VisionFlowType.图像翻转] = new ImageFlipHandler(),
             [VisionFlowType.图像旋转] = new ImageRotateHandler(),
+            [VisionFlowType.ROI剪切] = new ROICropHandler(),
 
         };
         [NotMapped]

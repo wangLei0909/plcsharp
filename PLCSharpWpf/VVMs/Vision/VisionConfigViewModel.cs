@@ -353,6 +353,8 @@ namespace PLCSharp.VVMs.Vision
                         newFlow.DoubleParams["RotateAngle"] = 0;
                         newFlow.IntParams["ResizeMode"] = 0;
                         break;
+                    case VisionFlowType.ROI剪切:
+                        break;
                     case VisionFlowType.ROI解码:
                         newFlow.IntParams["DecodeType"] = 0;
                         newFlow.BoolParams["EnableMirror"] = false;
@@ -592,6 +594,9 @@ namespace PLCSharp.VVMs.Vision
                     break;
                 case VisionFlowType.图像旋转:
                     ContentRegion = new ImageRotate();
+                    break;
+                case VisionFlowType.ROI剪切:
+                    ContentRegion = new ROICrop();
                     break;
                 case VisionFlowType.ROI解码:
                     ContentRegion = new BarcodeDecode();
@@ -1771,6 +1776,58 @@ namespace PLCSharp.VVMs.Vision
                 imageEdit.Draw(rect);
 
                 SendInfoDialog("灰度面积 ROI 已保存");
+            }
+            catch (Exception ex)
+            {
+                SendInfoDialog($"ROI 绘制失败：{ex.Message}");
+            }
+        }
+
+        private AsyncDelegateCommand _DrawROICropROI;
+        /// <summary>
+        /// 绘制ROI剪切 ROI 区域
+        /// </summary>
+        public AsyncDelegateCommand DrawROICropROI =>
+            _DrawROICropROI ??= new AsyncDelegateCommand(ExecuteDrawROICropROIAsync);
+
+        private async Task ExecuteDrawROICropROIAsync()
+        {
+            var window = System.Windows.Application.Current.Windows.OfType<System.Windows.Window>()
+                .FirstOrDefault(w => w.IsActive);
+            var imageEdit = WpfTool.FindVisualChild<ImageEdit>(window);
+            if (imageEdit?.ImageSource == null)
+            {
+                SendInfoDialog("请先获取图片！");
+                return;
+            }
+
+            try
+            {
+                var roi = await imageEdit.DrawROIAsync("ROI剪切");
+                if (roi == null) return;
+
+                if (SelectVisionFlow == null) return;
+
+                SelectVisionFlow.DoubleParams["ROILeft"] = roi.Left;
+                SelectVisionFlow.DoubleParams["ROITop"] = roi.Top;
+                SelectVisionFlow.DoubleParams["ROIWidth"] = roi.Width;
+                SelectVisionFlow.DoubleParams["ROIHeight"] = roi.Height;
+
+                // 画矩形边框
+                var rect = new System.Windows.Shapes.Rectangle
+                {
+                    Width = roi.Width,
+                    Height = roi.Height,
+                    Stroke = Brushes.Lime,
+                    StrokeThickness = 2,
+                    StrokeDashArray = new System.Windows.Media.DoubleCollection { 4, 2 },
+                    Tag = "ROI剪切",
+                };
+                Canvas.SetLeft(rect, roi.Left);
+                Canvas.SetTop(rect, roi.Top);
+                imageEdit.Draw(rect);
+
+                SendInfoDialog("ROI剪切 ROI 已保存");
             }
             catch (Exception ex)
             {
