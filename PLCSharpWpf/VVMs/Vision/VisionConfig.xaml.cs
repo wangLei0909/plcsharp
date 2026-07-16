@@ -1,4 +1,5 @@
 using PLCSharp.Core.Prism;
+using PLCSharp.VVMs.Vision.Models;
 using System.Windows;
 using System.Windows.Controls;
 

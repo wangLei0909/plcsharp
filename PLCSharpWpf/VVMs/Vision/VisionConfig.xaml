@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:PLCSharp.Core.UserControls"
              xmlns:local="clr-namespace:PLCSharp.VVMs.Vision"
+             xmlns:models="clr-namespace:PLCSharp.VVMs.Vision.Models"
              xmlns:variables="clr-namespace:PLCSharp.VVMs.GlobalVariables"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:prism="http://prismlibrary.com/"
@@ -24,10 +25,10 @@
                 <x:Type TypeName="local:VisionFlowType" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-        <DataTemplate DataType="{x:Type local:FlowMenuItem}">
+        <DataTemplate DataType="{x:Type models:FlowMenuItem}">
             <TextBlock Text="{Binding Header}" />
         </DataTemplate>
-        <HierarchicalDataTemplate DataType="{x:Type local:FlowMenuGroup}" ItemsSource="{Binding Items}">
+        <HierarchicalDataTemplate DataType="{x:Type models:FlowMenuGroup}" ItemsSource="{Binding Items}">
             <TextBlock Text="{Binding Header}" />
         </HierarchicalDataTemplate>
 

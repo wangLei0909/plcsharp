@@ -12,6 +12,7 @@ using PLCSharp.VVMs.Vision.VisionFlowHandler;
 using PLCSharp.VVMs.Vision.VisionFlowHandler.Access;
 using PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm;
 using PLCSharp.VVMs.Vision.VisionFlowHandler.Processing;
+using PLCSharp.VVMs.Vision.Models;
 using Prism.Commands;
 using Prism.Dialogs;
 using Prism.Events;
@@ -1908,37 +1909,5 @@ namespace PLCSharp.VVMs.Vision
         #endregion
 
 
-
     }
-
-    /// <summary>
-    /// 添加流程菜单中的一个分组（一个子菜单）
-    /// </summary>
-    public class FlowMenuGroup
-    {
-        /// <summary>
-        /// Header
-        /// </summary>
-        public string Header { get; set; }
-        /// <summary>
-        /// Items
-        /// </summary>
-        public List<FlowMenuItem> Items { get; set; }
-    }
-
-    /// <summary>
-    /// 添加流程菜单中的一个叶子菜单项
-    /// </summary>
-    public class FlowMenuItem
-    {
-        /// <summary>
-        /// Header
-        /// </summary>
-        public string Header { get; set; }
-        /// <summary>
-        /// Flow类型
-        /// </summary>
-        public VisionFlowType FlowType { get; set; }
-    }
-
 }
