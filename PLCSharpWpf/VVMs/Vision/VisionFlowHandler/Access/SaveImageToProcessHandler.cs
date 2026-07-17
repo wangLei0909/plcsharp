@@ -19,9 +19,9 @@
         {
             if (item.StringParams.TryGetValue("Image", out string imageName))
             {
-                if (func.Params.Mats.Where(w => w.Name == imageName).Any())
+                if (func.Params.ImageDatas.Where(w => w.Name == imageName).Any())
                 {
-                    func.Params.Mats.Where(w => w.Name == imageName).FirstOrDefault().Mat = func.Src.Clone();
+                    func.Params.ImageDatas.Where(w => w.Name == imageName).FirstOrDefault().Mat = func.Src.Clone();
                     item.Flow.Done = true;
                     return true;
                 }

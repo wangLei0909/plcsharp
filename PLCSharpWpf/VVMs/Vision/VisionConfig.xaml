@@ -62,7 +62,7 @@
                               CanUserDeleteRows="False" CanUserSortColumns="False"
                               ItemsSource="{Binding VisionsModel.ImageDatas}"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
-                              SelectedItem="{Binding VisionsModel.SelectImageData}"
+                              SelectedItem="{Binding GridSelectedGlobalImageData}"
                               Unloaded="DataGrid_Unloaded">
                         <DataGrid.ItemContainerStyle>
                             <Style TargetType="DataGridRow">
@@ -78,10 +78,10 @@
                         </DataGrid.ItemContainerStyle>
                         <DataGrid.ContextMenu>
                             <ContextMenu IsEnabled="True" StaysOpen="False">
-                                <MenuItem Command="{Binding VisionsModel.ImageManage}" CommandParameter="New" Header="新增" />
-                                <MenuItem Command="{Binding VisionsModel.ImageManage}" CommandParameter="Remove" Header="删除" />
-                                <MenuItem Command="{Binding VisionsModel.ImageManage}" CommandParameter="Save" Header="保存" />
-                                <MenuItem Command="{Binding VisionsModel.ImageManage}" CommandParameter="Show" Header="显示" />
+                                <MenuItem Command="{Binding GlobalImageManage}" CommandParameter="New" Header="新增" />
+                                <MenuItem Command="{Binding GlobalImageManage}" CommandParameter="Remove" Header="删除" />
+                                <MenuItem Command="{Binding GlobalImageManage}" CommandParameter="Save" Header="保存" />
+                                <MenuItem Command="{Binding GlobalImageManage}" CommandParameter="Show" Header="显示" />
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>
@@ -101,9 +101,9 @@
                               HorizontalAlignment="Left" VerticalAlignment="Center"
                               AutoGenerateColumns="False" CanUserAddRows="False"
                               CanUserDeleteRows="False" CanUserSortColumns="False"
-                              ItemsSource="{Binding SelectedVisionFunction.Params.Mats}"
+                              ItemsSource="{Binding SelectedVisionFunction.Params.ImageDatas}"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
-                              SelectedItem="{Binding GridSelectedMat}"
+                              SelectedItem="{Binding GridSelectedLocalImageData}"
                               Unloaded="DataGrid_Unloaded">
                         <DataGrid.ItemContainerStyle>
                             <Style TargetType="DataGridRow">
@@ -119,9 +119,9 @@
                         </DataGrid.ItemContainerStyle>
                         <DataGrid.ContextMenu>
                             <ContextMenu IsEnabled="True" StaysOpen="False">
-                                <MenuItem Command="{Binding MatManage}" CommandParameter="New" Header="新增" />
-                                <MenuItem Command="{Binding MatManage}" CommandParameter="Remove" Header="删除" />
-                                <MenuItem Command="{Binding MatManage}" CommandParameter="Show" Header="显示" />
+                                <MenuItem Command="{Binding LocalImageDataManage}" CommandParameter="New" Header="新增" />
+                                <MenuItem Command="{Binding LocalImageDataManage}" CommandParameter="Remove" Header="删除" />
+                                <MenuItem Command="{Binding LocalImageDataManage}" CommandParameter="Show" Header="显示" />
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>

@@ -11,6 +11,6 @@
     <StackPanel>
         <TextBlock Text="{Binding Path=SelectVisionFlow.StringParams[Image]}" />
 
-        <ComboBox DisplayMemberPath="Name" ItemsSource="{Binding VisionsModel.ImageDatas}" SelectedItem="{Binding SelectImageData}" />
+        <ComboBox DisplayMemberPath="Name" ItemsSource="{Binding VisionsModel.ImageDatas}" SelectedItem="{Binding SelectedGlobalImageData}" />
     </StackPanel>
 </UserControl>

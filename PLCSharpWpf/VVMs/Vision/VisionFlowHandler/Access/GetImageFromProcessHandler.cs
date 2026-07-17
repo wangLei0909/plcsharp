@@ -19,7 +19,7 @@
         {
             if (item.StringParams.TryGetValue("Image", out string imageName))
             {
-                var theMat = func.Params.Mats.Where(w => w.Name == imageName).FirstOrDefault();
+                var theMat = func.Params.ImageDatas.Where(w => w.Name == imageName).FirstOrDefault();
                 if (theMat != null)
                 {
                     func.Src = theMat.Mat.Clone();

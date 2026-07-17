@@ -247,7 +247,7 @@ namespace PLCSharp.VVMs.Vision
         }
 
         #region Camera
-        private HikCameras _HikCameras;
+        private readonly HikCameras _HikCameras;
         private ObservableCollection<CameraBase> _Cameras = [];
         /// <summary>
         /// Cameras
@@ -396,115 +396,7 @@ namespace PLCSharp.VVMs.Vision
             get { return _ImageDatas; }
             set { SetProperty(ref _ImageDatas, value); }
         }
-
-        private ImageData _SelectImageData;
-        /// <summary>
-        /// 选择图像数据
-        /// </summary>
-        public ImageData SelectImageData
-        {
-            get { return _SelectImageData; }
-            set { SetProperty(ref _SelectImageData, value); }
-        }
-
-        private DelegateCommand<string> _ImageManage;
-        /// <summary>
-        /// 图像管理
-        /// </summary>
-        public DelegateCommand<string> ImageManage =>
-            _ImageManage ??= new DelegateCommand<string>(ExecuteImageManage);
-
-        void ExecuteImageManage(string cmd)
-        {
-            switch (cmd)
-            {
-                case "New":
-                    var newImage = new ImageData()
-                    {
-                    };
-                    ImageDatas.Add(newImage);
-
-                    break;
-                case "Remove":
-                    if (SelectImageData != null)
-                    {
-                        if (System.Windows.MessageBox.Show($"确认删除图像 [{SelectImageData.Name}]？", "确认删除", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
-                            break;
-                        var image = _DatasContext.ImageDatas.Where(c => c.ID == SelectImageData.ID).FirstOrDefault();
-                        if (image != null)
-                        {
-
-                            _DatasContext.ImageDatas.Remove(image);
-                            _DatasContext.Save();
-                        }
-                        var name = SelectImageData.Name;
-                        ImageDatas.Remove(SelectImageData);
-                        SendInfoDialog($"已删除：{name}");
-                    }
-                    break;
-                case "Save":
-                    var names = new List<string>();
-
-                    foreach (var item in ImageDatas)
-                    {
-                        if (string.IsNullOrEmpty(item.Name))
-                        {
-                            SendInfoDialog($"保存失败，名称{item.Name}不合适！");
-                            return;
-                        }
-
-                        if (names.Contains(item.Name))
-                        {
-                            SendInfoDialog($"保存失败，重复的名称{item.Name}！");
-                            return;
-                        }
-                        else
-                        {
-                            names.Add(item.Name);
-                        }
-                    }
-
-
-                    foreach (var item in ImageDatas)
-                    {
-                        if (_DatasContext.ImageDatas.Any(h => h.ID == item.ID) == false)
-                        {
-                            item.RecipeID = _DatasContext.CurrentRecipe.ID;
-                            _DatasContext.ImageDatas.Add(item);
-
-                        }
-                        else
-                        {
-                            var newitem = _DatasContext.ImageDatas.Where(c => c.Name == item.Name).FirstOrDefault();
-                            newitem.ID = item.ID;
-                            newitem.RecipeID = item.RecipeID;
-                            newitem.Name = item.Name;
-                            newitem.Comment = item.Comment;
-                            newitem.Mat = item.Mat;
-
-
-                        }
-
-
-                    }
-                    if (SelectImageData != null)
-                        SelectImageData.Prompt = "";
-                    _DatasContext.Save();
-                    break;
-                case "Show":
-
-                    var window = System.Windows.Application.Current.Windows.OfType<System.Windows.Window>()
-                                .FirstOrDefault(w => w.IsActive);
-                    var imageEdit = WpfTool.FindVisualChild<ImageEdit>(window);
-
-
-                    imageEdit.ImageSource = SelectImageData.Mat.ToWriteableBitmap();
-                    break;
-            }
-        }
-
-
-
+ 
         #endregion
     }
 }

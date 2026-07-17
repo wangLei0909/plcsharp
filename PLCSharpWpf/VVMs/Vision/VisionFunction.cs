@@ -524,7 +524,7 @@ namespace PLCSharp.VVMs.Vision
         /// <summary>
         /// 图像集合
         /// </summary>
-        public ObservableCollection<ImageData> Mats
+        public ObservableCollection<ImageData> ImageDatas
         {
             get { return _Mats; }
             set { SetProperty(ref _Mats, value); }

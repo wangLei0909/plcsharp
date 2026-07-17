@@ -10,3 +10,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Performance", "SYSLIB1045:转换为“GeneratedRegexAttribute”。")]
 [assembly: SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "<挂起>", Scope = "member", Target = "~M:PLCSharp.VVMs.Workflows.Script.CustomTextEditor.OnDataContextChanged(System.Object,System.Windows.DependencyPropertyChangedEventArgs)")]
 [assembly: SuppressMessage("Usage", "VSTHRD001:Avoid legacy thread switching APIs")]
+[assembly: SuppressMessage("Style", "IDE0305:简化集合初始化")]
