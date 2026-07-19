@@ -73,7 +73,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="特征点数量" VerticalAlignment="Center" ToolTip="提取的特征点越多越精确，但速度越慢" />
-                    <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.IntParams[NFeatures], Mode=TwoWay, TargetNullValue=500, UpdateSourceTrigger=LostFocus}" />
+                    <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.IntParams[NFeatures], Mode=TwoWay, TargetNullValue=1000, UpdateSourceTrigger=LostFocus}" />
 
                     <TextBlock Grid.Row="1" Text="最小匹配数" VerticalAlignment="Center" ToolTip="最少需要的优质匹配点数" />
                     <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.IntParams[MinMatches], Mode=TwoWay, TargetNullValue=8, UpdateSourceTrigger=LostFocus}" />

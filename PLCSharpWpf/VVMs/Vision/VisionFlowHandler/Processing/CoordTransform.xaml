@@ -19,22 +19,19 @@
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
-                            <RowDefinition />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="70" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Row="0" Text="矩阵名称" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectVisionFlow.StringParams[CalibMatName], Mode=TwoWay, TargetNullValue=标定矩阵}" />
-                        <TextBlock Grid.Row="1" Text="行基准" VerticalAlignment="Center" ToolTip="第一行的世界Y坐标" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[CalibRowBase], Mode=TwoWay, TargetNullValue=0, UpdateSourceTrigger=LostFocus}" />
-                        <TextBlock Grid.Row="2" Text="列基准" VerticalAlignment="Center" ToolTip="第一列的世界X坐标" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[CalibColBase], Mode=TwoWay, TargetNullValue=0, UpdateSourceTrigger=LostFocus}" />
-                        <TextBlock Grid.Row="3" Text="间距" VerticalAlignment="Center" ToolTip="相邻圆点的世界间距" />
-                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[CalibSpacing], Mode=TwoWay, TargetNullValue=5, UpdateSourceTrigger=LostFocus}" />
-                        <TextBlock Grid.Row="4" Text="9点圆心数" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="4" Grid.Column="1"
+                        <TextBlock Grid.Row="0" Text="行基准" VerticalAlignment="Center" ToolTip="第一行的世界Y坐标" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[CalibRowBase], Mode=TwoWay, TargetNullValue=0, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="1" Text="列基准" VerticalAlignment="Center" ToolTip="第一列的世界X坐标" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[CalibColBase], Mode=TwoWay, TargetNullValue=0, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="2" Text="间距" VerticalAlignment="Center" ToolTip="相邻圆点的世界间距" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[CalibSpacing], Mode=TwoWay, TargetNullValue=5, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="3" Text="9点圆心数" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="3" Grid.Column="1"
                                  Text="{Binding SelectedVisionFunction.Params.ResultDoubles[CalibDotCount], Mode=OneWay, TargetNullValue=—}"
                                  IsReadOnly="True" Background="#FFF0F0F0" />
                     </Grid>

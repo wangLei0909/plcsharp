@@ -340,7 +340,7 @@ public partial class VisionConfigViewModel
             double rowBase = SelectVisionFlow.DoubleParams.TryGetValue("CalibRowBase", out double rb) ? rb : 0;
             double colBase = SelectVisionFlow.DoubleParams.TryGetValue("CalibColBase", out double cb) ? cb : 0;
             double spacing = SelectVisionFlow.DoubleParams.TryGetValue("CalibSpacing", out double sp) ? Math.Max(sp, 0.1) : 5;
-            string matName = SelectVisionFlow.StringParams.TryGetValue("CalibMatName", out var mn) && !string.IsNullOrEmpty(mn) ? mn : "标定矩阵";
+            string matName = SelectVisionFlow.StringParams.TryGetValue("TransformMat", out var mn) && !string.IsNullOrEmpty(mn) ? mn : "标定矩阵";
 
             Mat gray;
             if (src.Channels() == 3)

@@ -246,8 +246,7 @@ namespace PLCSharp.Models
                                     ID = i.ID.ToString(),
                                     RecipeID = i.RecipeID.ToString(),
                                     i.Name,
-                                    i.Comment,
-                                    图像数据 = i.SerializedMat != null ? Convert.ToBase64String(i.SerializedMat) : ""
+                                    i.Comment
                                 }).ToList();
 
                             // 运动控制点位
@@ -297,6 +296,23 @@ namespace PLCSharp.Models
                                     r.SerializedParams
                                 }).ToList();
 
+                            // 机器人矩阵
+                            sheets["机器人矩阵"] = _DatasContext.RobotMatrices
+                                .Where(m => m.RecipeID == recipeId)
+                                .Select(m => new
+                                {
+                                    ID = m.ID.ToString(),
+                                    RecipeID = m.RecipeID.ToString(),
+                                    RobotID = m.RobotID.ToString(),
+                                    m.Name,
+                                    m.StartName,
+                                    m.XEndName,
+                                    m.YEndName,
+                                    m.XCount,
+                                    m.YCount,
+                                    m.MatrixType
+                                }).ToList();
+
                             // 系统变量
                             sheets["系统变量"] = _DatasContext.SystemVariables
                                 .Where(s => s.RecipeID == recipeId)
@@ -324,6 +340,22 @@ namespace PLCSharp.Models
                                     关联轴Y = g.AxisYName,
                                     g.SerializedParams,
                                     g.SerializedInterpolations
+                                }).ToList();
+
+                            // 运动控制矩阵
+                            sheets["运动控制矩阵"] = _DatasContext.Matrices
+                                .Where(m => m.RecipeID == recipeId)
+                                .Select(m => new
+                                {
+                                    ID = m.ID.ToString(),
+                                    RecipeID = m.RecipeID.ToString(),
+                                    m.Name,
+                                    m.StartName,
+                                    m.XEndName,
+                                    m.YEndName,
+                                    m.XCount,
+                                    m.YCount,
+                                    m.MatrixType
                                 }).ToList();
 
                             // 画布配置
@@ -464,17 +496,13 @@ namespace PLCSharp.Models
                                 if (string.IsNullOrWhiteSpace(name)) continue;
                                 if (_DatasContext.ImageDatas.Any(i => i.Name == name && i.RecipeID == recipeId)) continue;
 
-                                var imgData = new ImageData
+                                _DatasContext.ImageDatas.Add(new ImageData
                                 {
                                     ID = id,
                                     RecipeID = recipeId,
                                     Name = name,
                                     Comment = (string)row.Comment
-                                };
-                                var base64 = (string)row.图像数据;
-                                if (!string.IsNullOrWhiteSpace(base64))
-                                    imgData.SerializedMat = Convert.FromBase64String(base64);
-                                _DatasContext.ImageDatas.Add(imgData);
+                                });
                             }
 
                             // 运动控制点位
@@ -547,6 +575,35 @@ namespace PLCSharp.Models
                                 _DatasContext.RobotPoints.Add(rp);
                             }
 
+                            // 机器人矩阵
+                            foreach (var row in MiniExcel.Query(dialog.FileName, sheetName: "机器人矩阵"))
+                            {
+                                var idStr = (string)row.ID;
+                                if (string.IsNullOrWhiteSpace(idStr)) continue;
+                                if (!Guid.TryParse(idStr, out var id)) continue;
+                                if (_DatasContext.RobotMatrices.Any(m => m.ID == id)) continue;
+
+                                var name = (string)row.Name;
+                                if (string.IsNullOrWhiteSpace(name)) continue;
+                                if (_DatasContext.RobotMatrices.Any(m => m.Name == name && m.RecipeID == recipeId)) continue;
+
+                                var rm = new RobotMatrix
+                                {
+                                    ID = id,
+                                    RecipeID = recipeId,
+                                    Name = name,
+                                    StartName = (string)row.StartName,
+                                    XEndName = (string)row.XEndName,
+                                    YEndName = (string)row.YEndName,
+                                    XCount = (int)row.XCount,
+                                    YCount = (int)row.YCount,
+                                    MatrixType = (int)row.MatrixType
+                                };
+                                if (Guid.TryParse((string)row.RobotID, out var robotId))
+                                    rm.RobotID = robotId;
+                                _DatasContext.RobotMatrices.Add(rm);
+                            }
+
                             // 系统变量
                             foreach (var row in MiniExcel.Query(dialog.FileName, sheetName: "系统变量"))
                             {
@@ -595,6 +652,32 @@ namespace PLCSharp.Models
                                     AxisYName = (string)row.关联轴Y,
                                     SerializedParams = (string)row.SerializedParams,
                                     SerializedInterpolations = (string)row.SerializedInterpolations
+                                });
+                            }
+
+                            // 运动控制矩阵
+                            foreach (var row in MiniExcel.Query(dialog.FileName, sheetName: "运动控制矩阵"))
+                            {
+                                var idStr = (string)row.ID;
+                                if (string.IsNullOrWhiteSpace(idStr)) continue;
+                                if (!Guid.TryParse(idStr, out var id)) continue;
+                                if (_DatasContext.Matrices.Any(m => m.ID == id)) continue;
+
+                                var name = (string)row.Name;
+                                if (string.IsNullOrWhiteSpace(name)) continue;
+                                if (_DatasContext.Matrices.Any(m => m.Name == name && m.RecipeID == recipeId)) continue;
+
+                                _DatasContext.Matrices.Add(new Matrix
+                                {
+                                    ID = id,
+                                    RecipeID = recipeId,
+                                    Name = name,
+                                    StartName = (string)row.StartName,
+                                    XEndName = (string)row.XEndName,
+                                    YEndName = (string)row.YEndName,
+                                    XCount = (int)row.XCount,
+                                    YCount = (int)row.YCount,
+                                    MatrixType = (int)row.MatrixType
                                 });
                             }
 
@@ -826,6 +909,34 @@ namespace PLCSharp.Models
                     _DatasContext.InterpolationGroups.Add(itemCopy);
                 }
             }
+            // 机器人矩阵
+
+            var robotMatrices = _DatasContext.RobotMatrices.Where(c => c.RecipeID == RecipeSelected.ID);
+            foreach (var item in robotMatrices)
+            {
+                if (item != null)
+                {
+                    var itemCopy = item.DeepCopy();
+                    itemCopy.RecipeID = newRecipe.ID;
+                    itemCopy.ID = Guid.NewGuid();
+                    _DatasContext.RobotMatrices.Add(itemCopy);
+                }
+            }
+
+            // 运动控制矩阵
+
+            var matrices = _DatasContext.Matrices.Where(c => c.RecipeID == RecipeSelected.ID);
+            foreach (var item in matrices)
+            {
+                if (item != null)
+                {
+                    var itemCopy = item.DeepCopy();
+                    itemCopy.RecipeID = newRecipe.ID;
+                    itemCopy.ID = Guid.NewGuid();
+                    _DatasContext.Matrices.Add(itemCopy);
+                }
+            }
+
             // 任务列表
 
             var workflows = _DatasContext.Workflows.Where(c => c.RecipeID == RecipeSelected.ID);

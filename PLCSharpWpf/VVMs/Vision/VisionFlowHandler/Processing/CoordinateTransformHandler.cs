@@ -39,9 +39,9 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Processing
             }
 
             // 2. 从全局变量中读取变换矩阵
-            if (!item.StringParams.TryGetValue("TransformMat", out string matName) ||
+            if (!item.StringParams.TryGetValue("TransformMat", out string? matName) ||
                 string.IsNullOrEmpty(matName))
-                item.StringParams["TransformMat"] = "TransformMat";
+                item.StringParams["TransformMat"] = "标定矩阵";
 
             var matVar = func.GlobalModel.VariablesModel.SystemVariables.FirstOrDefault(v => v.Name == matName);
             if (matVar?.Value == null)
