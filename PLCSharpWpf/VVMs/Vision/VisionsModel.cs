@@ -3,7 +3,6 @@ using PLCSharp.Core.Prism;
 using PLCSharp.Core.Tools;
 using PLCSharp.Core.UserControls;
 using PLCSharp.Models;
-using PLCSharp.VVMs.Connects;
 using PLCSharp.VVMs.Vision.Camera;
 using Prism.Commands;
 using Prism.Dialogs;
@@ -69,7 +68,6 @@ namespace PLCSharp.VVMs.Vision
         public void Init(GlobalModel globalModel)
         {
             GlobalModel = globalModel;
-            Connects = GlobalModel.Connects;
         }
 
         public void LoadRecipe(Guid CurrentRecipeID)
@@ -113,10 +111,7 @@ namespace PLCSharp.VVMs.Vision
                 CamerasAll.Add(item);
             }
         }
-        /// <summary>
-        /// 连接模型
-        /// </summary>
-        public ConnectsModel Connects { get; set; }
+ 
 
         private ObservableCollection<VisionFunction> _VisionFunctions = [];
         /// <summary>
