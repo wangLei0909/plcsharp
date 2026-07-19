@@ -43,7 +43,7 @@ namespace PLCSharp.VVMs.Vision
             {
                 SetProperty(ref _ShowMat, value);
                 if (value == null) return;
-               _ =  System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+               _ =  System.Windows.Application.Current.Dispatcher.InvokeAsync(new Action(() =>
                 {
                     if (_ImgSrc != null
                     && _ShowMat.Width == _ImgSrc.PixelWidth

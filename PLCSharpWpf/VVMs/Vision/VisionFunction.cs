@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 using Newtonsoft.Json;
 using OpenCvSharp;
 using PLCSharp.Core.Common;
@@ -17,7 +17,7 @@ using System.Windows.Media;
 
 namespace PLCSharp.VVMs.Vision
 {
- 
+
     /// <summary>
     /// 视觉功能的执行单元，包含流程步骤列表（VisionFlows）、参数集合（Params）和运行时图像缓存
     /// </summary>
@@ -350,7 +350,7 @@ namespace PLCSharp.VVMs.Vision
         public List<DrawCommand> DrawCommands { get; set; } = [];
         public async Task RenderDrawAsync()
         {
-            await System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+            await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
              {
                  if (DrawCommands == null || DrawCommands.Count <= 0) return;
                  var commands = DrawCommands.ToList();

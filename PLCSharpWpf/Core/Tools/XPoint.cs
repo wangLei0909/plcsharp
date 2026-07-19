@@ -1,4 +1,4 @@
-﻿
+﻿#nullable enable
 
 using Prism.Mvvm;
 
@@ -73,7 +73,7 @@ namespace PLCSharp.Core.Tools
             return to;
         }
 
-        public bool Equals(XPoint other)
+        public bool Equals(XPoint? other)
         {
             if (other is null) return false;
             // 避免浮点数精度问题，通常使用一个极小值 Epsilon 进行比较

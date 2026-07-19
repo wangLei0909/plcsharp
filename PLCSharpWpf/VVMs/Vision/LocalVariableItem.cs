@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Prism.Mvvm;
-
+        
 namespace PLCSharp.VVMs.Vision
 {
     /// <summary>
@@ -8,7 +8,7 @@ namespace PLCSharp.VVMs.Vision
     /// </summary>
     public class LocalVariableItem : BindableBase
     {
-        private string _Name;
+        private string _Name = "";
         /// <summary>
         /// 变量名称
         /// </summary>
@@ -18,7 +18,7 @@ namespace PLCSharp.VVMs.Vision
             set { SetProperty(ref _Name, value); }
         }
 
-        private string _VarType;
+        private string _VarType = "";
         /// <summary>
         /// 变量类型：Point / Line / Circle / Rect / Double
         /// </summary>
@@ -28,7 +28,7 @@ namespace PLCSharp.VVMs.Vision
             set { SetProperty(ref _VarType, value); }
         }
 
-        private string _StrValue;
+        private string _StrValue = "";
         [JsonIgnore]
         public string StrValue
         {
@@ -36,11 +36,11 @@ namespace PLCSharp.VVMs.Vision
             set { SetProperty(ref _StrValue, value); }
         }
 
-        private object? _RawValue;
+        private object _RawValue = "";
         /// <summary>
         /// 原始值
         /// </summary>
-        public object? RawValue
+        public object RawValue
         {
             get { return _RawValue; }
             set
@@ -58,6 +58,7 @@ namespace PLCSharp.VVMs.Vision
                                 }
                                 else
                                 {
+                                    if (value == null) break  ;
                                     r = JsonConvert.DeserializeObject<Pos>(value.ToString());
                                 }
                                 SetProperty(ref _RawValue, r);
@@ -72,6 +73,7 @@ namespace PLCSharp.VVMs.Vision
                                 }
                                 else
                                 {
+                                    if (value == null) break;
                                     r = JsonConvert.DeserializeObject<Line>(value.ToString());
                                 }
                                 SetProperty(ref _RawValue, r);
@@ -86,6 +88,7 @@ namespace PLCSharp.VVMs.Vision
                                 }
                                 else
                                 {
+                                    if (value == null) break;
                                     r = JsonConvert.DeserializeObject<Circle>(value.ToString());
                                 }
                                 SetProperty(ref _RawValue, r);
@@ -100,6 +103,7 @@ namespace PLCSharp.VVMs.Vision
                                 }
                                 else
                                 {
+                                    if (value == null) break;
                                     r = JsonConvert.DeserializeObject<Rect>(value.ToString());
                                 }
 
@@ -118,6 +122,7 @@ namespace PLCSharp.VVMs.Vision
                                 }
                                 else
                                 {
+                                    if (value == null) break;
                                     r = JsonConvert.DeserializeObject<Barcode>(value.ToString());
                                 }
 
@@ -133,9 +138,9 @@ namespace PLCSharp.VVMs.Vision
                 catch (Exception)
                 {
 
-                  
+
                 }
-   
+
             }
         }
 
@@ -172,25 +177,25 @@ namespace PLCSharp.VVMs.Vision
                         return $"位置(X:{pt.X:F4}, Y:{pt.Y:F4}), 角度:（{pt.Angle:F4})";
                         else
                             return val?.ToString() ?? "";
-                       
+
                     case "Line":
                         if (val is Line line)
                             return $"(X:{line.From.X:F4}, Y:{line.From.Y:F4}) -> (X:{line.To.X:F4}, Y:{line.To.Y:F4})";
                         else
                             return val?.ToString() ?? "";
-                      
+
                     case "Circle":
                         if (val is Circle c)
                             return $"中心(X:{c.Center.X:F4} Y:{c.Center.Y:F4}) 半径=({c.Radius:F4})";
                         else
                             return val?.ToString() ?? "";
-                       
+
                     case "Rect":
                         if (val is Rect r)
                             return $"中心：(X:{r.Center.X:F4}, Y:{r.Center.Y:F4}) 宽高:({r.Width:F4} × {r.Height:F4}) 角度:（{r.Center.Angle:F4})";
                         else
                             return val?.ToString() ?? "";
-                        
+
                     case "Double":
                         return ((double)val).ToString("F4");
 

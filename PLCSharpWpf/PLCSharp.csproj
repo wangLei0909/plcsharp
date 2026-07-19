@@ -21,18 +21,15 @@
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.17" />
 	<PackageReference Include="MiniExcel" Version="1.45.0" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-	<PackageReference Include="OpenCvSharp5.Windows" Version="5.0.0.20260713" />
+	<PackageReference Include="OpenCvSharp5.Windows" Version="5.0.0.20260718" />
     <PackageReference Include="Prism.DryIoc" Version="9.0.537" />
     <PackageReference Include="RoslynPad.Editor.Windows" Version="5.0.0" />
     <!--<PackageReference Include="SourceGear.sqlite3" Version="3.50.4.5" />-->
     <!--<PackageReference Include="SqlSugarCore" Version="5.1.4.214" />-->
-    <PackageReference Include="System.IO.Ports" Version="10.0.9" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.10" />
     <!-- 覆盖传递依赖 SQLitePCLRaw.lib.e_sqlite3 至修复版本 3.50.3（CVE-2025-6965，2.x 全部受影响且已弃用） -->
-    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.50.3" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
     <PackageReference Include="ZXing.Net" Version="0.16.11" />
-  </ItemGroup>
-  <ItemGroup>
-  	<FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
     <None Update="SDK\Camera\MvCameraControl.Net.dll">

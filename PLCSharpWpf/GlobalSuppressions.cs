@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Style", "IDE1006:命名样式")]
 [assembly: SuppressMessage("Style", "IDE0290:使用主构造函数")]
-[assembly: SuppressMessage("Performance", "SYSLIB1045:转换为“GeneratedRegexAttribute”。")]
-[assembly: SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "<挂起>", Scope = "member", Target = "~M:PLCSharp.VVMs.Workflows.Script.CustomTextEditor.OnDataContextChanged(System.Object,System.Windows.DependencyPropertyChangedEventArgs)")]
-[assembly: SuppressMessage("Usage", "VSTHRD001:Avoid legacy thread switching APIs")]
 [assembly: SuppressMessage("Style", "IDE0305:简化集合初始化")]
+[assembly: SuppressMessage("Usage", "VSTHRD003:Avoid awaiting foreign Tasks")]
+[assembly: SuppressMessage("Usage", "VSTHRD001:Avoid legacy thread switching APIs")]
+ 

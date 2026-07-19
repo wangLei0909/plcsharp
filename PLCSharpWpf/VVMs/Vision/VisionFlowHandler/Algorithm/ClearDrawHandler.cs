@@ -9,7 +9,7 @@
 
         public bool Execute(VisionFunction func, VisionFlow item)
         {
-            _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(() =>
+            _ = System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
            {
                func.DrawCommands.Clear();
                func.EditImageEdit?.Remove("DrawOverlay");

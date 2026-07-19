@@ -107,7 +107,7 @@ namespace PLCSharp.VVMs.Connects.Socket
                         if (!(Server as SocketServer).LogQueue.IsEmpty)
                         {
                             if ((Server as SocketServer).LogQueue.TryDequeue(out string log))
-                                _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                                _ = System.Windows.Application.Current.Dispatcher.InvokeAsync(new Action(() =>
                                 {
                                     Logs.Add(new ErrorLog(log));
                                 }));

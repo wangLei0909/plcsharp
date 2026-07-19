@@ -214,7 +214,7 @@ namespace PLCSharp.VVMs.Homepage
         }
         private static void Dispatch(Action action)
         {
-          _=  Application.Current.Dispatcher.BeginInvoke(action);
+          _=  Application.Current.Dispatcher.InvokeAsync(action);
         }
 
         /// <summary>

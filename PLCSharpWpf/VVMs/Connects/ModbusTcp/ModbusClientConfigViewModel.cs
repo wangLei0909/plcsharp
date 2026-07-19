@@ -31,7 +31,6 @@ namespace PLCSharp.VVMs.Connects.ModbusTcp
 
         private readonly ConnectsModel _ConnectsModel;
         private string _Title = "Modbus TCP 客户端";
-        private bool _hasSubscribedCollection;
 
         /// <summary>
         /// 标题
@@ -97,7 +96,7 @@ namespace PLCSharp.VVMs.Connects.ModbusTcp
                 {
                     if (Client.LogQueue.TryDequeue(out string log))
                     {
-                        _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                        _ = System.Windows.Application.Current.Dispatcher.InvokeAsync(new Action(() =>
                         {
                             Logs.Add(new ErrorLog(log));
                         }));

@@ -1,3 +1,4 @@
+﻿#nullable enable
 using Prism.Mvvm;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -23,7 +24,7 @@ namespace PLCSharp.VVMs.Robots
         /// </summary>
         public Guid RobotID { get; set; }
 
-        private string _Name;
+        private string _Name = "";
         /// <summary>
         /// 名称
         /// </summary>
@@ -33,7 +34,7 @@ namespace PLCSharp.VVMs.Robots
             set { SetProperty(ref _Name, value); }
         }
 
-        private string _StartName;
+        private string _StartName = "";
         /// <summary>
         /// 首点名（原点 (0,0)）
         /// </summary>
@@ -43,7 +44,7 @@ namespace PLCSharp.VVMs.Robots
             set { SetProperty(ref _StartName, value); }
         }
 
-        private string _XEndName;
+        private string _XEndName = "";
         /// <summary>
         /// X方向尾点名（(XCount-1, 0)）
         /// </summary>
@@ -53,7 +54,7 @@ namespace PLCSharp.VVMs.Robots
             set { SetProperty(ref _XEndName, value); }
         }
 
-        private string _YEndName;
+        private string _YEndName = "";
         /// <summary>
         /// Y方向尾点名（(0, YCount-1)）
         /// </summary>

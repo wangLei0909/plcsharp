@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Threading;
 
@@ -29,7 +29,7 @@ namespace PLCSharp.VVMs.Connects.ModbusRtu
 
 
         /// <summary>打开串口</summary>
-        public bool Open()
+        public override void Open()
         {
             try
             {
@@ -42,13 +42,13 @@ namespace PLCSharp.VVMs.Connects.ModbusRtu
                 _port.Open();
                 Connected = true;
                 Log($"串口 {IP_SerialPort} 已打开");
-                return true;
+
             }
             catch (Exception ex)
             {
                 Log($"打开串口失败: {ex.Message}");
                 Connected = false;
-                return false;
+
             }
         }
 

@@ -200,7 +200,7 @@ namespace PLCSharp.VVMs.Connects.ModbusTcp
                     {
                         if (Server.LogQueue.TryDequeue(out string log))
                         {
-                            _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                            _ = System.Windows.Application.Current.Dispatcher.InvokeAsync(new Action(() =>
                               {
                                   Logs.Add(new ErrorLog(log));
                               }));

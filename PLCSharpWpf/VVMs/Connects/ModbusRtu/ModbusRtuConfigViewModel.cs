@@ -42,7 +42,7 @@ namespace PLCSharp.VVMs.Connects.ModbusRtu
         /// <summary>
         /// 标题
         /// </summary>
-        public string Title => "Modbus RTU 客户端";
+        public static string Title => "Modbus RTU 客户端";
 
         /// <summary>
         /// Request关闭
@@ -180,7 +180,7 @@ namespace PLCSharp.VVMs.Connects.ModbusRtu
                 {
                     if (Client.LogQueue.TryDequeue(out string log))
                     {
-                        _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                        _ = System.Windows.Application.Current.Dispatcher.InvokeAsync(new Action(() =>
                         {
                             Logs.Add(new ErrorLog(log));
                         }));

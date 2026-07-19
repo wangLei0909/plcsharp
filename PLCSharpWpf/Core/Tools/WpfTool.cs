@@ -30,7 +30,7 @@ namespace PLCSharp.Core.Tools
                     PointsQueue.TryDequeue(out PointF point);
                     Points.Add(point);
                 }
-                await Application.Current?.Dispatcher.BeginInvoke(() =>
+                await Application.Current.Dispatcher.InvokeAsync(() =>
                   {
                       WriteableBitmap writeableBitmap = _imgSource;
                       int width = (int)writeableBitmap.Width;
@@ -89,7 +89,7 @@ namespace PLCSharp.Core.Tools
         public static System.Windows.Media.Color GetRandColor(int start = 0, int end = 256)
         {
             // 创建一个Random对象
-            Random random = new Random();
+            Random random = new();
 
             // 生成一个0到255之间的随机整数作为红色分量
             byte red = Convert.ToByte(random.Next(start, end));

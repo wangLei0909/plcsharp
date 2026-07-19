@@ -1,4 +1,4 @@
-
+﻿
 using ICSharpCode.AvalonEdit.Editing;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -85,38 +85,51 @@ namespace PLCSharp.VVMs.Workflows.Script
             Focus();
         }
 #nullable enable
+#pragma warning disable IDE0079 // 请删除不必要的忽略
+#pragma warning disable VSTHRD100 // Avoid async void methods
         private async void OnDataContextChanged(object? sender, DependencyPropertyChangedEventArgs args)
+#pragma warning restore VSTHRD100 // Avoid async void methods
+#pragma warning restore IDE0079 // 请删除不必要的忽略
         {
-            var workingDirectory = Directory.GetCurrentDirectory();
+            try
+            {
 
-            _host = new CustomRoslynHost(additionalAssemblies:
-            [
-                    Assembly.Load("RoslynPad.Roslyn.Windows"),
+                var workingDirectory = Directory.GetCurrentDirectory();
+
+                _host = new CustomRoslynHost(additionalAssemblies:
+                [
+                        Assembly.Load("RoslynPad.Roslyn.Windows"),
                     Assembly.Load("RoslynPad.Editor.Windows"),
 
             ],
-            RoslynHostReferences.NamespaceDefault.With(assemblyReferences:
-            [
-                typeof(object).Assembly,
+                RoslynHostReferences.NamespaceDefault.With(assemblyReferences:
+                [
+                    typeof(object).Assembly,
                 typeof(Mat).Assembly,
                 typeof(App).Assembly,
-            ]
-            ));
+                ]
+                ));
 
 
-            var documentId = await InitializeAsync(_host, new ClassificationHighlightColors(),
-                workingDirectory, string.Empty, SourceCodeKind.Script);
+                var documentId = await InitializeAsync(_host, new ClassificationHighlightColors(),
+                    workingDirectory, string.Empty, SourceCodeKind.Script);
 
-            _document = _host.GetDocument(documentId);
+                _document = _host.GetDocument(documentId);
 
-            // 如果有初始化前暂存的文本，现在应用
-            if (_pendingText != null && Document != null)
+                // 如果有初始化前暂存的文本，现在应用
+                if (_pendingText != null && Document != null)
+                {
+                    Document.Text = _pendingText;
+                    Text = _pendingText;
+                    _pendingText = null;
+                }
+
+            }                // 原有的代码
+
+            catch (Exception)
             {
-                Document.Text = _pendingText;
-                Text = _pendingText;
-                _pendingText = null;
-            }
 
+            }
         }
 
 #nullable disable
@@ -210,7 +223,7 @@ namespace PLCSharp.VVMs.Workflows.Script
             set => SetValue(FontSizeProperty, value);
         }
 
-        public static readonly DependencyProperty FontSizeProperty =
+        public new static readonly DependencyProperty FontSizeProperty =
             DependencyProperty.Register(
                 nameof(FontSize),
                 typeof(double),

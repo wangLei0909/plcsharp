@@ -38,12 +38,12 @@ namespace PLCSharp
                 ForegroundWindow();
                 Environment.Exit(0);
             }
+            LoadConfig();
             //数据库
             _ = containerRegistry.RegisterSingleton<DatasContext>();
             _ = Container.Resolve<DatasContext>();
 
             RegisterEvents(); // 捕获全局异常
-            LoadConfig();
 
             //Module中的初始化晚于这里，所以不能在Module中注册全局使用的实例，比如NavigateModel
 
