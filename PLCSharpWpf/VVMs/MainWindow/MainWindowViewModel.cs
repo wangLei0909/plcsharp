@@ -162,6 +162,12 @@ namespace PLCSharp.VVMs.MainWindow
 
         void ExecuteShowDialog(string param)
         {
+
+            if (showList.Contains(param))
+            {
+                return;
+            }
+     
             switch (param)
             {
                 case "Login":
@@ -170,35 +176,33 @@ namespace PLCSharp.VVMs.MainWindow
                         {
                             if (r.Result == ButtonResult.Yes)
                             {
-
+                              
                             }
-
-                            if (r.Result == ButtonResult.Retry)
+                            else if (r.Result == ButtonResult.Retry)
                             {
                                 _dialogService.ShowDialog("UserManage", new DialogParameters($"message={"message:管理"}"), r => { });
                             }
                         });
                     }
                     break;
-                case "Config":
+                case "SystemConfig":
                     {
-                        if (Login.CurrentUser == null || Login.CurrentUser.Authority <Authority.Authority.SeniorMaintainer)
+                        showList.Add(param);
+                        if (Login.CurrentUser == null || Login.CurrentUser.Authority < Authority.Authority.SeniorMaintainer)
                         {
-                            MessageBox.Show("系统设置需要高级操作者权限", "无权限");
+                            showList.Remove("SystemConfig");
+                            MessageBox.Show("系统设置需要 高级维护 权限", "无权限");
                             return;
                         }
-                        _dialogService.Show("SystemConfig", new DialogParameters($"message={"message:系统设置"}"), (Action<IDialogResult>)(r =>
+                        _dialogService.Show("SystemConfig", new DialogParameters($"message={"message:系统设置"}"), r =>
                         {
-
-                        }));
+                            showList.Remove("SystemConfig");
+                        });
                     }
                     break;
                 case "ErrorLogs":
                     {
-                        if (showList.Contains("ErrorLogs"))
-                        {
-                            return;
-                        }
+
                         showList.Add("ErrorLogs");
                         _dialogService.Show("ErrorLogs", new DialogParameters($"message={"message:错误日志"}"), (Action<IDialogResult>)(r =>
                         {
@@ -210,7 +214,7 @@ namespace PLCSharp.VVMs.MainWindow
 
             }
         }
- 
+
         /// <summary>
         /// _EventAggregator
         /// </summary>
@@ -226,7 +230,7 @@ namespace PLCSharp.VVMs.MainWindow
             {
                 Target = "Exit"
             });
-      
+
 
         }
     }

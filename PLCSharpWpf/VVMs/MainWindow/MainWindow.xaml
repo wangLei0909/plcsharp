@@ -212,7 +212,7 @@
                         Background="Transparent"
                         BorderBrush="{x:Null}"
                         Command="{Binding ShowDialog}"
-                        CommandParameter="Config" Cursor="Hand" ToolTip="配置">
+                        CommandParameter="SystemConfig" Cursor="Hand" ToolTip="配置">
                     <Button.Content>
                         <TextBlock Text="&#xe8b8;" FontSize="30" FontFamily="{StaticResource iconfont}" Foreground="LightGray" />
                     </Button.Content>
