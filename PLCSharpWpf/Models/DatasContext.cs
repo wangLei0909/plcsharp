@@ -57,8 +57,13 @@ namespace PLCSharp.Models
         /// 全局图像列表
         /// </summary>
         public DbSet<ImageData> ImageDatas { get; set; }
+
         /// <summary>
-        /// 连接模型
+        /// 局部图像列表
+        /// </summary>
+        public DbSet<LocalImageData> LocalImageDatas { get; set; }
+        /// <summary>
+        /// 连接模型·
         /// </summary>
         public DbSet<Connect> Connects { get; set; }
         /// <summary>

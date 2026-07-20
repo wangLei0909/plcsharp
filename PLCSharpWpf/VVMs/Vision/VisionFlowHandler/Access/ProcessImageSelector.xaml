@@ -10,7 +10,7 @@
              d:DesignHeight="100" d:DesignWidth="300">
     <StackPanel>
         <Label Content="局部图像名称" />
-        <ComboBox IsEditable="False" ItemsSource="{Binding SelectedVisionFunction.Params.ImageDatas}" SelectedItem="{Binding SelectedLocalImageData}" DisplayMemberPath="Name" />
+        <ComboBox IsEditable="False" ItemsSource="{Binding SelectedVisionFunction.LocalImageDatas}" SelectedItem="{Binding SelectedLocalImageData}" DisplayMemberPath="Name" />
         <TextBlock Text="{Binding Path=SelectVisionFlow.StringParams[Image]}" />
 
     </StackPanel>

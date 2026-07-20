@@ -3,13 +3,10 @@ using OpenCvSharp.WpfExtensions;
 using PLCSharp.Core.Prism;
 using PLCSharp.Core.UserControls;
 using PLCSharp.Models;
-using PLCSharp.VVMs.GlobalVariables;
-using PLCSharp.VVMs.Vision.Camera;
 using Prism.Commands;
 using Prism.Dialogs;
 using Prism.Events;
 using Prism.Ioc;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -96,7 +93,7 @@ namespace PLCSharp.VVMs.Vision
             SelectedVisionFunction.EditImageEdit = null;
         }
 
- 
+
         /// <summary>
         /// Line 类型局部变量列表（供 ComboBox 选择）
         /// </summary>
@@ -230,29 +227,36 @@ namespace PLCSharp.VVMs.Vision
                 case "New":
                     var baseName = "temp";
                     int index = 1;
-                    while (SelectedVisionFunction.Params.ImageDatas.Where(w => w.Name == $"{baseName}{index}").Any())
+                    while (SelectedVisionFunction.LocalImageDatas.Where(w => w.Name == $"{baseName}{index}").Any())
                         index++;
-                    SelectedVisionFunction.Params.ImageDatas.Add(new ImageData { Name = $"{baseName}{index}" });
+                    SelectedVisionFunction.LocalImageDatas.Add(
+                        new LocalImageData
+                        {
+                            Name = $"{baseName}{index}",
+                            FuncID = SelectedVisionFunction.ID
+                        });
                     break;
                 case "Remove":
                     if (GridSelectedLocalImageData == null) return;
-                    if (SelectedVisionFunction.Params.ImageDatas.Contains(GridSelectedLocalImageData))
-                        SelectedVisionFunction.Params.ImageDatas.Remove(GridSelectedLocalImageData);
+                    if (SelectedVisionFunction.LocalImageDatas.Contains(GridSelectedLocalImageData))
+                        SelectedVisionFunction.LocalImageDatas.Remove(GridSelectedLocalImageData);
                     break;
                 case "Show":
-                    if (GridSelectedLocalImageData.Mat != null && GridSelectedLocalImageData.Mat.Empty() == false)
-                        ShowMat = GridSelectedLocalImageData.Mat;
+                    if (GridSelectedLocalImageData == null) return;
+                    if (GridSelectedLocalImageData.Mat == null) return;
+                    if (GridSelectedLocalImageData.Mat.Empty()) return;
+                    ShowMat = GridSelectedLocalImageData.Mat;
                     break;
 
             }
         }
 
 
-        private ImageData _GridSelectedLocalImageData;
+        private LocalImageData _GridSelectedLocalImageData;
         /// <summary>
         /// 在表格中选择的局部图像
         /// </summary>
-        public ImageData GridSelectedLocalImageData
+        public LocalImageData GridSelectedLocalImageData
         {
             get { return _GridSelectedLocalImageData; }
             set { SetProperty(ref _GridSelectedLocalImageData, value); }
@@ -315,6 +319,6 @@ namespace PLCSharp.VVMs.Vision
         }
         #endregion
 
-      
+
     }
 }

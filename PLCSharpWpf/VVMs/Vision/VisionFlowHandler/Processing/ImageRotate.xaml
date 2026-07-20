@@ -22,7 +22,7 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Text="角度" VerticalAlignment="Center" ToolTip="旋转角度（度），正数逆时针，负数顺时针" />
-                    <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[RotateAngle], TargetNullValue=0, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[RotateAngle], TargetNullValue=0, UpdateSourceTrigger=LostFocus}" />
 
                     <TextBlock Grid.Row="1" Text="尺寸模式" VerticalAlignment="Center" />
                     <ComboBox Grid.Row="1" Grid.Column="1" SelectedIndex="{Binding SelectVisionFlow.IntParams[ResizeMode], Mode=TwoWay}">

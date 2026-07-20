@@ -101,7 +101,7 @@
                               HorizontalAlignment="Left" VerticalAlignment="Center"
                               AutoGenerateColumns="False" CanUserAddRows="False"
                               CanUserDeleteRows="False" CanUserSortColumns="False"
-                              ItemsSource="{Binding SelectedVisionFunction.Params.ImageDatas}"
+                              ItemsSource="{Binding SelectedVisionFunction.LocalImageDatas}"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                               SelectedItem="{Binding GridSelectedLocalImageData}"
                               Unloaded="DataGrid_Unloaded">

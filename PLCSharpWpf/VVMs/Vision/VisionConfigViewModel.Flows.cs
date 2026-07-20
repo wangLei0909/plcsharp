@@ -117,7 +117,9 @@ public partial class VisionConfigViewModel
             case VisionFlowType.灰度面积:
                 ContentRegion = new GrayArea();
                 break;
-
+            case VisionFlowType.灰度模板匹配:
+                ContentRegion = new GrayTemplateMatch();
+                break;
         }
 
         if (ContentRegion != null)
@@ -419,6 +421,14 @@ public partial class VisionConfigViewModel
                     newFlow.DoubleParams["AreaMinPercent"] = 0;
                     newFlow.DoubleParams["AreaMaxPercent"] = 100;
                     newFlow.StringParams["ResultVarName"] = "灰度面积_Result";
+                    break;
+                case VisionFlowType.灰度模板匹配:
+                    newFlow.DoubleParams["MinAngle"] = -10;
+                    newFlow.DoubleParams["MaxAngle"] = 10;
+                    newFlow.DoubleParams["AngleStep"] = 1;
+                    newFlow.DoubleParams["MatchScoreMax"] = 0.9;
+                    newFlow.StringParams["TemplateName"] = "GrayMatch_Template";
+                    newFlow.StringParams["GrayTemplateMatch_PosVar"] = "灰度模板匹配_Pos";
                     break;
                 default:
                     break;

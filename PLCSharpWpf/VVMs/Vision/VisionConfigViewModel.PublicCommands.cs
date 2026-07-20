@@ -1,5 +1,4 @@
 ﻿using OpenCvSharp;
-using PLCSharp.Core.Tools;
 using PLCSharp.Core.UserControls;
 using PLCSharp.VVMs.GlobalVariables;
 using PLCSharp.VVMs.Vision.VisionFlowHandler;
@@ -291,7 +290,7 @@ public partial class VisionConfigViewModel
 
     private async Task ExecuteDrawFindRectROIAsync()
     {
- 
+
         var imageEdit = SelectedVisionFunction?.EditImageEdit;
         if (imageEdit?.ImageSource == null)
         {
@@ -693,21 +692,218 @@ public partial class VisionConfigViewModel
     private void SaveTemplateMat(Mat templateMat)
     {
         string templateName = SelectVisionFlow.StringParams.TryGetValue("TemplateName", out var tn)
-                              && !string.IsNullOrEmpty(tn) ? tn : "ORB_Template";
+                              && !string.IsNullOrEmpty(tn) ? tn : "Template";
 
-        var existing = SelectedVisionFunction.Params.ImageDatas
+        var existing = SelectedVisionFunction.LocalImageDatas
             .FirstOrDefault(m => m.Name == templateName);
         if (existing != null)
         {
             existing.Mat?.Dispose();
-            SelectedVisionFunction.Params.ImageDatas.Remove(existing);
+
+            existing.Mat = templateMat;
+        }
+        else
+        {
+
+            SelectedVisionFunction.LocalImageDatas.Add(new LocalImageData
+            {
+                FuncID = SelectedVisionFunction.ID,
+                Name = templateName,
+                Mat = templateMat
+            });
         }
 
-        SelectedVisionFunction.Params.ImageDatas.Add(new ImageData
+        var localImageData = VisionsModel.
+                            _DatasContext.
+                            LocalImageDatas.
+                            FirstOrDefault(m => m.Name == templateName
+                                            && m.FuncID == SelectedVisionFunction.ID);
+        if (localImageData != null)
         {
-            Name = templateName,
-            Mat = templateMat
-        });
+            localImageData.Mat = templateMat;
+
+        }
+        else
+        {
+
+            VisionsModel._DatasContext.Add(new LocalImageData
+            {
+                FuncID = SelectedVisionFunction.ID,
+                Name = templateName,
+                Mat = templateMat
+            });
+        }
+        VisionsModel._DatasContext.Save();
+    }
+
+    private AsyncDelegateCommand _DrawGrayTemplateMatchROI;
+    /// <summary>
+    /// 绘制灰度模板匹配模板 ROI
+    /// </summary>
+    public AsyncDelegateCommand DrawGrayTemplateMatchROI =>
+        _DrawGrayTemplateMatchROI ??= new AsyncDelegateCommand(ExecuteDrawGrayTemplateMatchROIAsync);
+
+    private async Task ExecuteDrawGrayTemplateMatchROIAsync()
+    {
+        var imageEdit = SelectedVisionFunction?.EditImageEdit;
+        if (imageEdit?.ImageSource == null)
+        {
+            SendInfoDialog("请先获取图片！");
+            return;
+        }
+
+        try
+        {
+            if (SelectVisionFlow == null) return;
+
+            string roiShape = SelectVisionFlow.StringParams.TryGetValue("ROIShape", out var rs)
+                && !string.IsNullOrEmpty(rs) ? rs : "矩形";
+
+            double centerX = 0, centerY = 0;
+            double templateW = 0, templateH = 0;
+
+            switch (roiShape)
+            {
+                case "矩形":
+                    {
+                        var roi = await imageEdit.DrawROIAsync("灰度模板匹配");
+                        if (roi == null) return;
+
+                        SelectVisionFlow.DoubleParams["TemplateLeft"] = roi.Left;
+                        SelectVisionFlow.DoubleParams["TemplateTop"] = roi.Top;
+                        SelectVisionFlow.DoubleParams["TemplateWidth"] = roi.Width;
+                        SelectVisionFlow.DoubleParams["TemplateHeight"] = roi.Height;
+
+                        centerX = roi.Left + roi.Width / 2.0;
+                        centerY = roi.Top + roi.Height / 2.0;
+                        templateW = roi.Width;
+                        templateH = roi.Height;
+
+                        var srcMat = SelectedVisionFunction.Src;
+                        if (srcMat != null && !srcMat.Empty())
+                        {
+                            int x = Math.Clamp((int)roi.Left, 0, srcMat.Width - 1);
+                            int y = Math.Clamp((int)roi.Top, 0, srcMat.Height - 1);
+                            int w = Math.Min((int)roi.Width, srcMat.Width - x);
+                            int h = Math.Min((int)roi.Height, srcMat.Height - y);
+                            if (w > 0 && h > 0)
+                                SaveTemplateMat(srcMat[new OpenCvSharp.Rect(x, y, w, h)].Clone());
+                        }
+
+                        imageEdit.DrawRectVisual(roi.Left, roi.Top, roi.Width, roi.Height);
+                        break;
+                    }
+
+                case "旋转矩形":
+                    {
+                        var roi = await imageEdit.DrawRotateRectROIAsync("灰度模板匹配");
+                        if (roi == null) return;
+
+                        SelectVisionFlow.DoubleParams["TemplateCenterX"] = roi.CenterX;
+                        SelectVisionFlow.DoubleParams["TemplateCenterY"] = roi.CenterY;
+                        SelectVisionFlow.DoubleParams["TemplateWidth"] = roi.RectWidth;
+                        SelectVisionFlow.DoubleParams["TemplateHeight"] = roi.RectHeight;
+                        SelectVisionFlow.DoubleParams["TemplateAngle"] = roi.RectAngle;
+
+                        centerX = roi.CenterX;
+                        centerY = roi.CenterY;
+                        templateW = roi.RectWidth;
+                        templateH = roi.RectHeight;
+
+                        var srcMat = SelectedVisionFunction.Src;
+                        if (srcMat != null && !srcMat.Empty())
+                        {
+                            double cx = roi.CenterX, cy = roi.CenterY;
+                            double w = roi.RectWidth, h = roi.RectHeight;
+                            double rad = roi.RectAngle * Math.PI / 180.0;
+                            double cosA = Math.Cos(rad), sinA = Math.Sin(rad);
+                            double hw = w / 2.0, hh = h / 2.0;
+                            Point2f[] corners =
+                            [
+                                new((float)(cx + (-hw * cosA - (-hh) * sinA)), (float)(cy + (-hw * sinA + (-hh) * cosA))),
+                                new((float)(cx + ( hw * cosA - (-hh) * sinA)), (float)(cy + ( hw * sinA + (-hh) * cosA))),
+                                new((float)(cx + ( hw * cosA -  hh * sinA)), (float)(cy + ( hw * sinA +  hh * cosA))),
+                                new((float)(cx + (-hw * cosA -  hh * sinA)), (float)(cy + (-hw * sinA +  hh * cosA))),
+                            ];
+                            float minX = corners.Min(p => p.X), maxX = corners.Max(p => p.X);
+                            float minY = corners.Min(p => p.Y), maxY = corners.Max(p => p.Y);
+                            int bx = Math.Clamp((int)Math.Floor(minX), 0, srcMat.Width - 1);
+                            int by = Math.Clamp((int)Math.Floor(minY), 0, srcMat.Height - 1);
+                            int bw = Math.Min((int)Math.Ceiling(maxX) - bx, srcMat.Width - bx);
+                            int bh = Math.Min((int)Math.Ceiling(maxY) - by, srcMat.Height - by);
+                            if (bw > 0 && bh > 0)
+                            {
+                                SelectVisionFlow.DoubleParams["TemplateBBoxLeft"] = bx;
+                                SelectVisionFlow.DoubleParams["TemplateBBoxTop"] = by;
+                                SelectVisionFlow.DoubleParams["TemplateBBoxWidth"] = bw;
+                                SelectVisionFlow.DoubleParams["TemplateBBoxHeight"] = bh;
+
+                                using var cropped = srcMat[new OpenCvSharp.Rect(bx, by, bw, bh)].Clone();
+                                using var mask = new Mat(cropped.Size(), MatType.CV_8UC1, Scalar.Black);
+                                var rr = new RotatedRect(
+                                    new Point2f((float)(cx - bx), (float)(cy - by)),
+                                    new Size2f((float)w, (float)h),
+                                    (float)roi.RectAngle);
+                                var rrPts = rr.Points();
+                                Cv2.FillPoly(mask, [rrPts.Select(p => new OpenCvSharp.Point((int)p.X, (int)p.Y)).ToArray()], Scalar.White);
+                                Mat result = Mat.Zeros(cropped.Size(), cropped.Type());
+                                cropped.CopyTo(result, mask);
+                                SaveTemplateMat(result);
+                            }
+                        }
+                        break;
+                    }
+
+                case "圆形":
+                    {
+                        var roi = await imageEdit.DrawCircleAsync("灰度模板匹配");
+                        if (roi == null) return;
+
+                        SelectVisionFlow.DoubleParams["TemplateCenterX"] = roi.CenterX;
+                        SelectVisionFlow.DoubleParams["TemplateCenterY"] = roi.CenterY;
+                        SelectVisionFlow.DoubleParams["TemplateRadius"] = roi.Radius;
+                        SelectVisionFlow.DoubleParams["TemplateWidth"] = roi.Radius * 2;
+                        SelectVisionFlow.DoubleParams["TemplateHeight"] = roi.Radius * 2;
+
+                        centerX = roi.CenterX;
+                        centerY = roi.CenterY;
+                        templateW = roi.Radius * 2;
+                        templateH = roi.Radius * 2;
+
+                        var srcMat = SelectedVisionFunction.Src;
+                        if (srcMat != null && !srcMat.Empty())
+                        {
+                            double r = roi.Radius;
+                            int x = Math.Clamp((int)(roi.CenterX - r), 0, srcMat.Width - 1);
+                            int y = Math.Clamp((int)(roi.CenterY - r), 0, srcMat.Height - 1);
+                            int size = Math.Min((int)(r * 2), Math.Min(srcMat.Width - x, srcMat.Height - y));
+                            if (size > 0)
+                            {
+                                using var cropped = srcMat[new OpenCvSharp.Rect(x, y, size, size)].Clone();
+                                using var mask = new Mat(cropped.Size(), MatType.CV_8UC1, Scalar.Black);
+                                Cv2.Circle(mask, new OpenCvSharp.Point(size / 2, size / 2), size / 2, Scalar.White, -1);
+                                Mat result = Mat.Zeros(cropped.Size(), cropped.Type());
+                                cropped.CopyTo(result, mask);
+                                SaveTemplateMat(result);
+                            }
+                        }
+
+                        imageEdit.DrawCircleVisual(roi.CenterX, roi.CenterY, roi.Radius);
+                        break;
+                    }
+            }
+
+            SelectVisionFlow.DoubleParams["Width"] = imageEdit.ImageSource.Width;
+            SelectVisionFlow.DoubleParams["Height"] = imageEdit.ImageSource.Height;
+            SelectVisionFlow.DoubleParams["TemplateCenterX"] = centerX;
+            SelectVisionFlow.DoubleParams["TemplateCenterY"] = centerY;
+
+            SendInfoDialog("模板已保存");
+        }
+        catch (Exception ex)
+        {
+            SendInfoDialog($"模板绘制失败：{ex.Message}");
+        }
     }
 
     private AsyncDelegateCommand _DrawBarcodeROI;

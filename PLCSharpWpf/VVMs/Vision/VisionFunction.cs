@@ -159,10 +159,19 @@ namespace PLCSharp.VVMs.Vision
                     _Src = value;
                     old?.Dispose();    // 释放旧 Mat 的非托管资源
                 }
-
-
-
             }
+        }
+
+
+        private ObservableCollection<LocalImageData> _LocalImageDatas = [];
+        /// <summary>
+        /// 图像集合
+        /// </summary>
+        [NotMapped]
+        public ObservableCollection<LocalImageData> LocalImageDatas
+        {
+            get { return _LocalImageDatas; }
+            set { SetProperty(ref _LocalImageDatas, value); }
         }
 
         private VisionParams _Params = new();
@@ -328,6 +337,7 @@ namespace PLCSharp.VVMs.Vision
             [VisionFlowType.拍照] = new GetFromCameraHandler(),
             [VisionFlowType.卡尺寻边] = new CaliperFindEdgeHandler(),
             [VisionFlowType.ORB匹配] = new ORBMatchHandler(),
+            [VisionFlowType.灰度模板匹配] = new GrayTemplateMatchHandler(),
             [VisionFlowType.卡尺找圆] = new CaliperFindCircleHandler(),
             [VisionFlowType.卡尺找旋转矩形] = new CaliperFindRectHandler(),
             [VisionFlowType.清除绘制] = new ClearDrawHandler(),
@@ -519,17 +529,7 @@ namespace PLCSharp.VVMs.Vision
     /// </summary>
     public class VisionParams : BindableBase
     {
-
-        private ObservableCollection<ImageData> _Mats = [];
-        /// <summary>
-        /// 图像集合
-        /// </summary>
-        public ObservableCollection<ImageData> ImageDatas
-        {
-            get { return _Mats; }
-            set { SetProperty(ref _Mats, value); }
-        }
-
+ 
         private ObservableDictionary<string, double> _ResultDoubles = [];
         /// <summary>
         /// 通用数值结果（如 ORB 匹配输出的 X/Y/角度偏移）

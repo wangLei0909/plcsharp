@@ -93,6 +93,13 @@ namespace PLCSharp.VVMs.Vision
                 itemcopy.VisionsModel = this;
                 itemcopy.ImageDatas = ImageDatas;
                 itemcopy.GlobalModel = GlobalModel;
+                var localImageDatas = _DatasContext.LocalImageDatas.Where(c => c.FuncID == item.ID);
+
+
+                foreach (var l in localImageDatas)
+                {
+                    itemcopy.LocalImageDatas.Add(l);
+                }
                 VisionFunctions.Add(itemcopy);
             }
 

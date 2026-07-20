@@ -84,7 +84,7 @@ namespace PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm
             {
                 // ---------- 1. 提取或缓存模板 ----------
                 template = Mat.Zeros((int)height, (int)width, MatType.CV_8UC3);
-                var existing = func.Params.ImageDatas.FirstOrDefault(m => m.Name == templateName);
+                var existing = func.LocalImageDatas.FirstOrDefault(m => m.Name == templateName);
                 if (existing?.Mat != null && !existing.Mat.Empty())
                 {
                     if (roiShape == "旋转矩形")

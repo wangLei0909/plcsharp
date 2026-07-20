@@ -1,0 +1,155 @@
+﻿<UserControl x:Class="PLCSharp.VVMs.Vision.VisionFlowHandler.Algorithm.GrayTemplateMatch"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PLCSharp.VVMs.Vision.VisionFlowHandler"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vision="clr-namespace:PLCSharp.VVMs.Vision"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vision:VisionConfigViewModel}"
+             d:DesignHeight="550" d:DesignWidth="300">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <!-- ========== 模板 ========== -->
+            <GroupBox Header="模板">
+                <StackPanel>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="ROI 形状" VerticalAlignment="Center" />
+                        <ComboBox Grid.Column="1" Margin="5,0,0,0"
+                                  SelectedValue="{Binding SelectVisionFlow.StringParams[ROIShape], TargetNullValue=矩形}"
+                                  SelectedValuePath="Content">
+                            <ComboBoxItem Content="矩形" IsSelected="True" />
+                            <ComboBoxItem Content="旋转矩形" />
+                            <ComboBoxItem Content="圆形" />
+                        </ComboBox>
+                    </Grid>
+                    <Button Height="25" Margin="5" Command="{Binding DrawGrayTemplateMatchROI}" Content="画选区截取模板" />
+                    <Grid Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Margin="5,0" Text="Left" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[TemplateLeft], UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Column="2" Margin="5,0" Text="Top" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="3" Text="{Binding SelectVisionFlow.DoubleParams[TemplateTop], UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="1" Margin="5,0" Text="宽度" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[TemplateWidth], UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="1" Grid.Column="2" Margin="5,0" Text="高度" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding SelectVisionFlow.DoubleParams[TemplateHeight], UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Grid.Row="2" Text="模板名称" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding SelectVisionFlow.StringParams[TemplateName], Mode=TwoWay, TargetNullValue=GrayMatch_Template}" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- ========== 参数 ========== -->
+            <GroupBox Header="参数">
+                <StackPanel>
+                    <Grid Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="最小角度" VerticalAlignment="Center" ToolTip="角度搜索起始值（度）" />
+                        <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[MinAngle], Mode=TwoWay, TargetNullValue=-10, UpdateSourceTrigger=LostFocus}" />
+
+                        <TextBlock Grid.Row="1" Text="最大角度" VerticalAlignment="Center" ToolTip="角度搜索终止值（度）" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[MaxAngle], Mode=TwoWay, TargetNullValue=10, UpdateSourceTrigger=LostFocus}" />
+
+                        <TextBlock Grid.Row="2" Text="角度步长" VerticalAlignment="Center" ToolTip="生成模板的角度步长（度）。越小精度越高但预处理越慢" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[AngleStep], Mode=TwoWay, TargetNullValue=1, UpdateSourceTrigger=LostFocus}" />
+
+                        <TextBlock Grid.Row="3" Text="分数下限" VerticalAlignment="Center" ToolTip="CCorrNormed 分数下限（-1~1）。越高匹配越好，低于此值则拒绝" />
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SelectVisionFlow.DoubleParams[MatchScoreMax], Mode=TwoWay, TargetNullValue=0.5, UpdateSourceTrigger=LostFocus}" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- ========== 变量设置 ========== -->
+            <GroupBox Header="变量设置">
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="位置变量" VerticalAlignment="Center" ToolTip="匹配到的位置 (X,Y,角度) 写入此 Pos 变量" />
+                    <TextBox Grid.Column="1" Text="{Binding SelectVisionFlow.StringParams[GrayTemplateMatch_PosVar], Mode=TwoWay, TargetNullValue=灰度模板匹配_Pos}" />
+                </Grid>
+            </GroupBox>
+
+            <!-- ========== 匹配结果 ========== -->
+            <GroupBox Header="匹配结果">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.ColumnSpan="4" Text="— 最佳匹配 —" FontWeight="Bold" HorizontalAlignment="Center" />
+
+                    <TextBlock Grid.Row="1" Margin="5,0" Text="匹配 X" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[GrayMatch_MatchX], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+                    <TextBlock Grid.Row="1" Grid.Column="2" Margin="5,0" Text="匹配 Y" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="3"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[GrayMatch_MatchY], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+
+                    <TextBlock Grid.Row="2" Margin="5,0" Text="偏移 X" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="2" Grid.Column="1"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[GrayMatch_OffsetX], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+                    <TextBlock Grid.Row="2" Grid.Column="2" Margin="5,0" Text="偏移 Y" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="2" Grid.Column="3"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[GrayMatch_OffsetY], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+
+                    <TextBlock Grid.Row="3" Margin="5,0" Text="相似度" VerticalAlignment="Center" ToolTip="CCorrNormed 分数（-1~1），越高匹配越好" />
+                    <TextBox Grid.Row="3" Grid.Column="1"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[GrayMatch_Score], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+                    <TextBlock Grid.Row="3" Grid.Column="2" Margin="5,0" Text="角度" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="3" Grid.Column="3"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[GrayMatch_Angle], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+
+                    <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Margin="5,0" Text="模板数量" VerticalAlignment="Center" ToolTip="本次生成的有效模板总数" />
+                    <TextBox Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2"
+                             Text="{Binding SelectedVisionFunction.Params.ResultDoubles[GrayMatch_Count], Mode=OneWay}"
+                             IsReadOnly="True" Background="#FFF0F0F0" />
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
